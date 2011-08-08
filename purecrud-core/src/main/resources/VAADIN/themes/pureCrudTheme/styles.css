@@ -1,0 +1,87 @@
+@import "../chameleon/styles.css";
+@import "../chameleon-blue/styles.css";
+
+.v-table-body {
+    overflow: hidden !important;
+}
+
+.v-textfield.v-readonly {
+    border: 1px solid #bcbdbe;
+}
+
+.v-textfield-error, .v-checkbox-error, .v-textarea-error, .v-richtextarea-error,
+.v-select-error .v-select-option, .v-datefield-error .v-textfield {
+    border-color: red !important;
+    border-width: 2px !important;
+    background: none !important;
+    border-image: none !important;
+}
+
+.v-form fieldset {
+    border: thin #add8e6 solid;
+}
+
+.searchForm fieldset {
+    border: thin #add8e6 solid;
+}
+
+.v-filterselect-error {
+    border: 2px red solid !important;
+}
+
+.v-table-cell-content, .v-table-header-cell {
+    border-right: none;
+    padding-top: 4px;
+    padding-bottom: 4px;
+    padding-left: 7px;
+    padding-right: 7px;
+}
+
+.v-tabsheet-tabitem {
+    background-color: rgb(5, 134, 252) !important;
+    color: rgb(247, 248, 249) !important;
+}
+
+.v-tabsheet-tabitem-selected .v-caption {
+    text-shadow: none !important;
+}
+
+.v-table-row.v-selected .v-button-link .v-button-caption, .v-table-row-odd.v-selected .v-button-link .v-button-caption {
+    color: white;
+}
+
+.v-gridlayout .v-gridlayout-spacing-on {
+    padding-left: .5em;
+    padding-right: .5em;
+    padding-top: .5em;
+    padding-bottom: .5em;
+}
+
+.v-gridlayout .v-gridlayout-margin-left {
+    padding-left: 2em;
+}
+
+.v-gridlayout .v-gridlayout-margin-right {
+    padding-right: 2em;
+}
+
+.v-gridlayout .v-gridlayout-margin-top {
+    padding-top: 1em;
+}
+
+.v-gridlayout .v-gridlayout-margin-bottom {
+    padding-bottom: 1em;
+}
+
+.v-required-field-indicator {
+    visibility: collapse;
+}
+
+.b-required-field-indicator {
+    color: red;
+    padding-left: 2px;
+}
+
+.b-formComponent-footer {
+    padding-left: 1em;
+}

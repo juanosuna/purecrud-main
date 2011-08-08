@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ BROWN BAG CONFIDENTIAL
+  ~
+  ~ Brown Bag Consulting LLC
+  ~ Copyright (c) 2011. All Rights Reserved.
+  ~
+  ~ NOTICE:  All information contained herein is, and remains
+  ~ the property of Brown Bag Consulting LLC and its suppliers,
+  ~ if any.  The intellectual and technical concepts contained
+  ~ herein are proprietary to Brown Bag Consulting LLC
+  ~ and its suppliers and may be covered by U.S. and Foreign Patents,
+  ~ patents in process, and are protected by trade secret or copyright law.
+  ~ Dissemination of this information or reproduction of this material
+  ~ is strictly forbidden unless prior written permission is obtained
+  ~ from Brown Bag Consulting LLC.
+  -->
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xsi:schemaLocation="
+           http://www.springframework.org/schema/beans
+           http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+           http://www.springframework.org/schema/mvc
+           http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd">
+
+    <!--
+         Set-up the controllers with @Controller annotations
+      -->
+    <!--<mvc:annotation-driven/>-->
+
+    <!--<bean class="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping"/>-->
+
+    <!--<bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter"/>-->
+
+    <!-- Vaadin application controller -->
+    <bean id="applicationServlet" class="org.springframework.web.servlet.mvc.ServletWrappingController"
+          p:servletClass="com.purebred.core.util.SpringApplicationServlet">
+        <property name="initParameters">
+            <props>
+                <prop key="application">com.purebred.core.view.MainApplication</prop>
+                <prop key="productionMode">false</prop>
+                <prop key="widgetset">com.purebred.core.view.AppWidgetSet</prop>
+            </props>
+        </property>
+    </bean>
+
+    <!-- Map URIs to web controllers -->
+    <bean class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping" p:alwaysUseFullPath="true">
+        <property name="urlMap">
+            <map>
+                <entry key="/app" value-ref="applicationServlet"/>
+                <entry key="/app/**/*" value-ref="applicationServlet"/>
+                <entry key="/UIDL" value-ref="applicationServlet"/>
+                <entry key="/UIDL/**/*" value-ref="applicationServlet"/>
+                <entry key="/VAADIN/**/*" value-ref="applicationServlet"/>
+                <entry key="/mvc/login.do" value-ref="loginController"/>
+            </map>
+        </property>
+    </bean>
+
+    <bean name="loginController" class="org.springframework.web.servlet.mvc.ParameterizableViewController">
+        <property name="viewName" value="login"/>
+    </bean>
+
+    <bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="prefix" value="/WEB-INF/jsp/"/>
+        <property name="suffix" value=".jsp"/>
+    </bean>
+
+</beans>
