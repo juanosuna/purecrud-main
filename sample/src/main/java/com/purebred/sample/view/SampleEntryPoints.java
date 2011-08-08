@@ -56,9 +56,4 @@ public class SampleEntryPoints extends MainEntryPoints {
 
         return entryPoints;
     }
-
-    @Override
-    public String getTheme() {
-        return null;
-    }
 }
