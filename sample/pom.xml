@@ -19,6 +19,24 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
+    <repositories>
+        <repository>
+            <id>purebred-private-snapshots</id>
+            <url>http://www.purecrud.com/nexus/content/repositories/purebred-private-snapshots/</url>
+        </repository>
+        <repository>
+            <id>purebred-releases</id>
+            <url>http://www.purecrud.com/nexus/content/groups/public</url>
+        </repository>
+    </repositories>
+
+    <pluginRepositories>
+        <pluginRepository>
+            <id>purebred-releases</id>
+            <url>http://www.purecrud.com/nexus/content/groups/public</url>
+        </pluginRepository>
+    </pluginRepositories>
+
     <parent>
         <groupId>com.purebred</groupId>
         <artifactId>purecrud-app-parent</artifactId>

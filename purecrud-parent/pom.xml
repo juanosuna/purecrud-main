@@ -34,9 +34,6 @@
         <h2.version>1.3.158</h2.version>
     </properties>
 
-    <licenses>
-        <license></license>
-    </licenses>
     <distributionManagement>
         <snapshotRepository>
             <uniqueVersion>false</uniqueVersion>
