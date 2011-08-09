@@ -21,7 +21,6 @@ import com.purebred.sample.entity.*;
 import com.purebred.sample.view.contact.ContactQuery;
 import com.google.i18n.phonenumbers.NumberParseException;
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import javax.annotation.Resource;

@@ -19,13 +19,12 @@ package com.purebred.sample.dao.init;
 
 import com.purebred.sample.dao.AbstractDomainTest;
 import org.junit.Test;
-import org.springframework.test.annotation.IfProfileValue;
 import org.springframework.test.context.transaction.TransactionConfiguration;
 
 import javax.annotation.Resource;
 
 @TransactionConfiguration(transactionManager = "transactionManager", defaultRollback = false)
-public class TestInitializer extends AbstractDomainTest {
+public class TestDataInitializerTest extends AbstractDomainTest {
 
     @Resource
     private ReferenceDataInitializer referenceDataInitializer;
@@ -34,9 +33,8 @@ public class TestInitializer extends AbstractDomainTest {
     private TestDataInitializer testDataInitializer;
 
     @Test
-    @IfProfileValue(name="regenerateDB", value="true")
     public void initialize() throws Exception {
         referenceDataInitializer.initialize();
-        testDataInitializer.initialize(100);
+        testDataInitializer.initialize(5);
     }
 }
