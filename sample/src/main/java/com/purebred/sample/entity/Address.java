@@ -9,7 +9,7 @@
  * if any.  The intellectual and technical concepts contained
  * herein are proprietary to Brown Bag Consulting LLC
  * and its suppliers and may be covered by U.S. and Foreign Patents,
- * patents in process, and are protected by trade secret or copyrightlaw.
+ * patents in process, and are protected by trade secret or copyright law.
  * Dissemination of this information or reproduction of this material
  * is strictly forbidden unless prior written permission is obtained
  * from Brown Bag Consulting LLC.
@@ -100,8 +100,7 @@ public class Address extends WritableEntity {
         this.zipCode = zipCode;
     }
 
-    @AssertTrueForProperties(errorProperty = "zipCode", dependentProperties = {"country"},
-            message = "US zip code must be 5 or 9 digits")
+    @AssertTrueForProperties(errorProperty = "zipCode", message = "US zip code must be 5 or 9 digits")
     public boolean isUsZipCodeValid() {
         if (!isEmpty(getZipCode()) && isCountryId("US")) {
             return getZipCode().matches("^\\d{5}$|^\\d{5}$");
@@ -110,8 +109,7 @@ public class Address extends WritableEntity {
         }
     }
 
-    @AssertTrueForProperties(errorProperty = "zipCode", dependentProperties = {"country"},
-            message = "CA zip code must be have the format: A0A 0A0")
+    @AssertTrueForProperties(errorProperty = "zipCode", message = "CA zip code must be have the format: A0A 0A0")
     public boolean isCaZipCodeValid() {
         if (!isEmpty(getZipCode()) && isCountryId("CA")) {
             return getZipCode().matches("^[a-zA-Z]\\d[a-zA-Z] \\d[a-zA-Z]\\d$");
@@ -120,8 +118,7 @@ public class Address extends WritableEntity {
         }
     }
 
-    @AssertTrueForProperties(errorProperty = "zipCode", dependentProperties = {"country"},
-            message = "Zip code invalid for selected country")
+    @AssertTrueForProperties(errorProperty = "zipCode", message = "Zip code invalid for selected country")
     public boolean isZipCodeValidForCountry() {
         if (!isEmpty(getZipCode()) && getCountry() != null && !isCountryId("US", "CA")) {
             return getCountry().isZipCodeValid(getZipCode());
@@ -138,8 +135,7 @@ public class Address extends WritableEntity {
         this.state = state;
     }
 
-    @AssertTrueForProperties(errorProperty = "state", dependentProperties = {"country"},
-            message = "State is required for selected country")
+    @AssertTrueForProperties(errorProperty = "state", message = "State is required for selected country")
     public boolean isStateValid() {
         if (getCountry() != null && isEqual(getCountry().getId(), "US", "CA", "MX", "AU")) {
             return getState() != null;

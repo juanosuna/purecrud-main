@@ -41,6 +41,6 @@
     <context:component-scan base-package="com.purebred.core"/>
 
     <context:annotation-config/>
-    <aop:aspectj-autoproxy/>
+    <aop:aspectj-autoproxy proxy-target-class="true"/>
 
 </beans>

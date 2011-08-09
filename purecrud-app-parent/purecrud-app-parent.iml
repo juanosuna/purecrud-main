@@ -63,7 +63,7 @@
     <orderEntry type="library" name="Maven: com.h2database:h2:1.3.158" level="project" />
     <orderEntry type="library" name="Maven: commons-lang:commons-lang:2.6" level="project" />
     <orderEntry type="library" name="Maven: commons-beanutils:commons-beanutils:1.8.3" level="project" />
-    <orderEntry type="library" name="Maven: com.vaadin:vaadin:6.6.3" level="project" />
+    <orderEntry type="library" name="Maven: com.vaadin:vaadin:6.6.4" level="project" />
     <orderEntry type="library" name="Maven: org.vaadin.addons:customfield:0.9.3" level="project" />
     <orderEntry type="library" name="Maven: com.vaadin.addon:beanvalidation-addon:0.6.2" level="project" />
     <orderEntry type="library" name="Maven: org.vaadin.addons:animator:1.6.4" level="project" />

@@ -9,7 +9,7 @@
  * if any.  The intellectual and technical concepts contained
  * herein are proprietary to Brown Bag Consulting LLC
  * and its suppliers and may be covered by U.S. and Foreign Patents,
- * patents in process, and are protected by trade secret or copyrightlaw.
+ * patents in process, and are protected by trade secret or copyright law.
  * Dissemination of this information or reproduction of this material
  * is strictly forbidden unless prior written permission is obtained
  * from Brown Bag Consulting LLC.
@@ -26,8 +26,8 @@ import com.purebred.core.view.entity.util.LayoutContextMenu;
 import com.vaadin.data.Item;
 import com.vaadin.data.Validator;
 import com.vaadin.data.util.BeanItem;
-import com.vaadin.data.util.NullCapableBeanItem;
-import com.vaadin.data.util.NullCapableNestedPropertyDescriptor;
+import com.vaadin.data.util.EnhancedBeanItem;
+import com.vaadin.data.util.EnhancedNestedPropertyDescriptor;
 import com.vaadin.data.util.VaadinPropertyDescriptor;
 import com.vaadin.terminal.ThemeResource;
 import com.vaadin.ui.*;
@@ -359,11 +359,11 @@ public abstract class FormComponent<T> extends CustomComponent {
         List<String> propertyIds = getFormFields().getPropertyIds();
         Map<String, VaadinPropertyDescriptor> descriptors = new HashMap<String, VaadinPropertyDescriptor>();
         for (String propertyId : propertyIds) {
-            VaadinPropertyDescriptor descriptor = new NullCapableNestedPropertyDescriptor(propertyId, getEntityType(),
+            VaadinPropertyDescriptor descriptor = new EnhancedNestedPropertyDescriptor(propertyId, getEntityType(),
                     getFormFields().getField(propertyId));
             descriptors.put(propertyId, descriptor);
         }
-        return new NullCapableBeanItem(entity, descriptors);
+        return new EnhancedBeanItem(entity, descriptors);
     }
 
     public static class EntityFieldFactory implements FormFieldFactory {

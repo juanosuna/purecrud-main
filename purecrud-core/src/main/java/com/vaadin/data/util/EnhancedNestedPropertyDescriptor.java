@@ -9,7 +9,7 @@
  * if any.  The intellectual and technical concepts contained
  * herein are proprietary to Brown Bag Consulting LLC
  * and its suppliers and may be covered by U.S. and Foreign Patents,
- * patents in process, and are protected by trade secret or copyrightlaw.
+ * patents in process, and are protected by trade secret or copyright law.
  * Dissemination of this information or reproduction of this material
  * is strictly forbidden unless prior written permission is obtained
  * from Brown Bag Consulting LLC.
@@ -21,15 +21,15 @@ import com.purebred.core.view.entity.field.DisplayField;
 import com.purebred.core.view.entity.field.format.EmptyPropertyFormatter;
 import com.vaadin.data.Property;
 
-public class NullCapableNestedPropertyDescriptor<BT> implements VaadinPropertyDescriptor<BT> {
+public class EnhancedNestedPropertyDescriptor<BT> implements VaadinPropertyDescriptor<BT> {
     private final String name;
     private final Class<?> propertyType;
     private DisplayField displayField;
 
-    public NullCapableNestedPropertyDescriptor(String name, Class<BT> beanType, DisplayField displayField)
+    public EnhancedNestedPropertyDescriptor(String name, Class<BT> beanType, DisplayField displayField)
             throws IllegalArgumentException {
         this.name = name;
-        NullCapableNestedMethodProperty property = new NullCapableNestedMethodProperty(beanType, name);
+        EnhancedNestedMethodProperty property = new EnhancedNestedMethodProperty(beanType, name);
         this.propertyType = property.getType();
         this.displayField = displayField;
     }
@@ -43,7 +43,7 @@ public class NullCapableNestedPropertyDescriptor<BT> implements VaadinPropertyDe
     }
 
     public Property createProperty(BT bean) {
-        Property property = new NullCapableNestedMethodProperty(bean, name);
+        Property property = new EnhancedNestedMethodProperty(bean, name);
         PropertyFormatter propertyFormatter = displayField.getPropertyFormatter();
         if (propertyFormatter.getClass().equals(EmptyPropertyFormatter.class)) {
             return property;

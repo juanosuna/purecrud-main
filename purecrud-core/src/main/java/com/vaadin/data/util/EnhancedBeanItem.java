@@ -9,7 +9,7 @@
  * if any.  The intellectual and technical concepts contained
  * herein are proprietary to Brown Bag Consulting LLC
  * and its suppliers and may be covered by U.S. and Foreign Patents,
- * patents in process, and are protected by trade secret or copyrightlaw.
+ * patents in process, and are protected by trade secret or copyright law.
  * Dissemination of this information or reproduction of this material
  * is strictly forbidden unless prior written permission is obtained
  * from Brown Bag Consulting LLC.
@@ -21,10 +21,10 @@ package com.vaadin.data.util;
 import java.util.Map;
 
 @SuppressWarnings("serial")
-public class NullCapableBeanItem<BT> extends BeanItem<BT> {
+public class EnhancedBeanItem<BT> extends BeanItem<BT> {
 
-    public NullCapableBeanItem(BT bean,
-                               Map<String, VaadinPropertyDescriptor<BT>> propertyDescriptors) {
+    public EnhancedBeanItem(BT bean,
+                            Map<String, VaadinPropertyDescriptor<BT>> propertyDescriptors) {
 
         super(bean, propertyDescriptors);
     }

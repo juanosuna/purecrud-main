@@ -9,7 +9,7 @@
  * if any.  The intellectual and technical concepts contained
  * herein are proprietary to Brown Bag Consulting LLC
  * and its suppliers and may be covered by U.S. and Foreign Patents,
- * patents in process, and are protected by trade secret or copyrightlaw.
+ * patents in process, and are protected by trade secret or copyright law.
  * Dissemination of this information or reproduction of this material
  * is strictly forbidden unless prior written permission is obtained
  * from Brown Bag Consulting LLC.
@@ -68,35 +68,6 @@ public class BeanPropertyType {
         } catch (NoSuchFieldException e) {
             // no need to get annotations if field doesn't exist
         }
-    }
-
-    public boolean hasAssertTruePropertyDependency() {
-
-        Method[] publicMethods = containerType.getMethods();
-        Method[] declaredMethods = containerType.getDeclaredMethods();
-        Set<Method> methods = new HashSet<Method>();
-        Collections.addAll(methods, publicMethods);
-        Collections.addAll(methods, declaredMethods);
-
-        for (Method method : methods) {
-            Annotation[] methodAnnotations = method.getAnnotations();
-            for (Annotation methodAnnotation : methodAnnotations) {
-                if (AssertTrueForProperties.class.isAssignableFrom(methodAnnotation.getClass())) {
-                    AssertTrueForProperties assertTrueForProperties = (AssertTrueForProperties) methodAnnotation;
-                    if (assertTrueForProperties.errorProperty().equals(id)) {
-                        return true;
-                    }
-                    String[] dependentProperties = assertTrueForProperties.dependentProperties();
-                    for (String dependentProperty : dependentProperties) {
-                        if (dependentProperty.equals(id)) {
-                            return true;
-                        }
-                    }
-                }
-            }
-        }
-
-        return false;
     }
 
     public boolean hasAnnotation(Class annotationClass) {

@@ -9,7 +9,7 @@
  * if any.  The intellectual and technical concepts contained
  * herein are proprietary to Brown Bag Consulting LLC
  * and its suppliers and may be covered by U.S. and Foreign Patents,
- * patents in process, and are protected by trade secret or copyrightlaw.
+ * patents in process, and are protected by trade secret or copyright law.
  * Dissemination of this information or reproduction of this material
  * is strictly forbidden unless prior written permission is obtained
  * from Brown Bag Consulting LLC.
@@ -18,7 +18,9 @@
 package com.purebred.sample.dao.init;
 
 import com.purebred.sample.dao.AbstractDomainTest;
+import org.junit.Before;
 import org.junit.Test;
+import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.test.context.transaction.TransactionConfiguration;
 
 import javax.annotation.Resource;
@@ -35,6 +37,6 @@ public class TestDataInitializerTest extends AbstractDomainTest {
     @Test
     public void initialize() throws Exception {
         referenceDataInitializer.initialize();
-        testDataInitializer.initialize(5);
+        testDataInitializer.initialize(1000);
     }
 }

@@ -9,7 +9,7 @@
  * if any.  The intellectual and technical concepts contained
  * herein are proprietary to Brown Bag Consulting LLC
  * and its suppliers and may be covered by U.S. and Foreign Patents,
- * patents in process, and are protected by trade secret or copyrightlaw.
+ * patents in process, and are protected by trade secret or copyright law.
  * Dissemination of this information or reproduction of this material
  * is strictly forbidden unless prior written permission is obtained
  * from Brown Bag Consulting LLC.
@@ -26,7 +26,7 @@ import com.vaadin.data.Container;
 import com.vaadin.data.Property;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.data.util.BeanItemContainer;
-import com.vaadin.data.util.NullCapableBeanItemContainer;
+import com.vaadin.data.util.EnhancedBeanItemContainer;
 import com.vaadin.data.util.PropertyFormatter;
 import com.vaadin.ui.*;
 import com.vaadin.ui.themes.BaseTheme;
@@ -60,7 +60,7 @@ public class ResultsTable extends Table {
         setEditable(true);
         setTableFieldFactory(new TableButtonLinkFactory());
 
-        NullCapableBeanItemContainer dataSource = new NullCapableBeanItemContainer(getEntityType(),
+        EnhancedBeanItemContainer dataSource = new EnhancedBeanItemContainer(getEntityType(),
                 results.getDisplayFields());
         dataSource.setNonSortablePropertyIds(results.getDisplayFields().getNonSortablePropertyIds());
         String[] propertyIds = getEntityFields().getPropertyIdsAsArray();

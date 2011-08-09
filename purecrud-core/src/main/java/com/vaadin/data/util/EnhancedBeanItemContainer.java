@@ -9,7 +9,7 @@
  * if any.  The intellectual and technical concepts contained
  * herein are proprietary to Brown Bag Consulting LLC
  * and its suppliers and may be covered by U.S. and Foreign Patents,
- * patents in process, and are protected by trade secret or copyrightlaw.
+ * patents in process, and are protected by trade secret or copyright law.
  * Dissemination of this information or reproduction of this material
  * is strictly forbidden unless prior written permission is obtained
  * from Brown Bag Consulting LLC.
@@ -24,19 +24,19 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Set;
 
-public class NullCapableBeanItemContainer<BEANTYPE> extends BeanItemContainer<BEANTYPE> {
+public class EnhancedBeanItemContainer<BEANTYPE> extends BeanItemContainer<BEANTYPE> {
     private Class beanType;
     private Set<String> nonSortablePropertyIds = new HashSet<String>();
     private DisplayFields displayFields;
 
-    public NullCapableBeanItemContainer(Class<? super BEANTYPE> type, DisplayFields displayFields)
+    public EnhancedBeanItemContainer(Class<? super BEANTYPE> type, DisplayFields displayFields)
             throws IllegalArgumentException {
         super(type);
         beanType = type;
         this.displayFields = displayFields;
     }
 
-    public NullCapableBeanItemContainer(Class<? super BEANTYPE> type, Collection<? extends BEANTYPE> beantypes, DisplayFields displayFields)
+    public EnhancedBeanItemContainer(Class<? super BEANTYPE> type, Collection<? extends BEANTYPE> beantypes, DisplayFields displayFields)
             throws IllegalArgumentException {
         super(type, beantypes);
         beanType = type;
@@ -45,7 +45,7 @@ public class NullCapableBeanItemContainer<BEANTYPE> extends BeanItemContainer<BE
 
     @Override
     public boolean addNestedContainerProperty(String propertyId) {
-        return addContainerProperty(propertyId, new NullCapableNestedPropertyDescriptor(
+        return addContainerProperty(propertyId, new EnhancedNestedPropertyDescriptor(
                 propertyId, beanType, displayFields.getField(propertyId)));
     }
 
