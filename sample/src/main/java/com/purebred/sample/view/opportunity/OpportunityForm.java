@@ -85,7 +85,7 @@ public class OpportunityForm extends EntityForm<Opportunity> {
 
     @Override
     public void configurePopupWindow(Window popupWindow) {
-        popupWindow.setWidth(68, Sizeable.UNITS_EM);
+        popupWindow.setWidth(70, Sizeable.UNITS_EM);
         popupWindow.setHeight(32, Sizeable.UNITS_EM);
     }
 }

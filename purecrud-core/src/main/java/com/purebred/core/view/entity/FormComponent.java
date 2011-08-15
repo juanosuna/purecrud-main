@@ -36,6 +36,7 @@ import org.vaadin.peter.contextmenu.ContextMenu;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -109,7 +110,7 @@ public abstract class FormComponent<T> extends CustomComponent {
         form.setInvalidCommitted(true);
         form.setImmediate(true);
         form.setValidationVisibleOnCommit(true);
-        form.addStyleName("entityForm");
+        form.addStyleName("p-form-component");
 
         formFields = createFormFields();
         configureFields(formFields);
@@ -118,7 +119,7 @@ public abstract class FormComponent<T> extends CustomComponent {
         final GridLayout gridLayout = formFields.createGridLayout();
         form.setLayout(gridLayout);
 
-        form.getFooter().addStyleName("b-formComponent-footer");
+        form.getFooter().addStyleName("p-form-component-footer");
         createFooterButtons((HorizontalLayout) form.getFooter());
 
         VerticalLayout tabsAndForm = new VerticalLayout();
@@ -143,7 +144,13 @@ public abstract class FormComponent<T> extends CustomComponent {
         final Animator formAnimator = new Animator(component);
         formAnimator.setSizeUndefined();
 
-        HorizontalLayout animatorLayout = new HorizontalLayout();
+        AbstractOrderedLayout animatorLayout;
+        if (this instanceof SearchForm) {
+            animatorLayout = new VerticalLayout();
+        } else {
+            animatorLayout = new HorizontalLayout();
+        }
+
         animatorLayout.setMargin(false, false, false, false);
         animatorLayout.setSpacing(false);
 
@@ -162,8 +169,17 @@ public abstract class FormComponent<T> extends CustomComponent {
         toggleFormButton.setIcon(new ThemeResource("../pureCrudTheme/icons/collapse-icon.png"));
         toggleFormButton.addStyleName("borderless");
 
-        animatorLayout.addComponent(toggleFormButton);
-        animatorLayout.addComponent(formAnimator);
+        if (this instanceof SearchForm) {
+            HorizontalLayout toggleFormButtonAndCaption = new HorizontalLayout();
+            toggleFormButtonAndCaption.setSizeUndefined();
+            toggleFormButtonAndCaption.addComponent(toggleFormButton);
+            toggleFormButtonAndCaption.addComponent(new Label(getEntityCaption()));
+            animatorLayout.addComponent(toggleFormButtonAndCaption);
+            animatorLayout.addComponent(formAnimator);
+        } else {
+            animatorLayout.addComponent(toggleFormButton);
+            animatorLayout.addComponent(formAnimator);
+        }
 
         return animatorLayout;
     }
@@ -172,6 +188,7 @@ public abstract class FormComponent<T> extends CustomComponent {
         final Set<String> tabNames = formFields.getTabNames();
 
         tabSheet = new TabSheet();
+        tabSheet.addStyleName("borderless");
         tabSheet.setSizeUndefined();
         menu = new LayoutContextMenu(layout);
         int tabPosition = 0;
@@ -182,6 +199,7 @@ public abstract class FormComponent<T> extends CustomComponent {
             TabSheet.Tab tab = tabSheet.addTab(emptyLabel, tabName, null);
             tabPositions.put(tabName, tabPosition++);
             if (formFields.isTabOptional(tabName)) {
+                tab.setClosable(true);
                 menu.addAction(uiMessageSource.getMessage("formComponent.add") + " " + tabName,
                         this, "executeContextAction").setVisible(true);
                 menu.addAction(uiMessageSource.getMessage("formComponent.remove") + " " + tabName,
@@ -197,6 +215,15 @@ public abstract class FormComponent<T> extends CustomComponent {
                 TabSheet.Tab tab = getTabByName(tabName);
                 tab.setDescription(uiMessageSource.getMessage("formComponent.tab.description"));
             }
+
+            tabSheet.setCloseHandler(new TabSheet.CloseHandler() {
+                @Override
+                public void onTabClose(TabSheet tabsheet, Component tabContent) {
+                    String tabName = tabsheet.getTab(tabContent).getCaption();
+                    String actionName = uiMessageSource.getMessage("formComponent.remove") + " " + tabName;
+                    executeContextAction(actionName);
+                }
+            });
         }
 
         layout.addComponent(tabSheet);
@@ -204,9 +231,9 @@ public abstract class FormComponent<T> extends CustomComponent {
         tabSheet.addListener(new TabSheet.SelectedTabChangeListener() {
             @Override
             public void selectedTabChange(TabSheet.SelectedTabChangeEvent event) {
+                String tabName = getCurrentTabName();
                 form.getLayout().removeAllComponents();
                 FormGridLayout gridLayout = (FormGridLayout) form.getLayout();
-                String tabName = getCurrentTabName();
                 gridLayout.setFormColumns(formFields.getColumns(tabName));
                 gridLayout.setRows(formFields.getRows(tabName));
                 Set<FormField> formFields = getFormFields().getFormFields(tabName);
@@ -271,7 +298,10 @@ public abstract class FormComponent<T> extends CustomComponent {
     }
 
     public void executeContextAction(ContextMenu.ContextMenuItem item) {
-        String name = item.getName();
+        executeContextAction(item.getName());
+    }
+
+    public void executeContextAction(String name) {
 
         if (name.startsWith(uiMessageSource.getMessage("formComponent.add") + " ")) {
             String tabName = name.substring(4);

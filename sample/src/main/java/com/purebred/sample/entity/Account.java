@@ -302,5 +302,8 @@ public class Account extends WritableEntity {
         for (Contact contact : getContacts()) {
             contact.setAccount(null);
         }
+        for (Opportunity opportunity : getOpportunities()) {
+            opportunity.setAccount(null);
+        }
     }
 }

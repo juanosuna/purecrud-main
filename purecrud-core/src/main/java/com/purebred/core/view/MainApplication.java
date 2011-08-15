@@ -19,6 +19,7 @@ package com.purebred.core.view;
 
 import com.vaadin.Application;
 import com.vaadin.addon.chameleon.ChameleonTheme;
+import com.vaadin.terminal.ClassResource;
 import com.vaadin.terminal.gwt.server.HttpServletRequestListener;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
@@ -70,9 +71,11 @@ public class MainApplication extends Application implements HttpServletRequestLi
         customizeConfirmDialogStyle();
 
         Window mainWindow = new Window(messageSource.getMessage("mainApplication.caption"));
+        mainWindow.addStyleName("p-main-window");
         mainWindow.getContent().setSizeUndefined();
         setMainWindow(mainWindow);
 
+        mainEntryPoints.addStyleName("p-main-entry-points");
         mainWindow.addComponent(mainEntryPoints);
     }
 

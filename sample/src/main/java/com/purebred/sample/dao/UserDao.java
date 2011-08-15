@@ -20,6 +20,7 @@ package com.purebred.sample.dao;
 import com.purebred.core.dao.EntityDao;
 import com.purebred.sample.entity.User;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.Query;
 import java.util.List;
@@ -42,5 +43,26 @@ public class UserDao extends EntityDao<User, Long> {
         query.setParameter("loginName", loginName);
 
         return (User) query.getSingleResult();
+    }
+
+    @Transactional
+    @Override
+    public void remove(User entity) {
+        Query query = getEntityManager().createQuery(
+                "UPDATE Account a SET a.assignedTo = null WHERE a.assignedTo = :user");
+        query.setParameter("user", entity);
+        query.executeUpdate();
+
+        query = getEntityManager().createQuery(
+                "UPDATE Contact c SET c.assignedTo = null WHERE c.assignedTo = :user");
+        query.setParameter("user", entity);
+        query.executeUpdate();
+
+        query = getEntityManager().createQuery(
+                "UPDATE Opportunity o SET o.assignedTo = null WHERE o.assignedTo = :user");
+        query.setParameter("user", entity);
+        query.executeUpdate();
+
+        super.remove(entity);
     }
 }

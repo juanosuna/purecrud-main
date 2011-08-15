@@ -51,6 +51,11 @@ public class OpportunitySelect extends EntitySelect<Opportunity> {
         return opportunitySelectResults;
     }
 
+    @Override
+    public String getEntityCaption() {
+        return "Select Opportunity";
+    }
+
     @Component
     @Scope("prototype")
     public static class OpportunitySelectResults extends EntitySelectResults<Opportunity> {

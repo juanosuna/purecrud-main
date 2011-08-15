@@ -86,6 +86,8 @@ public abstract class ResultsComponent<T> extends CustomComponent {
 
     @PostConstruct
     public void postConstruct() {
+        addStyleName("p-results-component");
+
         displayFields = new DisplayFields(getEntityType(), entityMessageSource, defaultFormat);
         configureFields(displayFields);
         resultsTable = new ResultsTable(this);
@@ -255,6 +257,10 @@ public abstract class ResultsComponent<T> extends CustomComponent {
         MethodProperty pageProperty = new MethodProperty(this, "pageSize");
         pageSizeMenu.setPropertyDataSource(pageProperty);
         pageSizeMenu.addListener(Property.ValueChangeEvent.class, this, "search");
+    }
+
+    public void selectPageSize(Integer size) {
+        pageSizeMenu.select(size);
     }
 
     public int getPageSize() {

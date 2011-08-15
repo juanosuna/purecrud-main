@@ -162,7 +162,7 @@ public class ContactForm extends EntityForm<Contact> {
 
     @Override
     public void configurePopupWindow(Window popupWindow) {
-        popupWindow.setWidth(62, Sizeable.UNITS_EM);
+        popupWindow.setWidth(66, Sizeable.UNITS_EM);
         popupWindow.setHeight(30, Sizeable.UNITS_EM);
     }
 }

@@ -17,10 +17,14 @@
 
 package com.purebred.core.view.entity;
 
+import com.purebred.core.view.MainApplication;
 import com.purebred.core.view.entity.field.FormFields;
 import com.vaadin.data.util.BeanItem;
+import com.vaadin.terminal.ClassResource;
 import com.vaadin.terminal.ThemeResource;
+import com.vaadin.ui.AbstractOrderedLayout;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
 
 import javax.annotation.PostConstruct;
@@ -33,9 +37,9 @@ public abstract class SearchForm<T> extends FormComponent<T> {
     public void postConstruct() {
         super.postConstruct();
 
-        getForm().setCaption(getEntityCaption());
+        addStyleName("p-search-form");
 
-        getForm().addStyleName("searchForm");
+//        getForm().setCaption(getEntityCaption());
     }
 
     public void postWire() {

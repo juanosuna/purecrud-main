@@ -1,0 +1,82 @@
+@import "../chameleon/styles.css";
+@import "../chameleon-blue/styles.css";
+@import "../pureCrudTheme/styles.css";
+
+.p-main-window, .p-entity-form-window {
+    background: #b6b6b6;
+}
+
+.p-select-field-window {
+    background: #ecffec;
+}
+
+.p-entry-point {
+    background: #ecffec;
+}
+
+.v-window, .v-popupview-popup {
+    border-color: black !important;
+}
+
+.p-search-form, .p-form-component {
+    background: #ecffec;
+}
+
+.p-results-component {
+    background: #ecffec;
+}
+
+/*.v-tabsheet-deco {*/
+/*height: 0 !important;*/
+/*background: transparent !important;*/
+/*border-top: 5px solid black !important;*/
+/*}*/
+
+.v-tabsheet-tabitem-selected {
+    border-color: #ecffec !important;
+}
+
+.v-tabsheet-content {
+    border: none !important;
+    background-color: #ecffec !important;
+}
+
+.v-tabsheet-tabitem {
+    background-color: green !important;
+}
+
+.v-tabsheet-tabitemcell {
+    background-color: transparent !important;
+}
+
+.v-tabsheet-tabitem {
+    border-left: 1px solid #ecffec !important;
+    border-bottom: none !important;
+}
+
+.v-tabsheet-tabitemcell-first .v-tabsheet-tabitem {
+    border-left: none !important;
+}
+
+.v-tabsheet-tabitem-selected {
+    background-color: #ecffec !important;
+    color: black !important;
+}
+
+.v-tabsheet-tabitem .v-caption {
+    background: transparent url(img/grad-light-top.png) repeat-x;
+    border: none;
+    margin: 0;
+}
+
+.p-entity-form .v-form fieldset {
+    border: none !important;
+}
+
+.v-window-outerheader {
+    background: #403f3f;
+}
+
+.v-window-header {
+    color: white !important;
+}

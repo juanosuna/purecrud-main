@@ -41,7 +41,7 @@
         <property name="initParameters">
             <props>
                 <prop key="application">com.purebred.core.view.MainApplication</prop>
-                <prop key="productionMode">false</prop>
+                <prop key="productionMode">true</prop>
                 <prop key="widgetset">com.purebred.core.view.AppWidgetSet</prop>
             </props>
         </property>

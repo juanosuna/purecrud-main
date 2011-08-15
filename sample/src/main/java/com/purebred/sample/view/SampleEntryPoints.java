@@ -23,6 +23,7 @@ import com.purebred.sample.view.account.AccountEntryPoint;
 import com.purebred.sample.view.contact.ContactEntryPoint;
 import com.purebred.sample.view.opportunity.OpportunityEntryPoint;
 import com.purebred.sample.view.user.UserEntryPoint;
+import com.vaadin.terminal.Sizeable;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -55,5 +56,19 @@ public class SampleEntryPoints extends MainEntryPoints {
         entryPoints.add(userEntryPoint);
 
         return entryPoints;
+    }
+
+    @Override
+    public String getTheme() {
+        return "sampleTheme";
+    }
+
+    @Override
+    public void configureEntryPoints() {
+        List<EntryPoint> entryPoints = getEntryPoints();
+        for (EntryPoint entryPoint : entryPoints) {
+            entryPoint.setWidth(75, Sizeable.UNITS_EM);
+            entryPoint.setHeight("100%");
+        }
     }
 }

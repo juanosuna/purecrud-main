@@ -34,6 +34,8 @@ public abstract class ToManyRelationship<T> extends EntityComponent<T> {
     public void postConstruct() {
         super.postConstruct();
 
+        addStyleName("p-to-many-relationship");
+
         addComponent(getResultsComponent());
     }
 }

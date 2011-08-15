@@ -49,6 +49,11 @@ public class UserSelect extends EntitySelect<User> {
         return userSelectResults;
     }
 
+    @Override
+    public String getEntityCaption() {
+        return "Select User";
+    }
+
     @Component
     @Scope("prototype")
     public static class UserSelectResults extends EntitySelectResults<User> {

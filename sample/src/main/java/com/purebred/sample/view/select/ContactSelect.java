@@ -52,6 +52,10 @@ public class ContactSelect extends EntitySelect<Contact> {
         return contactSelectResults;
     }
 
+    @Override
+    public String getEntityCaption() {
+        return "Select Contact";
+    }
 
     @Component
     @Scope("prototype")

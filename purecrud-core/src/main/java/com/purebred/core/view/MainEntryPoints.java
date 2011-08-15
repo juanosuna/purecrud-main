@@ -43,6 +43,10 @@ public abstract class MainEntryPoints extends TabSheet {
         entryPoints.get(0).getResultsComponent().search();
     }
 
+    public void configureEntryPoints() {
+
+    }
+
     private class TabChangeListener implements SelectedTabChangeListener {
 
         @Override

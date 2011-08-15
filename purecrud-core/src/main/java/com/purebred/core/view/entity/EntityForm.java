@@ -55,7 +55,6 @@ public abstract class EntityForm<T> extends FormComponent<T> {
 
     private Button saveButton;
     private boolean isValidationEnabled = true;
-    private Animator toManyRelationshipsAnimator;
 
     public void configurePopupWindow(Window popupWindow) {
         popupWindow.setSizeUndefined();
@@ -76,6 +75,7 @@ public abstract class EntityForm<T> extends FormComponent<T> {
     public void postConstruct() {
         super.postConstruct();
 
+        addStyleName("p-entity-form");
 
         List<ToManyRelationship> toManyRelationships = getToManyRelationships();
         if (toManyRelationships.size() > 0) {
@@ -85,16 +85,12 @@ public abstract class EntityForm<T> extends FormComponent<T> {
                 toManyRelationshipTabs.addTab(toManyRelationship);
             }
 
-            Layout animateLayout = (Layout) animate(toManyRelationshipTabs);
-            Iterator<Component> componentIterator = animateLayout.getComponentIterator();
-            while (componentIterator.hasNext()) {
-                Component component = componentIterator.next();
-                if (component instanceof Animator) {
-                    toManyRelationshipsAnimator = (Animator) component;
-                    break;
-                }
-            }
-            addComponent(animateLayout);
+            Layout layout = new HorizontalLayout();
+            layout.setSizeUndefined();
+            Label label = new Label("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;", Label.CONTENT_XHTML);
+            layout.addComponent(label);
+            layout.addComponent(toManyRelationshipTabs);
+            addComponent(layout);
         }
     }
 
@@ -157,6 +153,21 @@ public abstract class EntityForm<T> extends FormComponent<T> {
         resetTabs(selectFirstTab);
     }
 
+    @Override
+    protected void resetTabs(boolean selectFirstTab) {
+        super.resetTabs(selectFirstTab);
+
+        if (selectFirstTab) {
+            selectFirstToManyTab();
+        }
+    }
+
+    public void selectFirstToManyTab() {
+        if (toManyRelationshipTabs != null) {
+            toManyRelationshipTabs.setSelectedTab(toManyRelationshipTabs.getTab(0).getComponent());
+        }
+    }
+
     private EntityDao getEntityDao() {
         return SpringApplicationContext.getBeanByTypeAndGenericArgumentType(EntityDao.class, getEntityType());
     }
@@ -172,7 +183,7 @@ public abstract class EntityForm<T> extends FormComponent<T> {
 
             }
             toManyRelationshipTabs.setEnabled(true);
-            toManyRelationshipsAnimator.setRolledUp(toManyRelationshipsAnimator.isRolledUp());
+//            toManyRelationshipsAnimator.setRolledUp(toManyRelationshipsAnimator.isRolledUp());
         }
     }
 
@@ -216,6 +227,7 @@ public abstract class EntityForm<T> extends FormComponent<T> {
 
     public void open(boolean createNavigationButtons) {
         formWindow = new Window(getEntityCaption());
+        formWindow.addStyleName("p-entity-form-window");
         formWindow.addStyleName("opaque");
         VerticalLayout layout = (VerticalLayout) formWindow.getContent();
         layout.setMargin(true);
@@ -237,6 +249,7 @@ public abstract class EntityForm<T> extends FormComponent<T> {
         navigationFormLayout.setSizeUndefined();
 
         if (createNavigationButtons) {
+
             VerticalLayout previousButtonLayout = new VerticalLayout();
             previousButtonLayout.setSizeUndefined();
             previousButtonLayout.setMargin(false);
@@ -250,7 +263,19 @@ public abstract class EntityForm<T> extends FormComponent<T> {
             previousButton.setSizeUndefined();
             previousButton.addStyleName("borderless");
             previousButton.setIcon(new ThemeResource("icons/16/previous.png"));
-            previousButtonLayout.addComponent(previousButton);
+
+            if (getToManyRelationships().size() == 0) {
+                HorizontalLayout previousButtonHorizontalLayout = new HorizontalLayout();
+                previousButtonHorizontalLayout.setSizeUndefined();
+                Label horizontalSpaceLabel = new Label("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;", Label.CONTENT_XHTML);
+                horizontalSpaceLabel.setSizeUndefined();
+                previousButtonHorizontalLayout.addComponent(previousButton);
+                previousButtonHorizontalLayout.addComponent(horizontalSpaceLabel);
+                previousButtonLayout.addComponent(previousButtonHorizontalLayout);
+            } else {
+                previousButtonLayout.addComponent(previousButton);
+            }
+
             navigationFormLayout.addComponent(previousButtonLayout);
             navigationFormLayout.setComponentAlignment(previousButtonLayout, Alignment.TOP_LEFT);
         }
@@ -266,13 +291,21 @@ public abstract class EntityForm<T> extends FormComponent<T> {
             spaceLabel.setSizeUndefined();
             nextButtonLayout.addComponent(spaceLabel);
 
+
             nextButton = new Button(null, this, "nextItem");
             nextButton.setDescription(uiMessageSource.getMessage("entityForm.next.description"));
             nextButton.setSizeUndefined();
             nextButton.addStyleName("borderless");
             nextButton.setIcon(new ThemeResource("icons/16/next.png"));
 
-            nextButtonLayout.addComponent(nextButton);
+            HorizontalLayout nextButtonHorizontalLayout = new HorizontalLayout();
+            nextButtonHorizontalLayout.setSizeUndefined();
+            Label horizontalSpaceLabel = new Label("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;", Label.CONTENT_XHTML);
+            horizontalSpaceLabel.setSizeUndefined();
+            nextButtonHorizontalLayout.addComponent(horizontalSpaceLabel);
+            nextButtonHorizontalLayout.addComponent(nextButton);
+
+            nextButtonLayout.addComponent(nextButtonHorizontalLayout);
             navigationFormLayout.addComponent(nextButtonLayout);
             navigationFormLayout.setComponentAlignment(nextButtonLayout, Alignment.TOP_RIGHT);
 

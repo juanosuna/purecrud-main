@@ -61,7 +61,7 @@ public class FormField extends DisplayField {
         if (label == null) {
             String labelText = generateLabelText();
             if (isRequired()) {
-                labelText = "<span class=\"b-required-field-indicator\">*</span>" + labelText;
+                labelText = "<span class=\"p-required-field-indicator\">*</span>" + labelText;
             }
             label = new com.vaadin.ui.Label(labelText, com.vaadin.ui.Label.CONTENT_XHTML);
             label.setSizeUndefined();

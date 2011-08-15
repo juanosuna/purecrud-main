@@ -97,7 +97,8 @@ public abstract class ToManyRelationshipResults<T> extends ResultsComponent<T> {
     }
 
     public void add() {
-        popupWindow = new Window(entityMessageSource.getMessageWithDefault(getEntityCaption()));
+        popupWindow = new Window();
+        popupWindow.addStyleName("p-select-field-window");
         popupWindow.addStyleName("opaque");
         VerticalLayout layout = (VerticalLayout) popupWindow.getContent();
         layout.setMargin(true);
@@ -106,7 +107,9 @@ public abstract class ToManyRelationshipResults<T> extends ResultsComponent<T> {
         popupWindow.setSizeUndefined();
         popupWindow.setModal(true);
         EntitySelect entitySelect = getEntitySelect();
+        popupWindow.setCaption(entitySelect.getEntityCaption());
         entitySelect.getResultsComponent().getEntityQuery().clear();
+        entitySelect.getResultsComponent().selectPageSize(5);
         entitySelect.getResultsComponent().search();
         popupWindow.addComponent(entitySelect);
         popupWindow.setClosable(true);

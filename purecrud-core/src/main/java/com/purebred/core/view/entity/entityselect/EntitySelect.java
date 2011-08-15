@@ -39,7 +39,13 @@ public abstract class EntitySelect<T> extends EntryPoint<T> {
         popupWindow.setSizeUndefined();
     }
 
+    @Override
     public String getEntityCaption() {
+        return null;
+    }
+
+    @Override
+    public String getCaption() {
         return null;
     }
 
@@ -48,6 +54,8 @@ public abstract class EntitySelect<T> extends EntryPoint<T> {
     public void postConstruct() {
         super.postConstruct();
 
-        getResultsComponent().getEntityQuery().setPageSize(5);
+        addStyleName("p-entity-select");
+
+        getResultsComponent().selectPageSize(5);
     }
 }

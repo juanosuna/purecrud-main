@@ -132,7 +132,8 @@ public class SelectField extends CustomField {
     }
 
     public void open() {
-        popupWindow = new Window(getCaption());
+        popupWindow = new Window(entitySelect.getEntityCaption());
+        popupWindow.addStyleName("p-select-field-window");
         popupWindow.addStyleName("opaque");
         VerticalLayout layout = (VerticalLayout) popupWindow.getContent();
         layout.setMargin(true);
@@ -144,6 +145,7 @@ public class SelectField extends CustomField {
         popupWindow.setClosable(true);
 
         entitySelect.getResultsComponent().getEntityQuery().clear();
+        entitySelect.getResultsComponent().selectPageSize(5);
         entitySelect.getResultsComponent().search();
         entitySelect.getResultsComponent().setSelectButtonListener(this, "itemSelected");
 

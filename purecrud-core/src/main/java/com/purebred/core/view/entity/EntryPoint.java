@@ -34,6 +34,8 @@ public abstract class EntryPoint<T> extends EntityComponent<T> {
     public void postConstruct() {
         super.postConstruct();
 
+        addStyleName("p-entry-point");
+
         wireRelationships();
 
         addComponent(getSearchForm());

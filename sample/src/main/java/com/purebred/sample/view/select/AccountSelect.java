@@ -51,6 +51,10 @@ public class AccountSelect extends EntitySelect<Account> {
         return accountSelectResults;
     }
 
+    @Override
+    public String getEntityCaption() {
+        return "Select Account";
+    }
 
     @Component
     @Scope("prototype")
@@ -88,7 +92,7 @@ public class AccountSelect extends EntitySelect<Account> {
 
     @Override
     public void configurePopupWindow(Window popupWindow) {
-        popupWindow.setWidth(55, Sizeable.UNITS_EM);
+        popupWindow.setWidth(50, Sizeable.UNITS_EM);
         popupWindow.setHeight("95%");
     }
 }

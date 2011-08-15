@@ -51,7 +51,7 @@ public class UserForm extends EntityForm<User> {
 
     @Override
     public void configurePopupWindow(Window popupWindow) {
-        popupWindow.setWidth(33, Sizeable.UNITS_EM);
+        popupWindow.setWidth(36, Sizeable.UNITS_EM);
         popupWindow.setHeight(17, Sizeable.UNITS_EM);
     }
 }

@@ -21,7 +21,7 @@
     border: thin #add8e6 solid;
 }
 
-.searchForm fieldset {
+.p-search-form fieldset {
     border: thin #add8e6 solid;
 }
 
@@ -76,12 +76,11 @@
 .v-required-field-indicator {
     visibility: collapse;
 }
-
-.b-required-field-indicator {
+                                             .p-required-field-indicator {
     color: red;
     padding-left: 2px;
 }
 
-.b-formComponent-footer {
+.p-form-component-footer {
     padding-left: 1em;
 }
