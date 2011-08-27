@@ -257,10 +257,12 @@ public abstract class Results<T> extends ResultsComponent<T> implements Walkable
 
     public void selectionChanged() {
         Collection itemIds = (Collection) getResultsTable().getValue();
+        boolean isEditAllowed = securityService.getCurrentUser().isEditAllowed(getEntityType().getName());
+        boolean isDeleteAllowed = securityService.getCurrentUser().isDeleteAllowed(getEntityType().getName());
         if (itemIds.size() == 1) {
             actionContextMenu.setActionEnabled("entityResults.view", true);
-            actionContextMenu.setActionEnabled("entityResults.edit", true);
-            actionContextMenu.setActionEnabled("entityResults.delete", true);
+            actionContextMenu.setActionEnabled("entityResults.edit", isEditAllowed);
+            actionContextMenu.setActionEnabled("entityResults.delete", isDeleteAllowed);
             getResultsTable().removeActionHandler(actionContextMenu);
             getResultsTable().addActionHandler(actionContextMenu);
             editButton.setEnabled(true);
@@ -269,7 +271,7 @@ public abstract class Results<T> extends ResultsComponent<T> implements Walkable
         } else if (itemIds.size() > 1) {
             actionContextMenu.setActionEnabled("entityResults.view", false);
             actionContextMenu.setActionEnabled("entityResults.edit", false);
-            actionContextMenu.setActionEnabled("entityResults.delete", true);
+            actionContextMenu.setActionEnabled("entityResults.delete", isDeleteAllowed);
             getResultsTable().removeActionHandler(actionContextMenu);
             getResultsTable().addActionHandler(actionContextMenu);
             editButton.setEnabled(false);
