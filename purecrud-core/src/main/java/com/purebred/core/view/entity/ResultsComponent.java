@@ -19,9 +19,11 @@ package com.purebred.core.view.entity;
 
 import com.purebred.core.dao.EntityDao;
 import com.purebred.core.dao.EntityQuery;
+import com.purebred.core.security.SecurityService;
 import com.purebred.core.util.ReflectionUtil;
 import com.purebred.core.view.MessageSource;
 import com.purebred.core.view.entity.field.DisplayFields;
+import com.purebred.core.view.entity.field.LabelDepot;
 import com.purebred.core.view.entity.field.format.DefaultFormats;
 import com.vaadin.data.Property;
 import com.vaadin.data.util.MethodProperty;
@@ -40,11 +42,8 @@ public abstract class ResultsComponent<T> extends CustomComponent {
     @Resource(name = "uiMessageSource")
     private MessageSource uiMessageSource;
 
-    @Resource(name = "entityMessageSource")
-    private MessageSource entityMessageSource;
-
     @Resource
-    private DefaultFormats defaultFormat;
+    private LabelDepot labelDepot;
 
     private ResultsTable resultsTable;
     private DisplayFields displayFields;
@@ -84,11 +83,16 @@ public abstract class ResultsComponent<T> extends CustomComponent {
         return crudButtons;
     }
 
+    @Resource
+    public void setDisplayFields(DisplayFields displayFields) {
+        this.displayFields = displayFields;
+        displayFields.setEntityType(getEntityType());
+    }
+
     @PostConstruct
     public void postConstruct() {
         addStyleName("p-results-component");
 
-        displayFields = new DisplayFields(getEntityType(), entityMessageSource, defaultFormat);
         configureFields(displayFields);
         resultsTable = new ResultsTable(this);
         configureTable(resultsTable);
@@ -107,6 +111,8 @@ public abstract class ResultsComponent<T> extends CustomComponent {
         addComponent(resultsTable);
 
         setCustomSizeUndefined();
+
+        labelDepot.trackLabels(displayFields);
     }
 
     public void configureTable(ResultsTable resultsTable) {
@@ -257,6 +263,7 @@ public abstract class ResultsComponent<T> extends CustomComponent {
         MethodProperty pageProperty = new MethodProperty(this, "pageSize");
         pageSizeMenu.setPropertyDataSource(pageProperty);
         pageSizeMenu.addListener(Property.ValueChangeEvent.class, this, "search");
+        getEntityQuery().postWire();
     }
 
     public void selectPageSize(Integer size) {

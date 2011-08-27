@@ -18,13 +18,17 @@
 package com.purebred.core.view.entity.tomanyrelationship;
 
 import com.purebred.core.dao.ToManyRelationshipQuery;
+import com.purebred.core.security.SecurityService;
+import com.purebred.core.util.BeanPropertyType;
+import com.purebred.core.util.assertion.Assert;
 import com.purebred.core.view.MainApplication;
 import com.purebred.core.view.MessageSource;
 import com.purebred.core.view.entity.ResultsComponent;
-import com.purebred.core.view.entity.entityselect.EntitySelect;
 import com.purebred.core.view.entity.util.ActionContextMenu;
 import com.vaadin.terminal.ThemeResource;
-import com.vaadin.ui.*;
+import com.vaadin.ui.Alignment;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.HorizontalLayout;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.vaadin.dialogs.ConfirmDialog;
 
@@ -36,18 +40,18 @@ import java.util.Collection;
 public abstract class ToManyRelationshipResults<T> extends ResultsComponent<T> {
 
     @Resource(name = "uiMessageSource")
-    private MessageSource uiMessageSource;
-
-    @Resource(name = "entityMessageSource")
-    private MessageSource entityMessageSource;
+    protected MessageSource uiMessageSource;
 
     @Resource
-    private ActionContextMenu actionContextMenu;
+    protected ActionContextMenu actionContextMenu;
 
-    private Window popupWindow;
+    @Resource
+    private SecurityService securityService;
+
+    protected HorizontalLayout crudButtons;
 
     private Button addButton;
-    private Button removeButton;
+    protected Button removeButton;
 
     protected ToManyRelationshipResults() {
         super();
@@ -55,20 +59,19 @@ public abstract class ToManyRelationshipResults<T> extends ResultsComponent<T> {
 
     public abstract String getEntityCaption();
 
-    public abstract String getParentPropertyId();
+    public abstract String getChildPropertyId();
 
-    public abstract EntitySelect<T> getEntitySelect();
+    public abstract String getParentPropertyId();
 
     @Override
     public abstract ToManyRelationshipQuery getEntityQuery();
-
 
     @PostConstruct
     @Override
     public void postConstruct() {
         super.postConstruct();
 
-        HorizontalLayout crudButtons = new HorizontalLayout();
+        crudButtons = new HorizontalLayout();
         crudButtons.setMargin(false);
         crudButtons.setSpacing(true);
 
@@ -89,59 +92,53 @@ public abstract class ToManyRelationshipResults<T> extends ResultsComponent<T> {
         getCrudButtons().setComponentAlignment(crudButtons, Alignment.MIDDLE_LEFT);
 
         getResultsTable().setMultiSelect(true);
-        getEntitySelect().getResultsComponent().getResultsTable().setMultiSelect(true);
 
         actionContextMenu.addAction("entityResults.remove", this, "remove");
         actionContextMenu.setActionEnabled("entityResults.remove", true);
         addSelectionChangedListener(this, "selectionChanged");
     }
 
-    public void add() {
-        popupWindow = new Window();
-        popupWindow.addStyleName("p-select-field-window");
-        popupWindow.addStyleName("opaque");
-        VerticalLayout layout = (VerticalLayout) popupWindow.getContent();
-        layout.setMargin(true);
-        layout.setSpacing(true);
-        layout.setSizeUndefined();
-        popupWindow.setSizeUndefined();
-        popupWindow.setModal(true);
-        EntitySelect entitySelect = getEntitySelect();
-        popupWindow.setCaption(entitySelect.getEntityCaption());
-        entitySelect.getResultsComponent().getEntityQuery().clear();
-        entitySelect.getResultsComponent().selectPageSize(5);
-        entitySelect.getResultsComponent().search();
-        popupWindow.addComponent(entitySelect);
-        popupWindow.setClosable(true);
-        getEntitySelect().getResultsComponent().setSelectButtonListener(this, "itemsSelected");
+    public abstract void add();
 
-        entitySelect.configurePopupWindow(popupWindow);
-
-        MainApplication.getInstance().getMainWindow().addWindow(popupWindow);
-    }
-
-    public void itemsSelected() {
-        close();
-        Collection<T> selectedValues = getEntitySelect().getResultsComponent().getSelectedValues();
-        valuesSelected((T[]) selectedValues.toArray());
-    }
-
-    public void valuesSelected(T... values) {
-        Object parent = getEntityQuery().getParent();
+    public void setReferencesToParentAndPersist(T... values) {
         for (T value : values) {
-            value = getEntityDao().getReference(value);
-            try {
-                PropertyUtils.setProperty(value, getParentPropertyId(), parent);
-            } catch (IllegalAccessException e) {
-                throw new RuntimeException(e);
-            } catch (InvocationTargetException e) {
-                throw new RuntimeException(e);
-            } catch (NoSuchMethodException e) {
-                throw new RuntimeException(e);
-            }
-            getEntityDao().persist(value);
+            T referenceValue = getEntityDao().getReference(value);
+            setReferenceToParent(referenceValue);
+            getEntityDao().persist(referenceValue);
         }
         searchImpl(false);
+    }
+
+    public void setReferenceToParent(T value) {
+        try {
+            BeanPropertyType beanPropertyType = BeanPropertyType.getBeanPropertyType(getEntityType(), getParentPropertyId());
+            Assert.PROGRAMMING.assertTrue(!beanPropertyType.isCollectionType(),
+                    "Parent property id (" + getEntityType() + "." + getParentPropertyId() + ") must not be a collection type");
+            PropertyUtils.setProperty(value, getParentPropertyId(), getEntityQuery().getParent());
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+        } catch (InvocationTargetException e) {
+            throw new RuntimeException(e);
+        } catch (NoSuchMethodException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void setReadOnly(boolean isReadOnly) {
+        addButton.setVisible(!isReadOnly);
+        removeButton.setVisible(!isReadOnly);
+    }
+
+    public void applySecurityIsEditable() {
+        boolean isEditable = securityService.getCurrentUser().isEditAllowed(getEntityType().getName(), getChildPropertyId());
+        addButton.setVisible(isEditable);
+        removeButton.setVisible(isEditable);
+
+        if (isEditable) {
+            getResultsTable().addActionHandler(actionContextMenu);
+        } else {
+            getResultsTable().removeActionHandler(actionContextMenu);
+        }
     }
 
     public void valuesRemoved(T... values) {
@@ -160,14 +157,6 @@ public abstract class ToManyRelationshipResults<T> extends ResultsComponent<T> {
         }
         searchImpl(false);
         removeButton.setEnabled(false);
-    }
-
-    public void setAddButtonEnabled(boolean isEnabled) {
-        addButton.setEnabled(isEnabled);
-    }
-
-    public void close() {
-        MainApplication.getInstance().getMainWindow().removeWindow(popupWindow);
     }
 
     public void removeImpl() {

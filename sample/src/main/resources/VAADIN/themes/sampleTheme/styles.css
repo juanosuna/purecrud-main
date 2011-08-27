@@ -6,7 +6,7 @@
     background: #b6b6b6;
 }
 
-.p-select-field-window {
+.p-entity-select-window {
     background: #ecffec;
 }
 
@@ -25,12 +25,6 @@
 .p-results-component {
     background: #ecffec;
 }
-
-/*.v-tabsheet-deco {*/
-/*height: 0 !important;*/
-/*background: transparent !important;*/
-/*border-top: 5px solid black !important;*/
-/*}*/
 
 .v-tabsheet-tabitem-selected {
     border-color: #ecffec !important;
@@ -79,4 +73,9 @@
 
 .v-window-header {
     color: white !important;
+}
+
+.v-form-errormessage {
+    padding-left: 2em;
+    color: red;
 }

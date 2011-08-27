@@ -17,10 +17,12 @@
 
 package com.purebred.core.view.entity;
 
+import com.purebred.core.security.SecurityService;
 import com.purebred.core.util.ReflectionUtil;
 import com.purebred.core.view.MessageSource;
 import com.purebred.core.view.entity.field.FormField;
 import com.purebred.core.view.entity.field.FormFields;
+import com.purebred.core.view.entity.field.LabelDepot;
 import com.purebred.core.view.entity.field.format.DefaultFormats;
 import com.purebred.core.view.entity.util.LayoutContextMenu;
 import com.vaadin.data.Item;
@@ -36,7 +38,6 @@ import org.vaadin.peter.contextmenu.ContextMenu;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
-import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -53,12 +54,18 @@ public abstract class FormComponent<T> extends CustomComponent {
     @Resource
     private DefaultFormats defaultFormat;
 
+    @Resource
+    protected LabelDepot labelDepot;
+
+    @Resource
+    private SecurityService securityService;
+
     private ConfigurableForm form;
     private ResultsComponent results;
-    private FormFields formFields;
-    private TabSheet tabSheet;
+    protected TabSheet tabSheet;
     private Map<String, Integer> tabPositions = new HashMap<String, Integer>();
-    private LayoutContextMenu menu;
+    protected LayoutContextMenu menu;
+    private Button toggleFormVisibilityButton;
 
     public abstract String getEntityCaption();
 
@@ -66,7 +73,7 @@ public abstract class FormComponent<T> extends CustomComponent {
 
     abstract void createFooterButtons(HorizontalLayout footerButtons);
 
-    abstract FormFields createFormFields();
+    public abstract FormFields getFormFields();
 
     public MessageSource getUiMessageSource() {
         return uiMessageSource;
@@ -86,10 +93,6 @@ public abstract class FormComponent<T> extends CustomComponent {
 
     public Form getForm() {
         return form;
-    }
-
-    public FormFields getFormFields() {
-        return formFields;
     }
 
     public ResultsComponent getResults() {
@@ -112,11 +115,10 @@ public abstract class FormComponent<T> extends CustomComponent {
         form.setValidationVisibleOnCommit(true);
         form.addStyleName("p-form-component");
 
-        formFields = createFormFields();
-        configureFields(formFields);
-        form.setFormFieldFactory(new EntityFieldFactory(formFields));
+        configureFields(getFormFields());
+        form.setFormFieldFactory(new EntityFieldFactory(getFormFields()));
 
-        final GridLayout gridLayout = formFields.createGridLayout();
+        final GridLayout gridLayout = getFormFields().createGridLayout();
         form.setLayout(gridLayout);
 
         form.getFooter().addStyleName("p-form-component-footer");
@@ -124,7 +126,7 @@ public abstract class FormComponent<T> extends CustomComponent {
 
         VerticalLayout tabsAndForm = new VerticalLayout();
         tabsAndForm.setSizeUndefined();
-        if (formFields.getTabNames().size() > 1) {
+        if (getFormFields().getTabNames().size() > 1) {
             initializeTabs(tabsAndForm);
         }
         tabsAndForm.addComponent(form);
@@ -138,6 +140,8 @@ public abstract class FormComponent<T> extends CustomComponent {
 
         setCompositionRoot(formComponentLayout);
         setCustomSizeUndefined();
+
+        labelDepot.trackLabels(getFormFields());
     }
 
     protected Component animate(Component component) {
@@ -154,7 +158,7 @@ public abstract class FormComponent<T> extends CustomComponent {
         animatorLayout.setMargin(false, false, false, false);
         animatorLayout.setSpacing(false);
 
-        Button toggleFormButton = new Button(null, new Button.ClickListener() {
+        toggleFormVisibilityButton = new Button(null, new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent event) {
                 formAnimator.setRolledUp(!formAnimator.isRolledUp());
@@ -165,27 +169,31 @@ public abstract class FormComponent<T> extends CustomComponent {
                 }
             }
         });
-        toggleFormButton.setDescription(uiMessageSource.getMessage("entryPoint.toggleSearchForm.description"));
-        toggleFormButton.setIcon(new ThemeResource("../pureCrudTheme/icons/collapse-icon.png"));
-        toggleFormButton.addStyleName("borderless");
+        toggleFormVisibilityButton.setDescription(uiMessageSource.getMessage("entryPoint.toggleSearchForm.description"));
+        toggleFormVisibilityButton.setIcon(new ThemeResource("../pureCrudTheme/icons/collapse-icon.png"));
+        toggleFormVisibilityButton.addStyleName("borderless");
 
         if (this instanceof SearchForm) {
             HorizontalLayout toggleFormButtonAndCaption = new HorizontalLayout();
             toggleFormButtonAndCaption.setSizeUndefined();
-            toggleFormButtonAndCaption.addComponent(toggleFormButton);
+            toggleFormButtonAndCaption.addComponent(toggleFormVisibilityButton);
             toggleFormButtonAndCaption.addComponent(new Label(getEntityCaption()));
             animatorLayout.addComponent(toggleFormButtonAndCaption);
             animatorLayout.addComponent(formAnimator);
         } else {
-            animatorLayout.addComponent(toggleFormButton);
+            animatorLayout.addComponent(toggleFormVisibilityButton);
             animatorLayout.addComponent(formAnimator);
         }
 
         return animatorLayout;
     }
 
+    public void setFormAnimatorVisible(boolean isVisible) {
+        toggleFormVisibilityButton.setVisible(isVisible);
+    }
+
     private void initializeTabs(VerticalLayout layout) {
-        final Set<String> tabNames = formFields.getTabNames();
+        final Set<String> tabNames = getFormFields().getTabNames();
 
         tabSheet = new TabSheet();
         tabSheet.addStyleName("borderless");
@@ -198,7 +206,7 @@ public abstract class FormComponent<T> extends CustomComponent {
             emptyLabel.setSizeUndefined();
             TabSheet.Tab tab = tabSheet.addTab(emptyLabel, tabName, null);
             tabPositions.put(tabName, tabPosition++);
-            if (formFields.isTabOptional(tabName)) {
+            if (getFormFields().isTabOptional(tabName)) {
                 tab.setClosable(true);
                 menu.addAction(uiMessageSource.getMessage("formComponent.add") + " " + tabName,
                         this, "executeContextAction").setVisible(true);
@@ -234,8 +242,8 @@ public abstract class FormComponent<T> extends CustomComponent {
                 String tabName = getCurrentTabName();
                 form.getLayout().removeAllComponents();
                 FormGridLayout gridLayout = (FormGridLayout) form.getLayout();
-                gridLayout.setFormColumns(formFields.getColumns(tabName));
-                gridLayout.setRows(formFields.getRows(tabName));
+                gridLayout.setFormColumns(getFormFields().getColumns(tabName));
+                gridLayout.setRows(getFormFields().getRows(tabName));
                 Set<FormField> formFields = getFormFields().getFormFields(tabName);
                 for (FormField formField : formFields) {
                     String propertyId = formField.getPropertyId();
@@ -246,57 +254,6 @@ public abstract class FormComponent<T> extends CustomComponent {
         });
     }
 
-    protected void resetTabs() {
-        resetTabs(true);
-    }
-
-    protected void resetTabs(boolean selectFirstTab) {
-        if (tabSheet == null) return;
-
-        Set<String> tabNames = formFields.getTabNames();
-        for (String tabName : tabNames) {
-            if (formFields.isTabOptional(tabName)) {
-                Set<FormField> fields = formFields.getFormFields(tabName);
-                boolean isTabEmpty = true;
-                for (FormField field : fields) {
-                    if (field.getField().getValue() != null) {
-                        isTabEmpty = false;
-                        break;
-                    }
-                }
-                setIsRequiredEnable(tabName, !isTabEmpty);
-                TabSheet.Tab tab = getTabByName(tabName);
-                tab.setVisible(!isTabEmpty);
-            }
-        }
-
-        resetContextMenu();
-
-        if (selectFirstTab || !getTabByName(getCurrentTabName()).isVisible()) {
-            selectFirstTab();
-        }
-
-        if (this instanceof EntityForm) {
-            ((EntityForm) this).syncTabAndSaveButtonErrors();
-        }
-    }
-
-    private void resetContextMenu() {
-        Set<String> tabNames = formFields.getTabNames();
-        for (String tabName : tabNames) {
-            TabSheet.Tab tab = getTabByName(tabName);
-
-            String caption = uiMessageSource.getMessage("formComponent.add") + " " + tabName;
-            if (menu.containsItem(caption)) {
-                menu.getContextMenuItem(caption).setVisible(!tab.isVisible());
-            }
-            caption = uiMessageSource.getMessage("formComponent.remove") + " " + tabName;
-            if (menu.containsItem(caption)) {
-                menu.getContextMenuItem(caption).setVisible(tab.isVisible());
-            }
-        }
-    }
-
     public void executeContextAction(ContextMenu.ContextMenuItem item) {
         executeContextAction(item.getName());
     }
@@ -305,7 +262,7 @@ public abstract class FormComponent<T> extends CustomComponent {
 
         if (name.startsWith(uiMessageSource.getMessage("formComponent.add") + " ")) {
             String tabName = name.substring(4);
-            FormFields.AddRemoveMethodDelegate addRemoveMethodDelegate = formFields.getTabAddRemoveDelegate(tabName);
+            FormFields.AddRemoveMethodDelegate addRemoveMethodDelegate = getFormFields().getTabAddRemoveDelegate(tabName);
             addRemoveMethodDelegate.getAddMethodDelegate().execute();
             TabSheet.Tab tab = getTabByName(tabName);
             setIsRequiredEnable(tabName, true);
@@ -313,7 +270,7 @@ public abstract class FormComponent<T> extends CustomComponent {
             tabSheet.setSelectedTab(tab.getComponent());
         } else if (name.startsWith(uiMessageSource.getMessage("formComponent.remove") + " ")) {
             String tabName = name.substring(7);
-            FormFields.AddRemoveMethodDelegate addRemoveMethodDelegate = formFields.getTabAddRemoveDelegate(tabName);
+            FormFields.AddRemoveMethodDelegate addRemoveMethodDelegate = getFormFields().getTabAddRemoveDelegate(tabName);
             addRemoveMethodDelegate.getRemoveMethodDelegate().execute();
             TabSheet.Tab tab = getTabByName(tabName);
             setIsRequiredEnable(tabName, false);
@@ -331,8 +288,24 @@ public abstract class FormComponent<T> extends CustomComponent {
         resetContextMenu();
     }
 
-    private void setIsRequiredEnable(String tabName, boolean isEnabled) {
-        Set<FormField> fields = formFields.getFormFields(tabName);
+    protected void resetContextMenu() {
+        Set<String> tabNames = getFormFields().getTabNames();
+        for (String tabName : tabNames) {
+            TabSheet.Tab tab = getTabByName(tabName);
+
+            String caption = uiMessageSource.getMessage("formComponent.add") + " " + tabName;
+            if (menu.containsItem(caption)) {
+                menu.getContextMenuItem(caption).setVisible(!tab.isVisible());
+            }
+            caption = uiMessageSource.getMessage("formComponent.remove") + " " + tabName;
+            if (menu.containsItem(caption)) {
+                menu.getContextMenuItem(caption).setVisible(tab.isVisible());
+            }
+        }
+    }
+
+    protected void setIsRequiredEnable(String tabName, boolean isEnabled) {
+        Set<FormField> fields = getFormFields().getFormFields(tabName);
         for (FormField field : fields) {
             if (isEnabled) {
                 field.restoreIsRequired();
@@ -353,7 +326,7 @@ public abstract class FormComponent<T> extends CustomComponent {
 
     public String getCurrentTabName() {
         if (tabSheet == null || tabSheet.getSelectedTab() == null) {
-            return formFields.getFirstTabName();
+            return getFormFields().getFirstTabName();
         } else {
             return tabSheet.getTab(tabSheet.getSelectedTab()).getCaption();
         }
@@ -396,6 +369,9 @@ public abstract class FormComponent<T> extends CustomComponent {
         return new EnhancedBeanItem(entity, descriptors);
     }
 
+    public void postWire() {
+    }
+
     public static class EntityFieldFactory implements FormFieldFactory {
 
         private FormFields formFields;
@@ -424,7 +400,8 @@ public abstract class FormComponent<T> extends CustomComponent {
             FormGridLayout gridLayout = (FormGridLayout) form.getLayout();
             FormFields formFields = getFormFields();
             String currentTabName = getCurrentTabName();
-            if (formFields.containsPropertyId(currentTabName, propertyId.toString())) {
+            if (formFields.containsPropertyId(currentTabName, propertyId.toString())
+                    && securityService.getCurrentUser().isViewAllowed(getEntityType().getName(), propertyId.toString())) {
                 gridLayout.addField(getFormFields().getFormField(propertyId.toString()));
             }
         }

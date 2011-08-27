@@ -63,7 +63,7 @@ public class ResultsTable extends Table {
         EnhancedBeanItemContainer dataSource = new EnhancedBeanItemContainer(getEntityType(),
                 results.getDisplayFields());
         dataSource.setNonSortablePropertyIds(results.getDisplayFields().getNonSortablePropertyIds());
-        String[] propertyIds = getEntityFields().getPropertyIdsAsArray();
+        String[] propertyIds = getEntityFields().getViewablePropertyIdsAsArray();
         for (String propertyId : propertyIds) {
             dataSource.addNestedContainerProperty(propertyId);
         }
@@ -75,8 +75,8 @@ public class ResultsTable extends Table {
         setColumnCollapsingAllowed(true);
         setCacheRate(1);
 
-        setVisibleColumns(getEntityFields().getPropertyIdsAsArray());
-        setColumnHeaders(getEntityFields().getLabelsAsArray());
+        setVisibleColumns(getEntityFields().getViewablePropertyIdsAsArray());
+        setColumnHeaders(getEntityFields().getViewableLabelsAsArray());
     }
 
     @Override
@@ -214,7 +214,7 @@ public class ResultsTable extends Table {
                 WritableEntity propertyBean = (WritableEntity) PropertyUtils.getProperty(parentBean,
                         formLink.getPropertyId());
                 EntityForm entityForm = formLink.getEntityForm();
-                entityForm.setCloseListener(results, "search");
+                entityForm.addCloseListener(results, "search");
                 entityForm.load(propertyBean);
                 entityForm.open(false);
             } catch (IllegalAccessException e) {

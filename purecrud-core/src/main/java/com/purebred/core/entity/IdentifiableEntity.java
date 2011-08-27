@@ -17,6 +17,8 @@
 
 package com.purebred.core.entity;
 
+import java.io.Serializable;
+
 public interface IdentifiableEntity {
-    Object getId();
+    Serializable getId();
 }

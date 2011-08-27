@@ -19,6 +19,7 @@ package com.purebred.sample.entity;
 
 
 import com.purebred.core.entity.WritableEntity;
+import com.purebred.sample.entity.security.User;
 import com.purebred.sample.util.ValidPhone;
 import org.hibernate.annotations.ForeignKey;
 import org.hibernate.annotations.Index;
@@ -125,7 +126,15 @@ public class Contact extends WritableEntity {
     }
 
     public String getName() {
-        return getLastName() + ", " + getFirstName();
+        if (getFirstName() == null && getLastName() != null) {
+            return getFirstName();
+        } else if (getFirstName() != null && getLastName() == null) {
+            return getLastName();
+        } else if (getFirstName() == null && getLastName() == null) {
+            return null;
+        } else {
+            return getLastName() + ", " + getFirstName();
+        }
     }
 
     @Size(min = 1, max = 64)

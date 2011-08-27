@@ -18,12 +18,12 @@
 package com.purebred.sample.view;
 
 import com.purebred.core.view.MainEntryPoints;
-import com.purebred.core.view.entity.EntryPoint;
+import com.purebred.core.view.entity.MainEntryPoint;
 import com.purebred.sample.view.account.AccountEntryPoint;
 import com.purebred.sample.view.contact.ContactEntryPoint;
 import com.purebred.sample.view.opportunity.OpportunityEntryPoint;
+import com.purebred.sample.view.role.RoleEntryPoint;
 import com.purebred.sample.view.user.UserEntryPoint;
-import com.vaadin.terminal.Sizeable;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -32,7 +32,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Component
-@Scope("session")
+@Scope("prototype")
 public class SampleEntryPoints extends MainEntryPoints {
 
     @Resource
@@ -47,13 +47,17 @@ public class SampleEntryPoints extends MainEntryPoints {
     @Resource
     private UserEntryPoint userEntryPoint;
 
+    @Resource
+    private RoleEntryPoint roleEntryPoint;
+
     @Override
-    public List<EntryPoint> getEntryPoints() {
-        List<EntryPoint> entryPoints = new ArrayList<EntryPoint>();
+    public List<MainEntryPoint> getEntryPoints() {
+        List<MainEntryPoint> entryPoints = new ArrayList<MainEntryPoint>();
         entryPoints.add(contactEntryPoint);
         entryPoints.add(accountEntryPoint);
         entryPoints.add(opportunityEntryPoint);
         entryPoints.add(userEntryPoint);
+        entryPoints.add(roleEntryPoint);
 
         return entryPoints;
     }
@@ -61,14 +65,5 @@ public class SampleEntryPoints extends MainEntryPoints {
     @Override
     public String getTheme() {
         return "sampleTheme";
-    }
-
-    @Override
-    public void configureEntryPoints() {
-        List<EntryPoint> entryPoints = getEntryPoints();
-        for (EntryPoint entryPoint : entryPoints) {
-            entryPoint.setWidth(75, Sizeable.UNITS_EM);
-            entryPoint.setHeight("100%");
-        }
     }
 }

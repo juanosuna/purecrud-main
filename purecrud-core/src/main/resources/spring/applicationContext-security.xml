@@ -29,7 +29,7 @@
     <http pattern="/" security="none"/>
 
     <http>
-        <intercept-url pattern="/**" access="ROLE_USER, ROLE_ADMIN"/>
+        <intercept-url pattern="/**" access="ROLE_USER"/>
 
         <form-login login-page="/mvc/login.do" authentication-failure-url="/mvc/login.do?login_error=1"
                     default-target-url="/app" always-use-default-target="true"/>
@@ -50,13 +50,18 @@
     <global-method-security pre-post-annotations="enabled"/>
 
     <authentication-manager>
-        <authentication-provider>
-            <user-service>
-                <user name="admin" password="admin" authorities="ROLE_ADMIN, ROLE_USER"/>
-                <user name="guest" password="guest" authorities="ROLE_USER"/>
-            </user-service>
+        <authentication-provider user-service-ref="userDetailsService">
+            <!--<user-service>-->
+                <!--<user name="admin" password="admin" authorities="ROLE_ADMIN, ROLE_USER"/>-->
+                <!--<user name="guest" password="guest" authorities="ROLE_USER"/>-->
+            <!--</user-service>-->
+            <!--<password-encoder hash="sha">-->
+                <!--<salt-source user-property="username"/>-->
+            <!--</password-encoder>-->
         </authentication-provider>
     </authentication-manager>
+
+    <beans:bean id="userDetailsService" class="com.purebred.core.security.UserDetailsServiceImpl"/>
 
     <!-- Automatically receives AuthenticationEvent messages -->
     <beans:bean id="loggerListener" class="org.springframework.security.authentication.event.LoggerListener"/>

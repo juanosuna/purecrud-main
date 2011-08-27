@@ -48,6 +48,8 @@ public class FormField extends DisplayField {
     private Integer columnEnd;
     private Integer rowEnd;
     private boolean isRequired;
+    private boolean isReadOnly;
+    private Field originalField;
     private com.vaadin.ui.Label label;
     private AutoAdjustWidthMode autoAdjustWidthMode = AutoAdjustWidthMode.PARTIAL;
     private Integer defaultWidth;
@@ -68,6 +70,15 @@ public class FormField extends DisplayField {
         }
 
         return label;
+    }
+
+    @Override
+    protected String getLabelSectionDisplayName() {
+        if (tabName.isEmpty()) {
+            return "Form";
+        } else {
+            return tabName;
+        }
     }
 
     public void setFieldLabel(String labelText) {
@@ -178,6 +189,10 @@ public class FormField extends DisplayField {
         getField().setWidth(width, unit);
     }
 
+    public void setHeight(float height, int unit) {
+        getField().setHeight(height, unit);
+    }
+
     public void setSelectItems(List items) {
         // could be either collection or single item
         Object selectedItems = getSelectedItems();
@@ -204,6 +219,33 @@ public class FormField extends DisplayField {
             if (!getBeanPropertyType().isCollectionType() && !container.containsId(selectedItems)) {
                 selectField.select(selectField.getNullSelectionItemId());
             }
+        }
+    }
+
+    public void setSelectItems(Map<Object, String> items) {
+        setSelectItems(items, null);
+    }
+
+    public void setSelectItems(Map<Object, String> items, String nullCaption) {
+        Field field = getField();
+        Assert.PROGRAMMING.assertTrue(field instanceof AbstractSelect,
+                "property " + getPropertyId() + " is not a AbstractSelect field");
+        AbstractSelect selectField = (AbstractSelect) field;
+        selectField.setItemCaptionMode(Select.ITEM_CAPTION_MODE_EXPLICIT);
+
+        selectField.removeAllItems();
+
+        if (nullCaption != null) {
+            selectField.addItem(nullCaption);
+            selectField.setItemCaption(nullCaption, nullCaption);
+            selectField.setNullSelectionItemId(nullCaption);
+        }
+
+        for (Object item : items.keySet()) {
+            String caption = items.get(item);
+
+            selectField.addItem(item);
+            selectField.setItemCaption(item, caption);
         }
     }
 
@@ -267,6 +309,51 @@ public class FormField extends DisplayField {
 
     public void setDescription(String description) {
         getField().setDescription(description);
+    }
+
+    public void setEnabled(boolean enabled) {
+        getField().setEnabled(enabled);
+    }
+
+    public void setReadOnly(boolean isReadOnly) {
+        if (getField() instanceof SelectField) {
+            ((SelectField) getField()).setButtonVisible(!isReadOnly);
+        }
+//        if (getField() instanceof AbstractSelect) {
+//            AbstractSelect select = (AbstractSelect) getField();
+//            if (!select.isMultiSelect()) {
+//                if (isReadOnly) {
+//                    originalField = field;
+//                    field = new TextField();
+//                } else {
+//                    field = originalField;
+//                }
+//            }
+//        }
+
+        getField().setReadOnly(isReadOnly);
+    }
+
+    public void restoreIsReadOnly() {
+        if (getField() instanceof SelectField) {
+            ((SelectField) getField()).setButtonVisible(!isReadOnly);
+        }
+//        if (getField() instanceof AbstractSelect) {
+//            AbstractSelect select = (AbstractSelect) getField();
+//            if (!select.isMultiSelect()) {
+//                if (isReadOnly) {
+//                    originalField = field;
+//                    field = new TextField();
+//                } else {
+//                    field = originalField;
+//                }
+//            }
+//        }
+        getField().setReadOnly(isReadOnly);
+    }
+
+    public void setValue(Object value) {
+        getField().setValue(value);
     }
 
     public boolean hasError() {
@@ -374,7 +461,6 @@ public class FormField extends DisplayField {
             return;
         }
 
-//        field.setCaption(getLabel());
         field.setInvalidAllowed(true);
 
         if (field instanceof AbstractField) {
@@ -410,19 +496,22 @@ public class FormField extends DisplayField {
                 valueType = getBeanPropertyType().getCollectionValueType();
             }
 
-            List referenceEntities;
+            List referenceEntities = null;
             if (Currency.class.isAssignableFrom(valueType)) {
                 referenceEntities = CurrencyUtil.getAvailableCurrencies();
                 ((AbstractSelect) field).setItemCaptionPropertyId("currencyCode");
             } else if (valueType.isEnum()) {
                 Object[] enumConstants = valueType.getEnumConstants();
                 referenceEntities = Arrays.asList(enumConstants);
-            } else {
+            } else if (ReferenceEntity.class.isAssignableFrom(valueType)) {
                 EntityDao propertyDao = SpringApplicationContext.getBeanByTypeAndGenericArgumentType(EntityDao.class,
                         valueType);
                 referenceEntities = propertyDao.findAll();
             }
-            setSelectItems(referenceEntities);
+
+            if (referenceEntities != null) {
+                setSelectItems(referenceEntities);
+            }
         }
 
 
@@ -434,6 +523,8 @@ public class FormField extends DisplayField {
 
             field.addListener(new FieldValueChangeListener());
         }
+
+        isReadOnly = field.isReadOnly();
     }
 
     private void initializeValidators() {
@@ -506,7 +597,6 @@ public class FormField extends DisplayField {
         field.setItemCaptionMode(Select.ITEM_CAPTION_MODE_PROPERTY);
         field.setNullSelectionAllowed(true);
         field.setItemCaptionPropertyId(DEFAULT_DISPLAY_PROPERTY_ID);
-        field.setImmediate(true);
     }
 
     public static void initSelectDefaults(Select field) {

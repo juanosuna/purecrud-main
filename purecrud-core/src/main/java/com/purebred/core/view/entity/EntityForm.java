@@ -19,6 +19,8 @@ package com.purebred.core.view.entity;
 
 import com.purebred.core.dao.EntityDao;
 import com.purebred.core.entity.WritableEntity;
+import com.purebred.core.entity.security.AbstractUser;
+import com.purebred.core.security.SecurityService;
 import com.purebred.core.util.MethodDelegate;
 import com.purebred.core.util.SpringApplicationContext;
 import com.purebred.core.validation.AssertTrueForProperties;
@@ -26,26 +28,37 @@ import com.purebred.core.validation.Validation;
 import com.purebred.core.view.MainApplication;
 import com.purebred.core.view.entity.field.FormField;
 import com.purebred.core.view.entity.field.FormFields;
+import com.purebred.core.view.entity.field.SelectField;
 import com.purebred.core.view.entity.tomanyrelationship.ToManyRelationship;
 import com.vaadin.data.Item;
+import com.vaadin.data.Validator;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.terminal.ErrorMessage;
 import com.vaadin.terminal.ThemeResource;
 import com.vaadin.terminal.UserError;
 import com.vaadin.ui.*;
-import org.vaadin.jouni.animator.Animator;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import javax.validation.ConstraintViolation;
 import javax.validation.metadata.ConstraintDescriptor;
 import java.lang.annotation.Annotation;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Set;
 
 public abstract class EntityForm<T> extends FormComponent<T> {
 
     @Resource
     private Validation validation;
+
+    @Resource
+    private SecurityService securityService;
+
+    private boolean isViewMode;
+
+    private FormFields formFields;
 
     private Window formWindow;
     private TabSheet toManyRelationshipTabs;
@@ -54,20 +67,43 @@ public abstract class EntityForm<T> extends FormComponent<T> {
     private Button previousButton;
 
     private Button saveButton;
+    private Button refreshButton;
     private boolean isValidationEnabled = true;
 
     public void configurePopupWindow(Window popupWindow) {
         popupWindow.setSizeUndefined();
     }
 
-    private MethodDelegate closeListener;
+    private List<MethodDelegate> persistListeners = new ArrayList<MethodDelegate>();
+    private List<MethodDelegate> closeListeners = new ArrayList<MethodDelegate>();
 
     public List<ToManyRelationship> getToManyRelationships() {
         return new ArrayList<ToManyRelationship>();
     }
 
-    FormFields createFormFields() {
-        return new FormFields(this);
+    public List<ToManyRelationship> getViewableToManyRelationships() {
+        List<ToManyRelationship> viewableToManyRelationships = new ArrayList<ToManyRelationship>();
+        List<ToManyRelationship> toManyRelationships = getToManyRelationships();
+
+        for (ToManyRelationship toManyRelationship : toManyRelationships) {
+            AbstractUser user = securityService.getCurrentUser();
+
+            if (user.isViewAllowed(toManyRelationship.getResultsComponent().getEntityType().getName())) {
+                viewableToManyRelationships.add(toManyRelationship);
+            }
+        }
+
+        return viewableToManyRelationships;
+    }
+
+    public FormFields getFormFields() {
+        return formFields;
+    }
+
+    @Resource
+    public void setFormFields(FormFields formFields) {
+        this.formFields = formFields;
+        formFields.setForm(this);
     }
 
     @PostConstruct
@@ -77,12 +113,14 @@ public abstract class EntityForm<T> extends FormComponent<T> {
 
         addStyleName("p-entity-form");
 
-        List<ToManyRelationship> toManyRelationships = getToManyRelationships();
+        List<ToManyRelationship> toManyRelationships = getViewableToManyRelationships();
         if (toManyRelationships.size() > 0) {
             toManyRelationshipTabs = new TabSheet();
             toManyRelationshipTabs.setSizeUndefined();
             for (ToManyRelationship toManyRelationship : toManyRelationships) {
                 toManyRelationshipTabs.addTab(toManyRelationship);
+                labelDepot.putFieldLabel(getEntityType().getName(), toManyRelationship.getResultsComponent().getChildPropertyId(),
+                        "Relationship", toManyRelationship.getResultsComponent().getEntityCaption());
             }
 
             Layout layout = new HorizontalLayout();
@@ -95,8 +133,34 @@ public abstract class EntityForm<T> extends FormComponent<T> {
     }
 
     @Override
+    public void postWire() {
+        super.postWire();
+
+        List<ToManyRelationship> toManyRelationships = getViewableToManyRelationships();
+        for (ToManyRelationship toManyRelationship : toManyRelationships) {
+            toManyRelationship.postWire();
+        }
+
+        Collection<FormField> formFields = getFormFields().getFormFields();
+        for (FormField formField : formFields) {
+            Field field = formField.getField();
+            if (field instanceof SelectField) {
+                ((SelectField) field).getEntitySelect().postWire();
+            }
+        }
+    }
+
+    public boolean isViewMode() {
+        return isViewMode;
+    }
+
+    public void setViewMode(boolean viewMode) {
+        isViewMode = viewMode;
+    }
+
+    @Override
     protected Component animate(Component component) {
-        if (getToManyRelationships().size() > 0) {
+        if (getViewableToManyRelationships().size() > 0) {
             return super.animate(component);
         } else {
             return component;
@@ -114,17 +178,52 @@ public abstract class EntityForm<T> extends FormComponent<T> {
         cancelButton.addStyleName("small default");
         footerLayout.addComponent(cancelButton);
 
-        Button resetButton = new Button(uiMessageSource.getMessage("entityForm.reset"), this, "reset");
-        resetButton.setDescription(uiMessageSource.getMessage("entityForm.reset.description"));
-        resetButton.setIcon(new ThemeResource("icons/16/refresh.png"));
-        resetButton.addStyleName("small default");
-        footerLayout.addComponent(resetButton);
+        refreshButton = new Button(uiMessageSource.getMessage("entityForm.reset"), this, "reset");
+        refreshButton.setDescription(uiMessageSource.getMessage("entityForm.reset.description"));
+        refreshButton.setIcon(new ThemeResource("icons/16/refresh.png"));
+        refreshButton.addStyleName("small default");
+        footerLayout.addComponent(refreshButton);
 
         saveButton = new Button(uiMessageSource.getMessage("entityForm.save"), this, "save");
         saveButton.setDescription(uiMessageSource.getMessage("entityForm.save.description"));
         saveButton.setIcon(new ThemeResource("icons/16/save.png"));
         saveButton.addStyleName("small default");
         footerLayout.addComponent(saveButton);
+    }
+
+    public void setReadOnly(boolean isReadOnly) {
+        getFormFields().setReadOnly(isReadOnly);
+
+        saveButton.setVisible(!isReadOnly);
+        refreshButton.setVisible(!isReadOnly);
+
+        List<ToManyRelationship> toManyRelationships = getToManyRelationships();
+        for (ToManyRelationship toManyRelationship : toManyRelationships) {
+            toManyRelationship.getResultsComponent().setReadOnly(isReadOnly);
+        }
+    }
+
+    public void restoreIsReadOnly() {
+        getFormFields().restoreIsReadOnly();
+
+        saveButton.setVisible(true);
+        refreshButton.setVisible(true);
+
+        List<ToManyRelationship> toManyRelationships = getToManyRelationships();
+        for (ToManyRelationship toManyRelationship : toManyRelationships) {
+            toManyRelationship.getResultsComponent().setReadOnly(false);
+        }
+    }
+
+    public void applySecurityIsEditable() {
+        saveButton.setVisible(true);
+        refreshButton.setVisible(true);
+        getFormFields().applySecurityIsEditable();
+
+        List<ToManyRelationship> toManyRelationships = getToManyRelationships();
+        for (ToManyRelationship toManyRelationship : toManyRelationships) {
+            toManyRelationship.getResultsComponent().applySecurityIsEditable();
+        }
     }
 
     public void load(WritableEntity entity) {
@@ -153,15 +252,6 @@ public abstract class EntityForm<T> extends FormComponent<T> {
         resetTabs(selectFirstTab);
     }
 
-    @Override
-    protected void resetTabs(boolean selectFirstTab) {
-        super.resetTabs(selectFirstTab);
-
-        if (selectFirstTab) {
-            selectFirstToManyTab();
-        }
-    }
-
     public void selectFirstToManyTab() {
         if (toManyRelationshipTabs != null) {
             toManyRelationshipTabs.setSelectedTab(toManyRelationshipTabs.getTab(0).getComponent());
@@ -173,7 +263,7 @@ public abstract class EntityForm<T> extends FormComponent<T> {
     }
 
     public void loadToManyRelationships() {
-        List<ToManyRelationship> toManyRelationships = getToManyRelationships();
+        List<ToManyRelationship> toManyRelationships = getViewableToManyRelationships();
         if (toManyRelationships.size() > 0) {
             for (ToManyRelationship toManyRelationship : toManyRelationships) {
                 Object parent = getEntity();
@@ -182,7 +272,8 @@ public abstract class EntityForm<T> extends FormComponent<T> {
                 toManyRelationship.getResultsComponent().search();
 
             }
-            toManyRelationshipTabs.setEnabled(true);
+            toManyRelationshipTabs.setVisible(true);
+            setFormAnimatorVisible(true);
 //            toManyRelationshipsAnimator.setRolledUp(toManyRelationshipsAnimator.isRolledUp());
         }
     }
@@ -196,12 +287,9 @@ public abstract class EntityForm<T> extends FormComponent<T> {
         createImpl();
         open(false);
 
-        List<ToManyRelationship> toManyRelationships = getToManyRelationships();
-        if (toManyRelationships.size() > 0) {
-            for (ToManyRelationship toManyRelationship : toManyRelationships) {
-                toManyRelationship.getResultsComponent().getResultsTable().getContainerDataSource().removeAllItems();
-            }
-            toManyRelationshipTabs.setEnabled(false);
+        if (toManyRelationshipTabs != null) {
+            toManyRelationshipTabs.setVisible(false);
+            setFormAnimatorVisible(false);
         }
     }
 
@@ -213,6 +301,74 @@ public abstract class EntityForm<T> extends FormComponent<T> {
         validate(true);
 
         resetTabs();
+    }
+
+    protected void resetTabs() {
+        resetTabs(true);
+    }
+
+    protected void resetTabs(boolean selectFirstTab) {
+
+        if (selectFirstTab) {
+            selectFirstToManyTab();
+        }
+
+        if (tabSheet == null) return;
+
+        Set<String> tabNames = getFormFields().getTabNames();
+        for (String tabName : tabNames) {
+            TabSheet.Tab tab = getTabByName(tabName);
+
+            Set<FormField> fields = getFormFields().getFormFields(tabName);
+            boolean isViewAllowed = false;
+            for (FormField field : fields) {
+                if (securityService.getCurrentUser().isViewAllowed(getEntityType().getName(), field.getPropertyId())) {
+                    isViewAllowed = true;
+                    break;
+                }
+            }
+
+            if (getFormFields().isTabOptional(tabName)) {
+                boolean isTabEmpty = true;
+                for (FormField field : fields) {
+                    if (field.getField().getValue() != null) {
+                        isTabEmpty = false;
+                        break;
+                    }
+                }
+
+                setIsRequiredEnable(tabName, !isTabEmpty);
+                tab.setClosable(!isViewMode());
+                tab.setVisible(!isTabEmpty && isViewAllowed);
+            } else {
+                tab.setVisible(isViewAllowed);
+            }
+        }
+
+        resetContextMenu();
+
+        if (selectFirstTab || !getTabByName(getCurrentTabName()).isVisible()) {
+            selectFirstTab();
+        }
+
+        syncTabAndSaveButtonErrors();
+    }
+
+    @Override
+    protected void resetContextMenu() {
+        Set<String> tabNames = getFormFields().getTabNames();
+        for (String tabName : tabNames) {
+            TabSheet.Tab tab = getTabByName(tabName);
+
+            String caption = uiMessageSource.getMessage("formComponent.add") + " " + tabName;
+            if (menu.containsItem(caption)) {
+                menu.getContextMenuItem(caption).setVisible(!tab.isVisible() && !isViewMode());
+            }
+            caption = uiMessageSource.getMessage("formComponent.remove") + " " + tabName;
+            if (menu.containsItem(caption)) {
+                menu.getContextMenuItem(caption).setVisible(tab.isVisible() && !isViewMode());
+            }
+        }
     }
 
     private T createEntity() {
@@ -264,7 +420,7 @@ public abstract class EntityForm<T> extends FormComponent<T> {
             previousButton.addStyleName("borderless");
             previousButton.setIcon(new ThemeResource("icons/16/previous.png"));
 
-            if (getToManyRelationships().size() == 0) {
+            if (getViewableToManyRelationships().size() == 0) {
                 HorizontalLayout previousButtonHorizontalLayout = new HorizontalLayout();
                 previousButtonHorizontalLayout.setSizeUndefined();
                 Label horizontalSpaceLabel = new Label("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;", Label.CONTENT_XHTML);
@@ -320,8 +476,8 @@ public abstract class EntityForm<T> extends FormComponent<T> {
 
     void refreshNavigationButtonStates() {
         if (getEntityDao().isPersistent(getEntity())) {
-            previousButton.setEnabled(((Results) getResults()).hasPreviousItem());
-            nextButton.setEnabled(((Results) getResults()).hasNextItem());
+            previousButton.setEnabled(((WalkableResults) getResults()).hasPreviousItem());
+            nextButton.setEnabled(((WalkableResults) getResults()).hasNextItem());
         } else {
             previousButton.setEnabled(false);
             nextButton.setEnabled(false);
@@ -333,13 +489,13 @@ public abstract class EntityForm<T> extends FormComponent<T> {
     }
 
     public void previousItem() {
-        ((Results) getResults()).editPreviousItem();
+        ((WalkableResults) getResults()).editOrViewPreviousItem();
         refreshNavigationButtonStates();
         refreshCaption();
     }
 
     public void nextItem() {
-        ((Results) getResults()).editNextItem();
+        ((WalkableResults) getResults()).editOrViewNextItem();
         refreshNavigationButtonStates();
         refreshCaption();
     }
@@ -352,13 +508,17 @@ public abstract class EntityForm<T> extends FormComponent<T> {
         MainApplication.getInstance().getMainWindow().removeWindow(formWindow);
         formWindow = null;
 
-        if (closeListener != null) {
+        for (MethodDelegate closeListener : closeListeners) {
             closeListener.execute();
         }
     }
 
-    public void setCloseListener(Object target, String methodName) {
-        closeListener = new MethodDelegate(target, methodName);
+    public void addCloseListener(Object target, String methodName) {
+        closeListeners.add(new MethodDelegate(target, methodName));
+    }
+
+    public void addPersistListener(Object target, String methodName) {
+        persistListeners.add(new MethodDelegate(target, methodName));
     }
 
     public void cancel() {
@@ -392,7 +552,11 @@ public abstract class EntityForm<T> extends FormComponent<T> {
             } else {
                 getEntityDao().persist(entity);
                 load(entity);
+                for (MethodDelegate persistListener : persistListeners) {
+                    persistListener.execute();
+                }
             }
+
             close();
         }
     }
@@ -409,20 +573,25 @@ public abstract class EntityForm<T> extends FormComponent<T> {
             ConstraintDescriptor descriptor = constraintViolation.getConstraintDescriptor();
             Annotation annotation = descriptor.getAnnotation();
 
-            FormField field;
-            if (annotation instanceof AssertTrueForProperties) {
-                if (propertyPath.lastIndexOf(".") > 0) {
-                    propertyPath = propertyPath.substring(0, propertyPath.lastIndexOf(".") + 1);
-                } else {
-                    propertyPath = "";
+            if (propertyPath.isEmpty()) {
+                Validator.InvalidValueException error = new Validator.InvalidValueException(constraintViolation.getMessage());
+                getForm().setComponentError(error);
+            } else {
+                FormField field;
+                if (annotation instanceof AssertTrueForProperties) {
+                    if (propertyPath.lastIndexOf(".") > 0) {
+                        propertyPath = propertyPath.substring(0, propertyPath.lastIndexOf(".") + 1);
+                    } else {
+                        propertyPath = "";
+                    }
+                    AssertTrueForProperties assertTrueForProperties = (AssertTrueForProperties) annotation;
+                    propertyPath += assertTrueForProperties.errorProperty();
                 }
-                AssertTrueForProperties assertTrueForProperties = (AssertTrueForProperties) annotation;
-                propertyPath += assertTrueForProperties.errorProperty();
-            }
-            field = getFormFields().getFormField(propertyPath);
-            if (!field.hasIsRequiredError()) {
-                UserError userError = new UserError(constraintViolation.getMessage());
-                field.addError(userError);
+                field = getFormFields().getFormField(propertyPath);
+                if (!field.hasIsRequiredError()) {
+                    Validator.InvalidValueException error = new Validator.InvalidValueException(constraintViolation.getMessage());
+                    field.addError(error);
+                }
             }
         }
 
@@ -459,6 +628,10 @@ public abstract class EntityForm<T> extends FormComponent<T> {
             } else {
                 setTabError(tabName, null);
             }
+        }
+
+        if (getForm().getComponentError() != null) {
+            formHasErrors = true;
         }
 
         if (formHasErrors) {

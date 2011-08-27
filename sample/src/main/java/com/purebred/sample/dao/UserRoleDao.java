@@ -15,22 +15,12 @@
  * from Brown Bag Consulting LLC.
  */
 
-package com.purebred.sample.entity;
+package com.purebred.sample.dao;
 
+import com.purebred.core.dao.EntityDao;
+import com.purebred.sample.entity.security.UserRole;
+import org.springframework.stereotype.Repository;
 
-import com.purebred.core.entity.AbstractUser;
-
-import javax.persistence.Entity;
-import javax.persistence.Table;
-
-@Entity
-@Table
-public class User extends AbstractUser {
-
-    public User() {
-    }
-
-    public User(String loginName, String loginPassword) {
-        super(loginName, loginPassword);
-    }
+@Repository
+public class UserRoleDao extends EntityDao<UserRole, UserRole.Id> {
 }

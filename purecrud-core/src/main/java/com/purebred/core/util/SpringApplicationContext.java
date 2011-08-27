@@ -42,6 +42,12 @@ public class SpringApplicationContext implements ApplicationContextAware {
         return applicationContext.getBean(beanName);
     }
 
+    public static void autowire(Object target) {
+        if (getApplicationContext() != null && getApplicationContext().getAutowireCapableBeanFactory() != null) {
+            SpringApplicationContext.getApplicationContext().getAutowireCapableBeanFactory().autowireBean(target);
+        }
+    }
+
     public static <T> Set<T> getBeansByType(Class<T> type) {
         Map beans = BeanFactoryUtils.beansOfTypeIncludingAncestors(applicationContext, type);
         return new HashSet(beans.values());

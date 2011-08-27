@@ -18,13 +18,16 @@
 package com.purebred.core.view.entity;
 
 import com.purebred.core.entity.WritableEntity;
+import com.purebred.core.security.SecurityService;
 import com.purebred.core.util.assertion.Assert;
 import com.purebred.core.view.MainApplication;
 import com.purebred.core.view.MessageSource;
+import com.purebred.core.view.entity.field.FormField;
 import com.purebred.core.view.entity.util.ActionContextMenu;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.event.ItemClickEvent;
 import com.vaadin.terminal.ThemeResource;
+import com.vaadin.ui.AbstractSelect;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.HorizontalLayout;
@@ -34,7 +37,7 @@ import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import java.util.Collection;
 
-public abstract class Results<T> extends ResultsComponent<T> {
+public abstract class Results<T> extends ResultsComponent<T> implements WalkableResults {
 
     @Resource(name = "uiMessageSource")
     private MessageSource uiMessageSource;
@@ -42,8 +45,15 @@ public abstract class Results<T> extends ResultsComponent<T> {
     @Resource
     private ActionContextMenu actionContextMenu;
 
+    @Resource
+    private SecurityService securityService;
+
+    private Button newButton;
     private Button editButton;
+    private Button viewButton;
     private Button deleteButton;
+
+    private Object currentItemId;
 
     protected Results() {
         super();
@@ -56,19 +66,24 @@ public abstract class Results<T> extends ResultsComponent<T> {
     public void postConstruct() {
         super.postConstruct();
 
-        wireRelationships();
-
         getResultsTable().setMultiSelect(true);
 
         HorizontalLayout crudButtons = new HorizontalLayout();
         crudButtons.setMargin(false);
         crudButtons.setSpacing(true);
 
-        Button newButton = new Button(uiMessageSource.getMessage("entityResults.new"), this, "create");
+        newButton = new Button(uiMessageSource.getMessage("entityResults.new"), this, "create");
         newButton.setDescription(uiMessageSource.getMessage("entityResults.new.description"));
         newButton.setIcon(new ThemeResource("icons/16/add.png"));
         newButton.addStyleName("small default");
         crudButtons.addComponent(newButton);
+
+        viewButton = new Button(uiMessageSource.getMessage("entityResults.view"), this, "view");
+        viewButton.setDescription(uiMessageSource.getMessage("entityResults.view.description"));
+        viewButton.setIcon(new ThemeResource("icons/16/view.png"));
+        viewButton.setEnabled(false);
+        viewButton.addStyleName("small default");
+        crudButtons.addComponent(viewButton);
 
         editButton = new Button(uiMessageSource.getMessage("entityResults.edit"), this, "edit");
         editButton.setDescription(uiMessageSource.getMessage("entityResults.edit.description"));
@@ -85,47 +100,82 @@ public abstract class Results<T> extends ResultsComponent<T> {
         crudButtons.addComponent(deleteButton);
 
         addSelectionChangedListener(this, "selectionChanged");
+        actionContextMenu.addAction("entityResults.view", this, "view");
         actionContextMenu.addAction("entityResults.edit", this, "edit");
         actionContextMenu.addAction("entityResults.delete", this, "delete");
 
+        applySecurityToCRUDButtons();
         getCrudButtons().addComponent(crudButtons, 0);
         getCrudButtons().setComponentAlignment(crudButtons, Alignment.MIDDLE_LEFT);
 
         getResultsTable().addListener(new DoubleClickListener());
     }
 
-    private void wireRelationships() {
+    @Override
+    public void postWire() {
+        super.postWire();
         getEntityForm().setResults(this);
+        getEntityForm().postWire();
+
+    }
+
+    public void applySecurityToCRUDButtons() {
+        newButton.setVisible(securityService.getCurrentUser().isCreateAllowed(getEntityType().getName()));
+        editButton.setVisible(securityService.getCurrentUser().isEditAllowed(getEntityType().getName()));
+        deleteButton.setVisible(securityService.getCurrentUser().isDeleteAllowed(getEntityType().getName()));
     }
 
     public void create() {
+        getEntityForm().setViewMode(false);
+        applyViewMode();
         getEntityForm().create();
     }
 
-    public void edit() {
-        Collection itemIds = (Collection) getResultsTable().getValue();
-        Assert.PROGRAMMING.assertTrue(itemIds.size() == 1);
-        editImpl(itemIds.iterator().next());
+    public void view() {
+        getEntityForm().setViewMode(true);
+        editOrView();
     }
 
-    public void editImpl(Object itemId) {
+    public void edit() {
+        getEntityForm().setViewMode(false);
+        editOrView();
+    }
+
+    public void editOrView() {
+        Collection itemIds = (Collection) getResultsTable().getValue();
+        Assert.PROGRAMMING.assertTrue(itemIds.size() == 1);
+        editOrView(itemIds.iterator().next());
+    }
+
+    public void editOrView(Object itemId) {
         loadItem(itemId);
         getEntityForm().open(true);
     }
-
-    private Object currentItemId;
 
     public void loadItem(Object itemId) {
         loadItem(itemId, true);
     }
 
     public void loadItem(Object itemId, boolean selectFirstTab) {
+
+        getEntityForm().restoreIsReadOnly();
+
         currentItemId = itemId;
         BeanItem beanItem = getResultsTable().getContainerDataSource().getItem(itemId);
         getEntityForm().load((WritableEntity) beanItem.getBean(), selectFirstTab);
+
+        applyViewMode();
     }
 
-    void editPreviousItem() {
+    public void applyViewMode() {
+        if (getEntityForm().isViewMode()) {
+            getEntityForm().setReadOnly(true);
+        } else {
+            getEntityForm().applySecurityIsEditable();
+        }
+    }
+
+    public void editOrViewPreviousItem() {
         Object previousItemId = getResultsTable().getContainerDataSource().prevItemId(currentItemId);
         if (previousItemId == null && getEntityQuery().hasPreviousPage()) {
             getResultsTable().previousPage();
@@ -134,14 +184,22 @@ public abstract class Results<T> extends ResultsComponent<T> {
         if (previousItemId != null) {
             loadItem(previousItemId, false);
         }
+
+        // workaround to Vaadin bug, to prevent the width of selects from growing
+        Collection<FormField> formFields = getEntityForm().getFormFields().getFormFields();
+        for (FormField formField : formFields) {
+            if (formField.getField() instanceof AbstractSelect) {
+                formField.getField().requestRepaintRequests();
+            }
+        }
     }
 
-    boolean hasPreviousItem() {
+    public boolean hasPreviousItem() {
         Object previousItemId = getResultsTable().getContainerDataSource().prevItemId(currentItemId);
         return previousItemId != null || getEntityQuery().hasPreviousPage();
     }
 
-    void editNextItem() {
+    public void editOrViewNextItem() {
         Object nextItemId = getResultsTable().getContainerDataSource().nextItemId(currentItemId);
         if (nextItemId == null && getEntityQuery().hasNextPage()) {
             getResultsTable().nextPage();
@@ -151,9 +209,17 @@ public abstract class Results<T> extends ResultsComponent<T> {
         if (nextItemId != null) {
             loadItem(nextItemId, false);
         }
+
+        // workaround to Vaadin bug, to prevent the width of selects from growing
+        Collection<FormField> formFields = getEntityForm().getFormFields().getFormFields();
+        for (FormField formField : formFields) {
+            if (formField.getField() instanceof AbstractSelect) {
+                formField.getField().requestRepaintRequests();
+            }
+        }
     }
 
-    boolean hasNextItem() {
+    public boolean hasNextItem() {
         Object nextItemId = getResultsTable().getContainerDataSource().nextItemId(currentItemId);
         return nextItemId != null || getEntityQuery().hasNextPage();
     }
@@ -171,6 +237,7 @@ public abstract class Results<T> extends ResultsComponent<T> {
         searchImpl(false);
         deleteButton.setEnabled(false);
         editButton.setEnabled(false);
+        viewButton.setEnabled(false);
     }
 
     public void delete() {
@@ -191,22 +258,27 @@ public abstract class Results<T> extends ResultsComponent<T> {
     public void selectionChanged() {
         Collection itemIds = (Collection) getResultsTable().getValue();
         if (itemIds.size() == 1) {
+            actionContextMenu.setActionEnabled("entityResults.view", true);
             actionContextMenu.setActionEnabled("entityResults.edit", true);
             actionContextMenu.setActionEnabled("entityResults.delete", true);
             getResultsTable().removeActionHandler(actionContextMenu);
             getResultsTable().addActionHandler(actionContextMenu);
             editButton.setEnabled(true);
+            viewButton.setEnabled(true);
             deleteButton.setEnabled(true);
         } else if (itemIds.size() > 1) {
+            actionContextMenu.setActionEnabled("entityResults.view", false);
             actionContextMenu.setActionEnabled("entityResults.edit", false);
             actionContextMenu.setActionEnabled("entityResults.delete", true);
             getResultsTable().removeActionHandler(actionContextMenu);
             getResultsTable().addActionHandler(actionContextMenu);
             editButton.setEnabled(false);
+            viewButton.setEnabled(false);
             deleteButton.setEnabled(true);
         } else {
             getResultsTable().removeActionHandler(actionContextMenu);
             editButton.setEnabled(false);
+            viewButton.setEnabled(false);
             deleteButton.setEnabled(false);
         }
     }
@@ -214,7 +286,8 @@ public abstract class Results<T> extends ResultsComponent<T> {
     public class DoubleClickListener implements ItemClickEvent.ItemClickListener {
         public void itemClick(ItemClickEvent event) {
             if (event.isDoubleClick()) {
-                editImpl(event.getItemId());
+                getEntityForm().setViewMode(false);
+                editOrView(event.getItemId());
             }
         }
     }

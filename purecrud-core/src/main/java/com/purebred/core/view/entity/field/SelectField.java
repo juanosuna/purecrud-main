@@ -17,14 +17,16 @@
 
 package com.purebred.core.view.entity.field;
 
-import com.purebred.core.view.MainApplication;
 import com.purebred.core.view.MessageSource;
 import com.purebred.core.view.entity.EntityForm;
 import com.purebred.core.view.entity.entityselect.EntitySelect;
 import com.vaadin.data.Property;
 import com.vaadin.data.Validator;
 import com.vaadin.terminal.ThemeResource;
-import com.vaadin.ui.*;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.TextField;
+import com.vaadin.ui.Window;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.vaadin.addon.customfield.CustomField;
 
@@ -40,6 +42,7 @@ public class SelectField extends CustomField {
     private EntitySelect entitySelect;
 
     private Button clearButton;
+    private Button searchButton;
 
     private Window popupWindow;
 
@@ -54,6 +57,15 @@ public class SelectField extends CustomField {
         initialize();
     }
 
+    public EntitySelect getEntitySelect() {
+        return entitySelect;
+    }
+
+    public void setButtonVisible(boolean isVisible) {
+        clearButton.setVisible(isVisible);
+        searchButton.setVisible(isVisible);
+    }
+
     public void initialize() {
         setSizeUndefined();
         field = new TextField();
@@ -64,14 +76,14 @@ public class SelectField extends CustomField {
         HorizontalLayout layout = new HorizontalLayout();
         layout.addComponent(field);
 
-        final Button searchButton = new Button();
+        searchButton = new Button();
         searchButton.setDescription(uiMessageSource.getMessage("selectField.search.description"));
         searchButton.setSizeUndefined();
         searchButton.addStyleName("borderless");
         searchButton.setIcon(new ThemeResource("../chameleon/img/magnifier.png"));
         searchButton.addListener(new Button.ClickListener() {
             public void buttonClick(Button.ClickEvent event) {
-                open();
+                entitySelect.open();
             }
         });
         layout.addComponent(searchButton);
@@ -83,7 +95,7 @@ public class SelectField extends CustomField {
         clearButton.setIcon(new ThemeResource("../runo/icons/16/cancel.png"));
         layout.addComponent(clearButton);
 
-//        entitySelect.getResultsComponent().addSelectButtonListener(this, "itemSelected");
+        entitySelect.getResultsComponent().setSelectButtonListener(this, "itemSelected");
         addClearListener(this, "itemCleared");
 
         setCompositionRoot(layout);
@@ -104,7 +116,7 @@ public class SelectField extends CustomField {
 
         Property property = field.getPropertyDataSource();
         field.setPropertyDataSource(property);
-        close();
+        entitySelect.close();
     }
 
     public void itemCleared() {
@@ -130,34 +142,6 @@ public class SelectField extends CustomField {
     public Object getSelectedValue() {
         return entitySelect.getResultsComponent().getSelectedValue();
     }
-
-    public void open() {
-        popupWindow = new Window(entitySelect.getEntityCaption());
-        popupWindow.addStyleName("p-select-field-window");
-        popupWindow.addStyleName("opaque");
-        VerticalLayout layout = (VerticalLayout) popupWindow.getContent();
-        layout.setMargin(true);
-        layout.setSpacing(true);
-        layout.setSizeUndefined();
-        popupWindow.setSizeUndefined();
-        popupWindow.setModal(true);
-        popupWindow.addComponent(entitySelect);
-        popupWindow.setClosable(true);
-
-        entitySelect.getResultsComponent().getEntityQuery().clear();
-        entitySelect.getResultsComponent().selectPageSize(5);
-        entitySelect.getResultsComponent().search();
-        entitySelect.getResultsComponent().setSelectButtonListener(this, "itemSelected");
-
-        entitySelect.configurePopupWindow(popupWindow);
-
-        MainApplication.getInstance().getMainWindow().addWindow(popupWindow);
-    }
-
-    public void close() {
-        MainApplication.getInstance().getMainWindow().removeWindow(popupWindow);
-    }
-
 
     public String getRequiredError() {
         return field.getRequiredError();

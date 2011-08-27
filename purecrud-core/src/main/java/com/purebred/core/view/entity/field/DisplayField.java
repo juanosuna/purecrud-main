@@ -30,6 +30,7 @@ import java.lang.reflect.Method;
 import java.text.Format;
 
 public class DisplayField {
+
     private DisplayFields displayFields;
 
     private String propertyId;
@@ -124,6 +125,10 @@ public class DisplayField {
         }
 
         return labelText;
+    }
+
+    protected String getLabelSectionDisplayName() {
+        return "Column";
     }
 
     private String getLabelTextFromMessageSource() {

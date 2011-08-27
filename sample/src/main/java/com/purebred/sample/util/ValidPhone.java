@@ -32,7 +32,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Constraint(validatedBy = PhoneValidator.class)
 @Documented
 public @interface ValidPhone {
-    String message() default "{com.purebred.core.validation.ValidPhone.message}";
+    String message() default "{com.purebred.sample.util.ValidPhone.message}";
 
     Class<?>[] groups() default {};
 

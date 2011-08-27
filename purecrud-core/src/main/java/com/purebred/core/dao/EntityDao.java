@@ -68,7 +68,6 @@ public abstract class EntityDao<T, ID extends Serializable> {
     }
 
     @Transactional
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public void remove(T entity) {
         T attachedEntity = getReference(entity);
         getEntityManager().remove(attachedEntity);
@@ -122,7 +121,6 @@ public abstract class EntityDao<T, ID extends Serializable> {
     }
 
     @Transactional
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public void delete(T entity) {
         Query query = getEntityManager().createQuery("delete from " + getEntityType().getSimpleName()
                 + " c where c = :entity");
@@ -133,19 +131,16 @@ public abstract class EntityDao<T, ID extends Serializable> {
     }
 
     @Transactional
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public T merge(T entity) {
         return getEntityManager().merge(entity);
     }
 
     @Transactional
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public void persist(T entity) {
         getEntityManager().persist(entity);
     }
 
     @Transactional
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public void persist(Collection<T> entities) {
         for (T entity : entities) {
             persist(entity);

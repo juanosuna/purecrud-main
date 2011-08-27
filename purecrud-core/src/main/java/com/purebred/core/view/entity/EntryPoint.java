@@ -17,7 +17,11 @@
 
 package com.purebred.core.view.entity;
 
+import com.purebred.core.view.entity.entityselect.EntitySelect;
+import com.purebred.core.view.entity.field.LabelDepot;
+
 import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
 
 public abstract class EntryPoint<T> extends EntityComponent<T> {
 
@@ -35,15 +39,17 @@ public abstract class EntryPoint<T> extends EntityComponent<T> {
         super.postConstruct();
 
         addStyleName("p-entry-point");
-
-        wireRelationships();
-
-        addComponent(getSearchForm());
-        addComponent(getResultsComponent());
     }
 
-    private void wireRelationships() {
+    @Override
+    public void postWire() {
+        super.postWire();
         getSearchForm().setResults(getResultsComponent());
         getSearchForm().postWire();
+        getResultsComponent().postWire();
+    }
+
+    public Class getEntityType() {
+        return getResultsComponent().getEntityType();
     }
 }

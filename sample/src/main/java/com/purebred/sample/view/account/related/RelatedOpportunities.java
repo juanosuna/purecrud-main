@@ -19,6 +19,7 @@ package com.purebred.sample.view.account.related;
 
 import com.purebred.core.dao.ToManyRelationshipQuery;
 import com.purebred.core.view.entity.field.DisplayFields;
+import com.purebred.core.view.entity.tomanyrelationship.ToManyAggregationRelationshipResults;
 import com.purebred.core.view.entity.tomanyrelationship.ToManyRelationship;
 import com.purebred.core.view.entity.tomanyrelationship.ToManyRelationshipResults;
 import com.purebred.sample.dao.OpportunityDao;
@@ -53,7 +54,7 @@ public class RelatedOpportunities extends ToManyRelationship<Opportunity> {
 
     @Component
     @Scope("prototype")
-    public static class RelatedOpportunitiesResults extends ToManyRelationshipResults<Opportunity> {
+    public static class RelatedOpportunitiesResults extends ToManyAggregationRelationshipResults<Opportunity> {
 
         @Resource
         private OpportunityDao opportunityDao;
@@ -89,6 +90,11 @@ public class RelatedOpportunities extends ToManyRelationship<Opportunity> {
             });
 
             displayFields.setLabel("amountWeightedInUSDFormatted", "Weighted Amount");
+        }
+
+        @Override
+        public String getChildPropertyId() {
+            return "opportunities";
         }
 
         @Override

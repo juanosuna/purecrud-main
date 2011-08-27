@@ -76,7 +76,8 @@
 .v-required-field-indicator {
     visibility: collapse;
 }
-                                             .p-required-field-indicator {
+
+.p-required-field-indicator {
     color: red;
     padding-left: 2px;
 }

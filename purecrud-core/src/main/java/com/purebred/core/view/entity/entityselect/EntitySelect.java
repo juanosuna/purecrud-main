@@ -17,17 +17,16 @@
 
 package com.purebred.core.view.entity.entityselect;
 
+import com.purebred.core.view.MainApplication;
 import com.purebred.core.view.entity.EntryPoint;
+import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 
 import javax.annotation.PostConstruct;
 
-/**
- * User: Juan
- * Date: 5/7/11
- * Time: 5:27 PM
- */
 public abstract class EntitySelect<T> extends EntryPoint<T> {
+
+    private Window popupWindow;
 
     protected EntitySelect() {
         super();
@@ -55,7 +54,35 @@ public abstract class EntitySelect<T> extends EntryPoint<T> {
         super.postConstruct();
 
         addStyleName("p-entity-select");
-
         getResultsComponent().selectPageSize(5);
+
+        addComponent(getSearchForm());
+        addComponent(getResultsComponent());
+    }
+
+    public void open() {
+        popupWindow = new Window();
+        popupWindow.addStyleName("p-entity-select-window");
+        popupWindow.addStyleName("opaque");
+        VerticalLayout layout = (VerticalLayout) popupWindow.getContent();
+        layout.setMargin(true);
+        layout.setSpacing(true);
+        layout.setSizeUndefined();
+        popupWindow.setSizeUndefined();
+        popupWindow.setModal(true);
+        popupWindow.setClosable(true);
+
+        getResultsComponent().getEntityQuery().clear();
+        getResultsComponent().selectPageSize(5);
+        getResultsComponent().search();
+        configurePopupWindow(popupWindow);
+        setCaption(getEntityCaption());
+        popupWindow.addComponent(this);
+
+        MainApplication.getInstance().getMainWindow().addWindow(popupWindow);
+    }
+
+    public void close() {
+        MainApplication.getInstance().getMainWindow().removeWindow(popupWindow);
     }
 }

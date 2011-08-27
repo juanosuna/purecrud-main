@@ -19,12 +19,12 @@ package com.purebred.sample.view.account.related;
 
 import com.purebred.core.dao.ToManyRelationshipQuery;
 import com.purebred.core.view.entity.field.DisplayFields;
+import com.purebred.core.view.entity.tomanyrelationship.ToManyAggregationRelationshipResults;
 import com.purebred.core.view.entity.tomanyrelationship.ToManyRelationship;
-import com.purebred.core.view.entity.tomanyrelationship.ToManyRelationshipResults;
-import com.purebred.sample.util.PhonePropertyFormatter;
 import com.purebred.sample.dao.ContactDao;
 import com.purebred.sample.entity.Account;
 import com.purebred.sample.entity.Contact;
+import com.purebred.sample.util.PhonePropertyFormatter;
 import com.purebred.sample.view.select.ContactSelect;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -54,7 +54,7 @@ public class RelatedContacts extends ToManyRelationship<Contact> {
 
     @Component
     @Scope("prototype")
-    public static class RelatedContactsResults extends ToManyRelationshipResults<Contact> {
+    public static class RelatedContactsResults extends ToManyAggregationRelationshipResults<Contact> {
 
         @Resource
         private ContactDao contactDao;
@@ -95,6 +95,11 @@ public class RelatedContacts extends ToManyRelationship<Contact> {
             displayFields.setSortable("name", false);
             displayFields.setSortable("mainPhone", false);
             displayFields.setPropertyFormatter("mainPhone", new PhonePropertyFormatter());
+        }
+
+        @Override
+        public String getChildPropertyId() {
+            return "contacts";
         }
 
         @Override

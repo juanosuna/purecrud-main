@@ -21,7 +21,7 @@ import com.purebred.core.view.entity.entityselect.EntitySelect;
 import com.purebred.core.view.entity.entityselect.EntitySelectResults;
 import com.purebred.core.view.entity.field.DisplayFields;
 import com.purebred.sample.dao.UserDao;
-import com.purebred.sample.entity.User;
+import com.purebred.sample.entity.security.User;
 import com.purebred.sample.view.user.UserQuery;
 import com.purebred.sample.view.user.UserSearchForm;
 import org.springframework.context.annotation.Scope;

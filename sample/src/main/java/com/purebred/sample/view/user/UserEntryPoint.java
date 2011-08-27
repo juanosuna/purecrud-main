@@ -18,7 +18,8 @@
 package com.purebred.sample.view.user;
 
 import com.purebred.core.view.entity.EntryPoint;
-import com.purebred.sample.entity.User;
+import com.purebred.core.view.entity.MainEntryPoint;
+import com.purebred.sample.entity.security.User;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -26,7 +27,7 @@ import javax.annotation.Resource;
 
 @Component
 @Scope("prototype")
-public class UserEntryPoint extends EntryPoint<User> {
+public class UserEntryPoint extends MainEntryPoint<User> {
 
     @Resource
     private UserSearchForm userSearchForm;

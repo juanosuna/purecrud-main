@@ -18,6 +18,7 @@
 package com.purebred.sample.view.account;
 
 import com.purebred.core.view.entity.EntryPoint;
+import com.purebred.core.view.entity.MainEntryPoint;
 import com.purebred.sample.entity.Account;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -26,7 +27,7 @@ import javax.annotation.Resource;
 
 @Component
 @Scope("prototype")
-public class AccountEntryPoint extends EntryPoint<Account> {
+public class AccountEntryPoint extends MainEntryPoint<Account> {
 
     @Resource
     private AccountSearchForm accountSearchForm;

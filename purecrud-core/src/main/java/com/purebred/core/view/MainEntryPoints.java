@@ -17,15 +17,39 @@
 
 package com.purebred.core.view;
 
+import com.purebred.core.entity.security.AbstractUser;
+import com.purebred.core.security.SecurityService;
 import com.purebred.core.view.entity.EntryPoint;
+import com.purebred.core.view.entity.MainEntryPoint;
+import com.purebred.core.view.entity.Results;
 import com.vaadin.ui.TabSheet;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.List;
 
 public abstract class MainEntryPoints extends TabSheet {
 
-    public abstract List<EntryPoint> getEntryPoints();
+    @Resource
+    private SecurityService securityService;
+
+    public abstract List<MainEntryPoint> getEntryPoints();
+
+    public List<MainEntryPoint> getViewableEntryPoints() {
+        List<MainEntryPoint> entryPoints = getEntryPoints();
+        List<MainEntryPoint> viewableEntryPoints = new ArrayList<MainEntryPoint>();
+
+        for (MainEntryPoint entryPoint : entryPoints) {
+            AbstractUser user = securityService.getCurrentUser();
+
+            if (user.isViewAllowed(entryPoint.getEntityType().getName())) {
+                viewableEntryPoints.add(entryPoint);
+            }
+        }
+
+        return viewableEntryPoints;
+    }
 
     public String getTheme() {
         return "pureCrudTheme";
@@ -34,8 +58,8 @@ public abstract class MainEntryPoints extends TabSheet {
     @PostConstruct
     public void postConstruct() {
         setSizeUndefined();
-        List<EntryPoint> entryPoints = getEntryPoints();
-        for (EntryPoint entryPoint : entryPoints) {
+        List<MainEntryPoint> entryPoints = getViewableEntryPoints();
+        for (MainEntryPoint entryPoint : entryPoints) {
             addTab(entryPoint);
         }
 
@@ -43,16 +67,22 @@ public abstract class MainEntryPoints extends TabSheet {
         entryPoints.get(0).getResultsComponent().search();
     }
 
-    public void configureEntryPoints() {
-
+    public void postWire() {
+        List<MainEntryPoint> entryPoints = getViewableEntryPoints();
+        for (EntryPoint entryPoint : entryPoints) {
+            entryPoint.postWire();
+        }
     }
 
     private class TabChangeListener implements SelectedTabChangeListener {
 
         @Override
         public void selectedTabChange(SelectedTabChangeEvent event) {
-            EntryPoint entryPoint = (EntryPoint) getSelectedTab();
+            MainEntryPoint entryPoint = (MainEntryPoint) getSelectedTab();
             entryPoint.getResultsComponent().search();
+            if (entryPoint.getResultsComponent() instanceof Results) {
+                ((Results) entryPoint.getResultsComponent()).applySecurityToCRUDButtons();
+            }
         }
     }
 }

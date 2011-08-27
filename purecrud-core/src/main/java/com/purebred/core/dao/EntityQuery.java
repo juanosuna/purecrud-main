@@ -36,6 +36,9 @@ public abstract class EntityQuery<T> {
 
     public abstract List<T> execute();
 
+    public void postWire() {
+    }
+
     public Integer getPageSize() {
         return pageSize;
     }

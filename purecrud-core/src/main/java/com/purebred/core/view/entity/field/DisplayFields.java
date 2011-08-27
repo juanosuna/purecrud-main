@@ -17,25 +17,35 @@
 
 package com.purebred.core.view.entity.field;
 
+import com.purebred.core.security.SecurityService;
 import com.purebred.core.util.CollectionsUtil;
 import com.purebred.core.view.MessageSource;
 import com.purebred.core.view.entity.EntityForm;
 import com.purebred.core.view.entity.field.format.DefaultFormats;
 import com.vaadin.data.util.PropertyFormatter;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 
+import javax.annotation.Resource;
 import java.util.*;
 
+@Component
+@Scope("prototype")
 public class DisplayFields {
 
-    private Class entityType;
+    @Resource(name = "entityMessageSource")
     private MessageSource messageSource;
-    private Map<String, DisplayField> fields = new LinkedHashMap<String, DisplayField>();
+
+    @Resource
     private DefaultFormats defaultFormats;
 
-    public DisplayFields(Class entityType, MessageSource messageSource, DefaultFormats defaultFormats) {
-        this.entityType = entityType;
-        this.messageSource = messageSource;
-        this.defaultFormats = defaultFormats;
+    @Resource
+    private SecurityService securityService;
+
+    private Class entityType;
+    private Map<String, DisplayField> fields = new LinkedHashMap<String, DisplayField>();
+
+    public DisplayFields() {
     }
 
     public void setPropertyIds(String[] propertyIds) {
@@ -47,6 +57,10 @@ public class DisplayFields {
 
     public Class getEntityType() {
         return entityType;
+    }
+
+    public void setEntityType(Class entityType) {
+        this.entityType = entityType;
     }
 
     public DefaultFormats getDefaultFormats() {
@@ -61,22 +75,31 @@ public class DisplayFields {
         return new ArrayList(fields.keySet());
     }
 
-    public String[] getPropertyIdsAsArray() {
-        return CollectionsUtil.toStringArray(getPropertyIds());
+    public List<String> getViewablePropertyIds() {
+        List<String> viewablePropertyIds = new ArrayList<String>();
+        List<String> propertyIds = getPropertyIds();
+
+        for (String propertyId : propertyIds) {
+            if (securityService.getCurrentUser().isViewAllowed(getEntityType().getName(), propertyId)) {
+                viewablePropertyIds.add(propertyId);
+            }
+        }
+
+        return viewablePropertyIds;
     }
 
-    public List<String> getLabels() {
+    public String[] getViewablePropertyIdsAsArray() {
+        return CollectionsUtil.toStringArray(getViewablePropertyIds());
+    }
+
+    public String[] getViewableLabelsAsArray() {
         List<String> labels = new ArrayList<String>();
-        List<String> propertyIds = getPropertyIds();
+        List<String> propertyIds = getViewablePropertyIds();
         for (String propertyId : propertyIds) {
             labels.add(getField(propertyId).getLabel());
         }
 
-        return labels;
-    }
-
-    public String[] getLabelsAsArray() {
-        return CollectionsUtil.toStringArray(getLabels());
+        return CollectionsUtil.toStringArray(labels);
     }
 
     public boolean containsPropertyId(String propertyId) {
@@ -109,6 +132,10 @@ public class DisplayFields {
         }
 
         return nonSortablePropertyIds;
+    }
+
+    public String getLabel(String propertyId) {
+        return getField(propertyId).getLabel();
     }
 
     public void setLabel(String propertyId, String label) {

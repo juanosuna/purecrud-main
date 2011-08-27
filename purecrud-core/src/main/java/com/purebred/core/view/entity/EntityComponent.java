@@ -47,8 +47,6 @@ public abstract class EntityComponent<T> extends CustomComponent {
 
     @PostConstruct
     public void postConstruct() {
-        wireRelationships();
-
         VerticalLayout layout = new VerticalLayout();
         layout.setMargin(true);
         layout.setSpacing(true);
@@ -57,8 +55,7 @@ public abstract class EntityComponent<T> extends CustomComponent {
         setCustomSizeUndefined();
     }
 
-    private void wireRelationships() {
-        getResultsComponent().postWire();
+    public void postWire() {
     }
 
     public void setCustomSizeUndefined() {

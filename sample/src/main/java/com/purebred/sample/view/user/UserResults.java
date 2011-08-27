@@ -21,7 +21,7 @@ import com.purebred.core.view.entity.Results;
 import com.purebred.core.view.entity.ResultsTable;
 import com.purebred.core.view.entity.field.DisplayFields;
 import com.purebred.sample.dao.UserDao;
-import com.purebred.sample.entity.User;
+import com.purebred.sample.entity.security.User;
 import com.vaadin.terminal.Sizeable;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;

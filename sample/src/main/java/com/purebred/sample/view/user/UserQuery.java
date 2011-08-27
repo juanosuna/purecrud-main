@@ -19,7 +19,8 @@ package com.purebred.sample.view.user;
 
 import com.purebred.core.dao.StructuredEntityQuery;
 import com.purebred.sample.dao.UserDao;
-import com.purebred.sample.entity.User;
+import com.purebred.sample.entity.security.Role;
+import com.purebred.sample.entity.security.User;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -37,6 +38,8 @@ public class UserQuery extends StructuredEntityQuery<User> {
     private UserDao userDao;
 
     private String loginName;
+    private Role doesNotBelongToRole;
+
 
     public String getLoginName() {
         return loginName;
@@ -44,6 +47,14 @@ public class UserQuery extends StructuredEntityQuery<User> {
 
     public void setLoginName(String loginName) {
         this.loginName = loginName;
+    }
+
+    public Role getDoesNotBelongToRole() {
+        return doesNotBelongToRole;
+    }
+
+    public void setDoesNotBelongToRole(Role doesNotBelongToRole) {
+        this.doesNotBelongToRole = doesNotBelongToRole;
     }
 
     @Override
@@ -60,6 +71,15 @@ public class UserQuery extends StructuredEntityQuery<User> {
             criteria.add(builder.like(builder.upper(rootEntity.<String>get("loginName")), p));
         }
 
+        if (!isEmpty(doesNotBelongToRole)) {
+            ParameterExpression<Role> p = builder.parameter(Role.class, "doesNotBelongToRole");
+            Join join = rootEntity.join("userRoles", JoinType.LEFT);
+            criteria.add(builder.or(
+                    builder.notEqual(join.get("role"), p),
+                    builder.isNull(join.get("role"))
+            ));
+        }
+
         return criteria;
     }
 
@@ -67,6 +87,9 @@ public class UserQuery extends StructuredEntityQuery<User> {
     public void setParameters(TypedQuery typedQuery) {
         if (!isEmpty(loginName)) {
             typedQuery.setParameter("loginName", "%" + loginName.toUpperCase() + "%");
+        }
+        if (!isEmpty(doesNotBelongToRole)) {
+            typedQuery.setParameter("doesNotBelongToRole", doesNotBelongToRole);
         }
     }
 
@@ -77,6 +100,13 @@ public class UserQuery extends StructuredEntityQuery<User> {
 
     @Override
     public void addFetchJoins(Root<User> rootEntity) {
+    }
+
+    @Override
+    public void clear() {
+        Role doesNotBelongToRole = this.doesNotBelongToRole;
+        super.clear();
+        this.doesNotBelongToRole = doesNotBelongToRole;
     }
 
     @Override

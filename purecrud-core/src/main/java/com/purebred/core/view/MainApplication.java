@@ -17,6 +17,8 @@
 
 package com.purebred.core.view;
 
+import com.purebred.core.security.SecurityService;
+import com.purebred.core.view.entity.EntryPoint;
 import com.vaadin.Application;
 import com.vaadin.addon.chameleon.ChameleonTheme;
 import com.vaadin.terminal.ClassResource;
@@ -26,6 +28,7 @@ import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.vaadin.dialogs.ConfirmDialog;
 import org.vaadin.dialogs.DefaultConfirmDialogFactory;
 
@@ -43,6 +46,9 @@ public class MainApplication extends Application implements HttpServletRequestLi
     @Resource
     private MainEntryPoints mainEntryPoints;
 
+    @Resource
+    private SecurityService securityService;
+
     public static MainApplication getInstance() {
         return threadLocal.get();
     }
@@ -51,6 +57,10 @@ public class MainApplication extends Application implements HttpServletRequestLi
         if (getInstance() == null) {
             threadLocal.set(application);
         }
+    }
+
+    public MainEntryPoints getMainEntryPoints() {
+        return mainEntryPoints;
     }
 
     @Override
@@ -77,6 +87,8 @@ public class MainApplication extends Application implements HttpServletRequestLi
 
         mainEntryPoints.addStyleName("p-main-entry-points");
         mainWindow.addComponent(mainEntryPoints);
+
+        mainEntryPoints.postWire();
     }
 
     private void customizeConfirmDialogStyle() {
@@ -123,5 +135,10 @@ public class MainApplication extends Application implements HttpServletRequestLi
         errorWindow.setClosable(true);
         errorWindow.setScrollable(true);
         MainApplication.getInstance().getMainWindow().addWindow(errorWindow);
+    }
+
+    public void logout() {
+        securityService.logout();
+        close();
     }
 }

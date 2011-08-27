@@ -17,6 +17,7 @@
 
 package com.purebred.core.view.entity.field;
 
+import com.purebred.core.security.SecurityService;
 import com.purebred.core.util.MethodDelegate;
 import com.purebred.core.util.assertion.Assert;
 import com.purebred.core.view.entity.EntityForm;
@@ -29,23 +30,31 @@ import com.vaadin.ui.AbstractComponent;
 import com.vaadin.ui.AbstractTextField;
 import com.vaadin.ui.Field;
 import com.vaadin.ui.GridLayout;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 
+import javax.annotation.Resource;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
+@Component
+@Scope("prototype")
 public class FormFields extends DisplayFields {
+
+    @Resource
+    private SecurityService securityService;
 
     private FormComponent form;
     private Map<String, AddRemoveMethodDelegate> optionalTabs = new HashMap<String, AddRemoveMethodDelegate>();
 
-    public FormFields(FormComponent form) {
-        super(form.getEntityType(), form.getEntityMessageSource(), form.getDefaultFormat());
-        this.form = form;
-    }
-
     public FormComponent getForm() {
         return form;
+    }
+
+    public void setForm(FormComponent form) {
+        this.form = form;
+        setEntityType(form.getEntityType());
     }
 
     public int getColumns() {
@@ -246,10 +255,16 @@ public class FormFields extends DisplayFields {
         return tabNames;
     }
 
+    @Override
     public String getLabel(String propertyId) {
-        return ((FormField) getField(propertyId)).getFieldLabel().getValue().toString();
+        if (((FormField) getField(propertyId)).getFieldLabel().getValue() == null) {
+            return null;
+        } else {
+            return ((FormField) getField(propertyId)).getFieldLabel().getValue().toString();
+        }
     }
 
+    @Override
     public void setLabel(String propertyId, String label) {
         ((FormField) getField(propertyId)).setFieldLabel(label);
     }
@@ -262,6 +277,10 @@ public class FormFields extends DisplayFields {
         getFormField(propertyId).setWidth(width, unit);
     }
 
+    public void setHeight(String propertyId, float height, int unit) {
+        getFormField(propertyId).setHeight(height, unit);
+    }
+
     public void autoAdjustWidths() {
         Set<FormField> formFields = getFormFields();
         for (FormField formField : formFields) {
@@ -269,6 +288,10 @@ public class FormFields extends DisplayFields {
                 formField.autoAdjustWidth();
             }
         }
+    }
+
+    public void setAutoAdjustWidthMode(String propertyId, FormField.AutoAdjustWidthMode mode) {
+        getFormField(propertyId).setAutoAdjustWidthMode(mode);
     }
 
     public void addValidator(String propertyId, Class<? extends Validator> validatorClass) {
@@ -299,6 +322,14 @@ public class FormFields extends DisplayFields {
         getFormField(propertyId).setSelectItems(items);
     }
 
+    public void setSelectItems(String propertyId, Map<Object, String> items) {
+        getFormField(propertyId).setSelectItems(items);
+    }
+
+    public void setSelectItems(String propertyId, Map<Object, String> items, String nullCaption) {
+        getFormField(propertyId).setSelectItems(items, nullCaption);
+    }
+
     public void setMultiSelectDimensions(String propertyId, int rows, int columns) {
         getFormField(propertyId).setMultiSelectDimensions(rows, columns);
     }
@@ -309,6 +340,43 @@ public class FormFields extends DisplayFields {
 
     public void setRequired(String propertyId, boolean isRequired) {
         getFormField(propertyId).setRequired(isRequired);
+    }
+
+    public void setEnabled(String propertyId, boolean isEnabled) {
+        getFormField(propertyId).setEnabled(isEnabled);
+    }
+
+    public void setReadOnly(String propertyId, boolean isReadOnly) {
+        getFormField(propertyId).setReadOnly(isReadOnly);
+    }
+
+    public void setReadOnly(boolean isReadOnly) {
+        Collection<FormField> formFields = getFormFields();
+        for (FormField formField : formFields) {
+            formField.setReadOnly(isReadOnly);
+        }
+    }
+
+    public void restoreIsReadOnly() {
+        Collection<FormField> formFields = getFormFields();
+        for (FormField formField : formFields) {
+            formField.restoreIsReadOnly();
+        }
+    }
+
+    public void applySecurityIsEditable() {
+        Collection<FormField> formFields = getFormFields();
+        for (FormField formField : formFields) {
+            if (!securityService.getCurrentUser().isEditAllowed(getEntityType().getName(), formField.getPropertyId())) {
+                formField.setReadOnly(true);
+            } else {
+                formField.restoreIsReadOnly();
+            }
+        }
+    }
+
+    public void setValue(String propertyId, Object value) {
+        getFormField(propertyId).setValue(value);
     }
 
     public void setComponentError(String propertyId, ErrorMessage errorMessage) {

@@ -17,17 +17,16 @@
 
 package com.purebred.sample.dao.init;
 
-import com.purebred.sample.util.PhonePropertyFormatter;
-import com.purebred.sample.dao.AccountDao;
-import com.purebred.sample.dao.ContactDao;
-import com.purebred.sample.dao.OpportunityDao;
-import com.purebred.sample.dao.UserDao;
+import com.purebred.sample.dao.*;
 import com.purebred.sample.entity.*;
+import com.purebred.sample.entity.security.Role;
+import com.purebred.sample.entity.security.User;
+import com.purebred.sample.entity.security.UserRole;
+import com.purebred.sample.util.PhonePropertyFormatter;
 import com.purebred.sample.util.PhoneValidator;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -52,16 +51,47 @@ public class TestDataInitializer {
     @Resource
     private UserDao userDao;
 
+    @Resource
+    private UserRoleDao userRoleDao;
+
+    @Resource
+    private RoleDao roleDao;
+
     public void initializeUsers() {
+        Role role = roleDao.findByName("ROLE_USER");
+
         User user = new User("admin", "admin");
         userDao.persist(user);
+        UserRole userRole = new UserRole(user, role);
+        userRoleDao.persist(userRole);
+
+        user = new User("assistant", "assistant");
+        userDao.persist(user);
+        userRole = new UserRole(user, role);
+        userRoleDao.persist(userRole);
 
         user = new User("guest", "guest");
         userDao.persist(user);
+        userRole = new UserRole(user, role);
+        userRoleDao.persist(userRole);
+
         userDao.getEntityManager().flush();
     }
 
+    public void initializeRoles() {
+        Role role = new Role("ROLE_USER");
+        roleDao.persist(role);
+
+        role = new Role("ROLE_ADMIN");
+        roleDao.persist(role);
+
+        role = new Role("ROLE_LIMITED_ACCESS");
+        roleDao.persist(role);
+        roleDao.getEntityManager().flush();
+    }
+
     public void initialize(int count) {
+        initializeRoles();
         initializeUsers();
 
         for (Integer i = 0; i < count; i++) {

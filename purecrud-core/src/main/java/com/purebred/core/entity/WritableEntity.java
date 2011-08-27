@@ -17,62 +17,25 @@
 
 package com.purebred.core.entity;
 
-import com.purebred.core.util.SpringApplicationContext;
-import org.hibernate.annotations.NaturalId;
-import org.springframework.security.core.context.SecurityContextHolder;
-
-import javax.persistence.*;
-import java.util.Date;
+import javax.persistence.Column;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.MappedSuperclass;
 import java.util.UUID;
 
 @MappedSuperclass
-@EntityListeners({WritableEntity.WritableEntityListener.class})
-public abstract class WritableEntity implements IdentifiableEntity {
-
-    public static final String SYSTEM_USER = "system";
-
-    public static String getCurrentUser() {
-        if (SecurityContextHolder.getContext() != null && SecurityContextHolder.getContext().getAuthentication() != null
-                && SecurityContextHolder.getContext().getAuthentication().getPrincipal() != null) {
-            org.springframework.security.core.userdetails.User user = (org.springframework.security.core.userdetails.User)
-                    SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-            return user.getUsername();
-        } else {
-            return SYSTEM_USER;
-        }
-    }
+public abstract class WritableEntity extends AuditableEntity {
 
     @Id
     @GeneratedValue
     private Long id;
 
-    @NaturalId
     @Column(unique = true, nullable = false, updatable = false)
     private String uuid;
 
-    @Version
-    private Integer version;
-
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(nullable = false)
-    private Date lastModified;
-
-    @Column(nullable = false)
-    private String modifiedBy;
-
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(nullable = false)
-    private Date created;
-
-    @Column(nullable = false)
-    private String createdBy;
-
     protected WritableEntity() {
+        super();
         uuid = UUID.randomUUID().toString();
-        if (SpringApplicationContext.getApplicationContext() != null &&
-                SpringApplicationContext.getApplicationContext().getAutowireCapableBeanFactory() != null) {
-            SpringApplicationContext.getApplicationContext().getAutowireCapableBeanFactory().autowireBean(this);
-        }
     }
 
     public Long getId() {
@@ -81,42 +44,6 @@ public abstract class WritableEntity implements IdentifiableEntity {
 
     public String getUuid() {
         return uuid;
-    }
-
-    public Integer getVersion() {
-        return version;
-    }
-
-    public Date getLastModified() {
-        return lastModified;
-    }
-
-    public void setLastModified(Date lastModified) {
-        this.lastModified = lastModified;
-    }
-
-    public String getModifiedBy() {
-        return modifiedBy;
-    }
-
-    public void setModifiedBy(String modifiedBy) {
-        this.modifiedBy = modifiedBy;
-    }
-
-    public Date getCreated() {
-        return created;
-    }
-
-    public void setCreated(Date created) {
-        this.created = created;
-    }
-
-    public String getCreatedBy() {
-        return createdBy;
-    }
-
-    public void setCreatedBy(String createdBy) {
-        this.createdBy = createdBy;
     }
 
     @Override
@@ -143,24 +70,4 @@ public abstract class WritableEntity implements IdentifiableEntity {
                 '}';
     }
 
-    public void updateLastModified() {
-        new WritableEntityListener().onPreUpdate(this);
-    }
-
-    public static class WritableEntityListener {
-        @PrePersist
-        public void onPrePersist(WritableEntity writableEntity) {
-            writableEntity.created = new Date();
-            writableEntity.lastModified = writableEntity.created;
-
-            writableEntity.createdBy = getCurrentUser();
-            writableEntity.modifiedBy = writableEntity.createdBy;
-        }
-
-        @PreUpdate
-        public void onPreUpdate(WritableEntity writableEntity) {
-            writableEntity.lastModified = new Date();
-            writableEntity.modifiedBy = getCurrentUser();
-        }
-    }
 }

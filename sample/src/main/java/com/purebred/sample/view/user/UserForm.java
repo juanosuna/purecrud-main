@@ -19,8 +19,9 @@ package com.purebred.sample.view.user;
 
 import com.purebred.core.view.entity.EntityForm;
 import com.purebred.core.view.entity.field.FormFields;
-import com.purebred.sample.dao.UserDao;
-import com.purebred.sample.entity.*;
+import com.purebred.core.view.entity.tomanyrelationship.ToManyRelationship;
+import com.purebred.sample.entity.security.User;
+import com.purebred.sample.view.user.related.RelatedRoles;
 import com.vaadin.terminal.Sizeable;
 import com.vaadin.ui.PasswordField;
 import com.vaadin.ui.Window;
@@ -28,13 +29,23 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.List;
 
 @Component
 @Scope("prototype")
 public class UserForm extends EntityForm<User> {
 
     @Resource
-    private UserDao userDao;
+    private RelatedRoles relatedRoles;
+
+    @Override
+    public List<ToManyRelationship> getToManyRelationships() {
+        List<ToManyRelationship> toManyRelationships = new ArrayList<ToManyRelationship>();
+        toManyRelationships.add(relatedRoles);
+
+        return toManyRelationships;
+    }
 
     @Override
     public void configureFields(FormFields formFields) {
@@ -51,7 +62,7 @@ public class UserForm extends EntityForm<User> {
 
     @Override
     public void configurePopupWindow(Window popupWindow) {
-        popupWindow.setWidth(36, Sizeable.UNITS_EM);
-        popupWindow.setHeight(17, Sizeable.UNITS_EM);
+        popupWindow.setWidth(45, Sizeable.UNITS_EM);
+        popupWindow.setHeight("95%");
     }
 }

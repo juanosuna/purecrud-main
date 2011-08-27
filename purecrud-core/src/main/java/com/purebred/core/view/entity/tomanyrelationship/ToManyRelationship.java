@@ -38,4 +38,11 @@ public abstract class ToManyRelationship<T> extends EntityComponent<T> {
 
         addComponent(getResultsComponent());
     }
+
+    @Override
+    public void postWire() {
+        super.postWire();
+
+        getResultsComponent().postWire();
+    }
 }

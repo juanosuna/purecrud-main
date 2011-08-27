@@ -18,6 +18,7 @@
 package com.purebred.sample.view.contact;
 
 import com.purebred.core.view.entity.EntryPoint;
+import com.purebred.core.view.entity.MainEntryPoint;
 import com.purebred.sample.entity.Contact;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -26,7 +27,7 @@ import javax.annotation.Resource;
 
 @Component
 @Scope("prototype")
-public class ContactEntryPoint extends EntryPoint<Contact> {
+public class ContactEntryPoint extends MainEntryPoint<Contact> {
 
     @Resource
     private ContactSearchForm contactSearchForm;

@@ -18,6 +18,7 @@
 package com.purebred.sample.view.opportunity;
 
 import com.purebred.core.view.entity.EntryPoint;
+import com.purebred.core.view.entity.MainEntryPoint;
 import com.purebred.sample.entity.Opportunity;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -26,7 +27,7 @@ import javax.annotation.Resource;
 
 @Component
 @Scope("prototype")
-public class OpportunityEntryPoint extends EntryPoint<Opportunity> {
+public class OpportunityEntryPoint extends MainEntryPoint<Opportunity> {
 
     @Resource
     private OpportunitySearchForm opportunitySearchForm;

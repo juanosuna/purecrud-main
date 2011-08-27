@@ -17,19 +17,18 @@
 
 package com.purebred.core.view.entity;
 
-import com.purebred.core.view.MainApplication;
 import com.purebred.core.view.entity.field.FormFields;
 import com.vaadin.data.util.BeanItem;
-import com.vaadin.terminal.ClassResource;
 import com.vaadin.terminal.ThemeResource;
-import com.vaadin.ui.AbstractOrderedLayout;
 import com.vaadin.ui.Button;
-import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
 
 public abstract class SearchForm<T> extends FormComponent<T> {
+
+    private FormFields formFields;
 
 
     @PostConstruct
@@ -42,7 +41,9 @@ public abstract class SearchForm<T> extends FormComponent<T> {
 //        getForm().setCaption(getEntityCaption());
     }
 
+    @Override
     public void postWire() {
+        super.postWire();
         BeanItem beanItem = createBeanItem(getResults().getEntityQuery());
         getForm().setItemDataSource(beanItem, getFormFields().getPropertyIds());
     }
@@ -68,9 +69,14 @@ public abstract class SearchForm<T> extends FormComponent<T> {
 //        footerLayout.setComponentAlignment(searchButton, Alignment.MIDDLE_RIGHT);
     }
 
-    @Override
-    FormFields createFormFields() {
-        return new FormFields(this);
+    public FormFields getFormFields() {
+        return formFields;
+    }
+
+    @Resource
+    public void setFormFields(FormFields formFields) {
+        this.formFields = formFields;
+        formFields.setForm(this);
     }
 
     public void clear() {
