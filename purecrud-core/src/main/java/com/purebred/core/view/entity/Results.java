@@ -186,12 +186,12 @@ public abstract class Results<T> extends ResultsComponent<T> implements Walkable
         }
 
         // workaround to Vaadin bug, to prevent the width of selects from growing
-        Collection<FormField> formFields = getEntityForm().getFormFields().getFormFields();
-        for (FormField formField : formFields) {
-            if (formField.getField() instanceof AbstractSelect) {
-                formField.getField().requestRepaintRequests();
-            }
-        }
+//        Collection<FormField> formFields = getEntityForm().getFormFields().getFormFields();
+//        for (FormField formField : formFields) {
+//            if (formField.getField() instanceof AbstractSelect) {
+//                formField.getField().requestRepaintRequests();
+//            }
+//        }
     }
 
     public boolean hasPreviousItem() {
@@ -211,12 +211,12 @@ public abstract class Results<T> extends ResultsComponent<T> implements Walkable
         }
 
         // workaround to Vaadin bug, to prevent the width of selects from growing
-        Collection<FormField> formFields = getEntityForm().getFormFields().getFormFields();
-        for (FormField formField : formFields) {
-            if (formField.getField() instanceof AbstractSelect) {
-                formField.getField().requestRepaintRequests();
-            }
-        }
+//        Collection<FormField> formFields = getEntityForm().getFormFields().getFormFields();
+//        for (FormField formField : formFields) {
+//            if (formField.getField() instanceof AbstractSelect) {
+//                formField.getField().requestRepaintRequests();
+//            }
+//        }
     }
 
     public boolean hasNextItem() {

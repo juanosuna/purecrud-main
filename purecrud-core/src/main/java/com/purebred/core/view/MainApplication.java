@@ -18,17 +18,14 @@
 package com.purebred.core.view;
 
 import com.purebred.core.security.SecurityService;
-import com.purebred.core.view.entity.EntryPoint;
 import com.vaadin.Application;
 import com.vaadin.addon.chameleon.ChameleonTheme;
-import com.vaadin.terminal.ClassResource;
 import com.vaadin.terminal.gwt.server.HttpServletRequestListener;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.vaadin.dialogs.ConfirmDialog;
 import org.vaadin.dialogs.DefaultConfirmDialogFactory;
 
@@ -119,6 +116,13 @@ public class MainApplication extends Application implements HttpServletRequestLi
             String fullStackTrace = ExceptionUtils.getFullStackTrace(event.getThrowable());
             openErrorWindow(fullStackTrace);
         }
+    }
+
+
+    public static SystemMessages getSystemMessages() {
+        CustomizedSystemMessages customizedSystemMessages = new CustomizedSystemMessages();
+        customizedSystemMessages.setSessionExpiredURL("mvc/login.do");
+        return customizedSystemMessages;
     }
 
     public void openErrorWindow(String message) {

@@ -45,6 +45,7 @@ public abstract class ResultsComponent<T> extends CustomComponent {
     @Resource
     private LabelDepot labelDepot;
 
+
     private ResultsTable resultsTable;
     private DisplayFields displayFields;
     private TextField firstResultTextField;

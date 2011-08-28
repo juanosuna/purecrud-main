@@ -594,6 +594,7 @@ public class FormField extends DisplayField {
     }
 
     public static void initAbstractSelectDefaults(AbstractSelect field) {
+        field.setWidth(DEFAULT_TEXT_FIELD_WIDTH, Sizeable.UNITS_EM);
         field.setItemCaptionMode(Select.ITEM_CAPTION_MODE_PROPERTY);
         field.setNullSelectionAllowed(true);
         field.setItemCaptionPropertyId(DEFAULT_DISPLAY_PROPERTY_ID);

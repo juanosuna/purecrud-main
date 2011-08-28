@@ -37,7 +37,10 @@ import org.springframework.stereotype.Component;
 import javax.annotation.Resource;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 @Component
 @Scope("prototype")
@@ -209,69 +212,49 @@ public class RelatedPermissions extends ToManyRelationship<Permission> {
             Boolean isFieldSelected = fieldField.getValue() != null;
 
             getFormFields().setEnabled("create", isViewChecked && !isFieldSelected);
-            getFormFields().setValue("create", isViewChecked && !isFieldSelected);
+//            getFormFields().setValue("create", isViewChecked && !isFieldSelected);
             getFormFields().setEnabled("edit", isViewChecked);
-            getFormFields().setValue("edit", isViewChecked && !isFieldSelected);
+//            getFormFields().setValue("edit", isViewChecked && !isFieldSelected);
             getFormFields().setEnabled("delete", isViewChecked && !isFieldSelected);
-            getFormFields().setValue("delete", isViewChecked && !isFieldSelected);
+//            getFormFields().setValue("delete", isViewChecked && !isFieldSelected);
         }
 
         @Override
         public void postWire() {
             super.postWire();
 
-            getFormFields().setSelectItems("entityType", getAvailableEntityTypeItems());
+            getFormFields().setSelectItems("entityType", getEntityTypeItems());
         }
 
         @Override
         public void create() {
             super.create();
 
-            getFormFields().setSelectItems("entityType", getAvailableEntityTypeItems());
+            getFormFields().setSelectItems("entityType", getEntityTypeItems());
         }
 
-        public Map<Object, String> getAvailableEntityTypeItems() {
-            Map<Object, String> allEntityTypeItems = getEntityTypeItems();
-            Set<String> existingEntityTypeItems = getExistingEntityTypeItems();
-
-            return subtractExistingEntityTypeItems(allEntityTypeItems,
-                    existingEntityTypeItems);
-        }
-
-        public Map<Object, String> getEntityTypeItems() {
+        private Map<Object, String> getEntityTypeItems() {
             Map<Object, String> entityTypeItems = new LinkedHashMap<Object, String>();
-            Map<String, String> entityTypes = labelDepot.getEntityTypeLabels();
-            for (String entityType : entityTypes.keySet()) {
-                entityTypeItems.put(entityType, entityType);
-            }
-
-            return entityTypeItems;
-        }
-
-        private Map<Object, String> subtractExistingEntityTypeItems(Map<Object, String> allEntityTypeItems,
-                                                                    Set<String> existingEntityTypeItems) {
-            Map<Object, String> entityTypeItems = new LinkedHashMap<Object, String>();
-
-            for (Object entityTypeItem : allEntityTypeItems.keySet()) {
-                if (!existingEntityTypeItems.contains(entityTypeItem)) {
-                    entityTypeItems.put(entityTypeItem, allEntityTypeItems.get(entityTypeItem));
-                }
-            }
-
-            return entityTypeItems;
-        }
-
-        private Set<String> getExistingEntityTypeItems() {
             List<Permission> existingPermissions = getExistingPermissionsForParentRole();
 
-            Set<String> existingEntityTypeItems = new HashSet<String>();
-            for (Permission existingPermission : existingPermissions) {
-                if (existingPermission.getField() == null) {
-                    existingEntityTypeItems.add(existingPermission.getEntityType());
+            Map<String, String> entityTypes = labelDepot.getEntityTypeLabels();
+            for (String entityType : entityTypes.keySet()) {
+                boolean isEntityTypeWithNullFieldAvailable = true;
+                for (Permission existingPermission : existingPermissions) {
+                    if (!existingPermission.equals(getEntity()) && existingPermission.getEntityType().equals(entityType)
+                            && existingPermission.getField() == null) {
+                        isEntityTypeWithNullFieldAvailable = false;
+                        break;
+                    }
+                }
+
+                Map<Object, String> fieldItems = getFieldItems(entityType);
+                if (!fieldItems.isEmpty() || isEntityTypeWithNullFieldAvailable) {
+                    entityTypeItems.put(entityType, entityType);
                 }
             }
 
-            return existingEntityTypeItems;
+            return entityTypeItems;
         }
 
         public void entityTypeChanged(Property.ValueChangeEvent event) {
@@ -283,13 +266,7 @@ public class RelatedPermissions extends ToManyRelationship<Permission> {
             }
         }
 
-        private List<Permission> getExistingPermissionsForParentRole() {
-            RelatedPermissionsResults results = (RelatedPermissionsResults) getResults();
-            Role role = (Role) results.getEntityQuery().getParent();
-            return permissionDao.findByRole(role);
-        }
-
-        public Map<Object, String> getFieldItems(String entityType) {
+        private Map<Object, String> getFieldItems(String entityType) {
             List<Permission> existingPermissions = getExistingPermissionsForParentRole();
 
             Map<Object, String> fieldItems = labelDepot.getPropertyIds(entityType);
@@ -301,6 +278,13 @@ public class RelatedPermissions extends ToManyRelationship<Permission> {
             }
 
             return fieldItems;
+        }
+
+        private List<Permission> getExistingPermissionsForParentRole() {
+            RelatedPermissionsResults results = (RelatedPermissionsResults) getResults();
+            Role role = (Role) results.getEntityQuery().getParent();
+
+            return permissionDao.findByRole(role);
         }
 
         @Override

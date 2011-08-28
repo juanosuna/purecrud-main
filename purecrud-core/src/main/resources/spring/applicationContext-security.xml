@@ -50,15 +50,7 @@
     <global-method-security pre-post-annotations="enabled"/>
 
     <authentication-manager>
-        <authentication-provider user-service-ref="userDetailsService">
-            <!--<user-service>-->
-                <!--<user name="admin" password="admin" authorities="ROLE_ADMIN, ROLE_USER"/>-->
-                <!--<user name="guest" password="guest" authorities="ROLE_USER"/>-->
-            <!--</user-service>-->
-            <!--<password-encoder hash="sha">-->
-                <!--<salt-source user-property="username"/>-->
-            <!--</password-encoder>-->
-        </authentication-provider>
+        <authentication-provider user-service-ref="userDetailsService"/>
     </authentication-manager>
 
     <beans:bean id="userDetailsService" class="com.purebred.core.security.UserDetailsServiceImpl"/>

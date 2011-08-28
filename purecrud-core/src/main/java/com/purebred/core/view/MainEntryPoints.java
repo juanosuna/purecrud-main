@@ -64,7 +64,9 @@ public abstract class MainEntryPoints extends TabSheet {
         }
 
         addListener(new TabChangeListener());
-        entryPoints.get(0).getResultsComponent().search();
+        if (entryPoints.size() > 0) {
+            entryPoints.get(0).getResultsComponent().search();
+        }
     }
 
     public void postWire() {

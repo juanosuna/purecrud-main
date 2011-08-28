@@ -17,8 +17,10 @@
 
 package com.purebred.sample.dao.init;
 
+import com.purebred.core.entity.security.AllowOrDeny;
 import com.purebred.sample.dao.*;
 import com.purebred.sample.entity.*;
+import com.purebred.sample.entity.security.Permission;
 import com.purebred.sample.entity.security.Role;
 import com.purebred.sample.entity.security.User;
 import com.purebred.sample.entity.security.UserRole;
@@ -28,6 +30,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.security.Permissions;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
@@ -35,6 +38,18 @@ import java.util.Date;
 @Service
 @Transactional
 public class TestDataInitializer {
+
+    @Resource
+    private UserDao userDao;
+
+    @Resource
+    private UserRoleDao userRoleDao;
+
+    @Resource
+    private RoleDao roleDao;
+
+    @Resource
+    private PermissionDao permissionDao;
 
     @Resource
     private ContactDao contactDao;
@@ -47,48 +62,6 @@ public class TestDataInitializer {
 
     @Resource
     private ReferenceDataInitializer referenceDataInitializer;
-
-    @Resource
-    private UserDao userDao;
-
-    @Resource
-    private UserRoleDao userRoleDao;
-
-    @Resource
-    private RoleDao roleDao;
-
-    public void initializeUsers() {
-        Role role = roleDao.findByName("ROLE_USER");
-
-        User user = new User("admin", "admin");
-        userDao.persist(user);
-        UserRole userRole = new UserRole(user, role);
-        userRoleDao.persist(userRole);
-
-        user = new User("assistant", "assistant");
-        userDao.persist(user);
-        userRole = new UserRole(user, role);
-        userRoleDao.persist(userRole);
-
-        user = new User("guest", "guest");
-        userDao.persist(user);
-        userRole = new UserRole(user, role);
-        userRoleDao.persist(userRole);
-
-        userDao.getEntityManager().flush();
-    }
-
-    public void initializeRoles() {
-        Role role = new Role("ROLE_USER");
-        roleDao.persist(role);
-
-        role = new Role("ROLE_ADMIN");
-        roleDao.persist(role);
-
-        role = new Role("ROLE_LIMITED_ACCESS");
-        roleDao.persist(role);
-        roleDao.getEntityManager().flush();
-    }
 
     public void initialize(int count) {
         initializeRoles();
@@ -136,6 +109,63 @@ public class TestDataInitializer {
                 contactDao.getEntityManager().clear();
             }
         }
+    }
+
+    public void initializeRoles() {
+        Role role = new Role("ROLE_USER");
+        role.setAllowOrDenyByDefault(AllowOrDeny.DENY);
+        roleDao.persist(role);
+
+        role = new Role("ROLE_ADMIN");
+        roleDao.persist(role);
+
+        role = new Role("ROLE_GUEST");
+        role.setAllowOrDenyByDefault(AllowOrDeny.ALLOW);
+        roleDao.persist(role);
+        Permission permission = new Permission(Role.class.getName());
+        permission.setRole(role);
+        permission.setView(false);
+        permissionDao.persist(permission);
+        permission = new Permission(User.class.getName());
+        permission.setRole(role);
+        permission.setView(false);
+        permissionDao.persist(permission);
+        permission = new Permission(Contact.class.getName());
+        permission.setRole(role);
+        permission.setView(true);
+        permissionDao.persist(permission);
+        permission = new Permission(Account.class.getName());
+        permission.setRole(role);
+        permission.setView(true);
+        permissionDao.persist(permission);
+        permission = new Permission(Opportunity.class.getName());
+        permission.setRole(role);
+        permission.setView(true);
+        permissionDao.persist(permission);
+
+        roleDao.getEntityManager().flush();
+    }
+
+    public void initializeUsers() {
+        Role anyUserRole = roleDao.findByName("ROLE_USER");
+        Role adminRole = roleDao.findByName("ROLE_ADMIN");
+        Role guestRole = roleDao.findByName("ROLE_GUEST");
+
+        User user = new User("admin", "admin");
+        userDao.persist(user);
+        UserRole userRole = new UserRole(user, anyUserRole);
+        userRoleDao.persist(userRole);
+        userRole = new UserRole(user, adminRole);
+        userRoleDao.persist(userRole);
+
+        user = new User("guest", "guest");
+        userDao.persist(user);
+        userRole = new UserRole(user, anyUserRole);
+        userRoleDao.persist(userRole);
+        userRole = new UserRole(user, guestRole);
+        userRoleDao.persist(userRole);
+
+        userDao.getEntityManager().flush();
     }
 
     private void initializeAccount(Contact contact, int i) {

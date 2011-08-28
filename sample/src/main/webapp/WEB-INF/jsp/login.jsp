@@ -25,7 +25,10 @@
 <body>
 <h2 align="center">Login</h2>
 
-<p align="center">For demo, please log in as username "admin" with password "admin"</p>
+<p align="center">For full demo, please log in as username "admin" with password "admin."</p>
+<p align="center">You may also login as username "guest" with password "guest," to see how security rules
+    limit access to data.
+</p>
 <c:if test="${not empty param.login_error}">
       <span style="color: red; ">
         Your login attempt was not successful, try again.<br/><br/>
@@ -48,7 +51,7 @@
         </tr>
         <tr>
             <td align="right"><input type="checkbox" name="_spring_security_remember_me" value="true"></td>
-            <td align="left">remember for two weeks</td>
+            <td align="left">remember me</td>
         </tr>
 
         <tr>

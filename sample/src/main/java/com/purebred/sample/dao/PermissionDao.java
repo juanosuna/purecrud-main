@@ -58,10 +58,4 @@ public class PermissionDao extends EntityDao<Permission, Long> {
 
         return query.getResultList();
     }
-
-    @Transactional
-    @Override
-    public void remove(Permission permission) {
-        // todo implement me
-    }
 }

@@ -61,7 +61,7 @@ public abstract class EntitySelect<T> extends EntryPoint<T> {
     }
 
     public void open() {
-        popupWindow = new Window();
+        popupWindow = new Window(getEntityCaption());
         popupWindow.addStyleName("p-entity-select-window");
         popupWindow.addStyleName("opaque");
         VerticalLayout layout = (VerticalLayout) popupWindow.getContent();
@@ -76,7 +76,6 @@ public abstract class EntitySelect<T> extends EntryPoint<T> {
         getResultsComponent().selectPageSize(5);
         getResultsComponent().search();
         configurePopupWindow(popupWindow);
-        setCaption(getEntityCaption());
         popupWindow.addComponent(this);
 
         MainApplication.getInstance().getMainWindow().addWindow(popupWindow);

@@ -134,13 +134,13 @@ public abstract class ToManyCompositionRelationshipResults<T> extends ToManyRela
 
     @Override
     public void valuesRemoved(T... values) {
-        super.valuesRemoved(values);
-
         for (T value : values) {
             getEntityDao().remove(value);
         }
 
+        searchImpl(false);
         editButton.setEnabled(false);
+        removeButton.setEnabled(false);
     }
 
     @Override

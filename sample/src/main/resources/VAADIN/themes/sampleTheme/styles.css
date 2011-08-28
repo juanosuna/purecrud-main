@@ -2,8 +2,12 @@
 @import "../chameleon-blue/styles.css";
 @import "../pureCrudTheme/styles.css";
 
-.p-main-window, .p-entity-form-window {
-    background: #b6b6b6;
+.p-main-window {
+    background: #d3d3d3 url(img/background.gif);
+}
+
+.p-entity-form-window {
+    background: #d3d3d3;
 }
 
 .p-entity-select-window {
@@ -18,8 +22,13 @@
     border-color: black !important;
 }
 
-.p-search-form, .p-form-component {
+.p-form-component {
     background: #ecffec;
+}
+
+.p-search-form {
+    background: #f9f9f9;
+    border-color: #a9a9a9
 }
 
 .p-results-component {
@@ -68,11 +77,13 @@
 }
 
 .v-window-outerheader {
-    background: #403f3f;
+    /*background: #403f3f;*/
+    background: #787878;
 }
 
 .v-window-header {
     color: white !important;
+    text-shadow: none !important;
 }
 
 .v-form-errormessage {
