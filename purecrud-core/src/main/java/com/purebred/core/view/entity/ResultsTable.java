@@ -146,13 +146,10 @@ public class ResultsTable extends Table {
     public void executeCurrentQuery() {
         List entities = results.getEntityQuery().execute();
         getContainerDataSource().removeAllItems();
-        for (Object entity : entities) {
-            getContainerDataSource().addBean(entity);
-        }
+        getContainerDataSource().addAll(entities);
 
         results.refreshResultCountLabel();
         results.refreshNavigationButtonStates();
-//        setPageLength(0);
         setPageLength(Math.min(entities.size(), results.getPageSize()));
     }
 

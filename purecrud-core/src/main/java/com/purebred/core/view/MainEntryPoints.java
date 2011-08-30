@@ -81,7 +81,9 @@ public abstract class MainEntryPoints extends TabSheet {
         @Override
         public void selectedTabChange(SelectedTabChangeEvent event) {
             MainEntryPoint entryPoint = (MainEntryPoint) getSelectedTab();
-            entryPoint.getResultsComponent().search();
+            if (entryPoint.getResultsComponent().getEntityQuery().getResultCount() == 0) {
+                entryPoint.getResultsComponent().search();
+            }
             if (entryPoint.getResultsComponent() instanceof Results) {
                 ((Results) entryPoint.getResultsComponent()).applySecurityToCRUDButtons();
             }
