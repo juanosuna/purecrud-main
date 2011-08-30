@@ -72,7 +72,7 @@ public class RoleForm extends EntityForm<Role> {
 
     @Override
     public void configurePopupWindow(Window popupWindow) {
-        popupWindow.setWidth(70, Sizeable.UNITS_EM);
-        popupWindow.setHeight(40, Sizeable.UNITS_EM);
+        popupWindow.setWidth(66, Sizeable.UNITS_EM);
+        popupWindow.setHeight("95%");
     }
 }

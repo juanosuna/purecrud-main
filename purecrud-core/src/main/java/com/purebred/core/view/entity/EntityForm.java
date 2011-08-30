@@ -274,7 +274,6 @@ public abstract class EntityForm<T> extends FormComponent<T> {
             }
             toManyRelationshipTabs.setVisible(true);
             setFormAnimatorVisible(true);
-//            toManyRelationshipsAnimator.setRolledUp(toManyRelationshipsAnimator.isRolledUp());
         }
     }
 

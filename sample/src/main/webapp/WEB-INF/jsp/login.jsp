@@ -26,15 +26,9 @@
 <h2 align="center">Login</h2>
 
 <p align="center">For full demo, please log in as username "admin" with password "admin."</p>
-<p align="center">You may also login as username "guest" with password "guest," to see how security rules
-    limit access to data.
+
+<p align="center">To see how a role limits access, login as username "guest" with password "guest."
 </p>
-<c:if test="${not empty param.login_error}">
-      <span style="color: red; ">
-        Your login attempt was not successful, try again.<br/><br/>
-        Reason: <c:out value="${SPRING_SECURITY_LAST_EXCEPTION.message}"/>.
-      </span>
-</c:if>
 
 <form name="f" action="<c:url value='/j_spring_security_check'/>" method="POST">
     <table align="center">
@@ -59,5 +53,14 @@
         </tr>
     </table>
 </form>
+
+<c:if test="${not empty param.login_error}">
+    <div align="center">
+      <span style="color: red;">
+        Your login attempt was not successful, please try again.
+      </span>
+    </div>
+</c:if>
+
 </body>
 </html>

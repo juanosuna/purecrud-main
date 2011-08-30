@@ -25,6 +25,7 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 import org.apache.commons.lang.exception.ExceptionUtils;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.access.AccessDeniedException;
 import org.vaadin.dialogs.ConfirmDialog;
 import org.vaadin.dialogs.DefaultConfirmDialogFactory;
@@ -108,11 +109,20 @@ public class MainApplication extends Application implements HttpServletRequestLi
     @Override
     public void terminalError(com.vaadin.terminal.Terminal.ErrorEvent event) {
         super.terminalError(event);
-        if (event.getThrowable().getCause() instanceof AccessDeniedException) {
+        Throwable cause = event.getThrowable().getCause();
+
+        if (cause instanceof AccessDeniedException) {
             getMainWindow().showNotification(
                     messageSource.getMessage("mainApplication.accessDenied"),
                     Window.Notification.TYPE_ERROR_MESSAGE);
-        } else {
+        } else if (cause instanceof DataIntegrityViolationException) {
+            DataIntegrityViolationException violationException = (DataIntegrityViolationException) cause;
+            getMainWindow().showNotification(
+                    messageSource.getMessage("mainApplication.dataConstraintViolation"),
+                    violationException.getMessage(),
+                    Window.Notification.TYPE_ERROR_MESSAGE);
+        }
+        else {
             String fullStackTrace = ExceptionUtils.getFullStackTrace(event.getThrowable());
             openErrorWindow(fullStackTrace);
         }

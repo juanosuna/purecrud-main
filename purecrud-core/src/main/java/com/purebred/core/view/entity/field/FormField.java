@@ -40,6 +40,7 @@ import java.util.*;
 public class FormField extends DisplayField {
     public static final String DEFAULT_DISPLAY_PROPERTY_ID = "displayName";
     public static final Integer DEFAULT_TEXT_FIELD_WIDTH = 11;
+    public static final Integer DEFAULT_SELECT_FIELD_WIDTH = 11;
 
     private String tabName = "";
     private Field field;
@@ -49,7 +50,6 @@ public class FormField extends DisplayField {
     private Integer rowEnd;
     private boolean isRequired;
     private boolean isReadOnly;
-    private Field originalField;
     private com.vaadin.ui.Label label;
     private AutoAdjustWidthMode autoAdjustWidthMode = AutoAdjustWidthMode.PARTIAL;
     private Integer defaultWidth;
@@ -193,6 +193,29 @@ public class FormField extends DisplayField {
         getField().setHeight(height, unit);
     }
 
+    private void autoAdjustSelectWidth() {
+        Assert.PROGRAMMING.assertTrue(getField() instanceof AbstractSelect,
+                "FormField.autoAdjustSelectWidth can only be called on select fields");
+
+        if (autoAdjustWidthMode == AutoAdjustWidthMode.NONE) return;
+
+        AbstractSelect selectField = (AbstractSelect) getField();
+        Collection itemsIds = selectField.getItemIds();
+
+        int maxWidth = 0;
+        for (Object itemsId : itemsIds) {
+            String caption = selectField.getItemCaption(itemsId);
+            int approximateWidth = StringUtil.approximateColumnWidth(caption);
+            maxWidth = Math.max(maxWidth, approximateWidth);
+        }
+
+        if (autoAdjustWidthMode == AutoAdjustWidthMode.FULL) {
+            selectField.setWidth(maxWidth, Sizeable.UNITS_EM);
+        } else if (autoAdjustWidthMode == AutoAdjustWidthMode.PARTIAL) {
+            selectField.setWidth(MathUtil.maxIgnoreNull(maxWidth, DEFAULT_SELECT_FIELD_WIDTH), Sizeable.UNITS_EM);
+        }
+    }
+
     public void setSelectItems(List items) {
         // could be either collection or single item
         Object selectedItems = getSelectedItems();
@@ -220,6 +243,7 @@ public class FormField extends DisplayField {
                 selectField.select(selectField.getNullSelectionItemId());
             }
         }
+        autoAdjustSelectWidth();
     }
 
     public void setSelectItems(Map<Object, String> items) {
@@ -243,10 +267,11 @@ public class FormField extends DisplayField {
 
         for (Object item : items.keySet()) {
             String caption = items.get(item);
-
             selectField.addItem(item);
             selectField.setItemCaption(item, caption);
         }
+
+        autoAdjustSelectWidth();
     }
 
     public void setMultiSelectDimensions(int rows, int columns) {
@@ -594,7 +619,7 @@ public class FormField extends DisplayField {
     }
 
     public static void initAbstractSelectDefaults(AbstractSelect field) {
-        field.setWidth(DEFAULT_TEXT_FIELD_WIDTH, Sizeable.UNITS_EM);
+        field.setWidth(DEFAULT_SELECT_FIELD_WIDTH, Sizeable.UNITS_EM);
         field.setItemCaptionMode(Select.ITEM_CAPTION_MODE_PROPERTY);
         field.setNullSelectionAllowed(true);
         field.setItemCaptionPropertyId(DEFAULT_DISPLAY_PROPERTY_ID);

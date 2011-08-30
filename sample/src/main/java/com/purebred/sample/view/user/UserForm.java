@@ -20,7 +20,11 @@ package com.purebred.sample.view.user;
 import com.purebred.core.view.entity.EntityForm;
 import com.purebred.core.view.entity.field.FormFields;
 import com.purebred.core.view.entity.tomanyrelationship.ToManyRelationship;
+import com.purebred.sample.dao.RoleDao;
+import com.purebred.sample.dao.UserRoleDao;
+import com.purebred.sample.entity.security.Role;
 import com.purebred.sample.entity.security.User;
+import com.purebred.sample.entity.security.UserRole;
 import com.purebred.sample.view.user.related.RelatedRoles;
 import com.vaadin.terminal.Sizeable;
 import com.vaadin.ui.PasswordField;
@@ -39,6 +43,12 @@ public class UserForm extends EntityForm<User> {
     @Resource
     private RelatedRoles relatedRoles;
 
+    @Resource
+    private RoleDao roleDao;
+
+    @Resource
+    private UserRoleDao userRoleDao;
+
     @Override
     public List<ToManyRelationship> getToManyRelationships() {
         List<ToManyRelationship> toManyRelationships = new ArrayList<ToManyRelationship>();
@@ -52,8 +62,16 @@ public class UserForm extends EntityForm<User> {
         formFields.setPosition("loginName", 1, 1);
         formFields.setPosition("loginPassword", 2, 1);
         formFields.setField("loginPassword", new PasswordField());
+
+        addPersistListener(this, "onPersist");
     }
 
+
+    public void onPersist() {
+        Role anyUserRole = roleDao.findByName("ROLE_USER");
+        UserRole userRole = new UserRole(getEntity(), anyUserRole);
+        userRoleDao.persist(userRole);
+    }
 
     @Override
     public String getEntityCaption() {
@@ -62,7 +80,7 @@ public class UserForm extends EntityForm<User> {
 
     @Override
     public void configurePopupWindow(Window popupWindow) {
-        popupWindow.setWidth(45, Sizeable.UNITS_EM);
+        popupWindow.setWidth(37, Sizeable.UNITS_EM);
         popupWindow.setHeight("95%");
     }
 }

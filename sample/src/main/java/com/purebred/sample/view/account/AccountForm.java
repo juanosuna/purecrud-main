@@ -165,7 +165,7 @@ public class AccountForm extends EntityForm<Account> {
 
     @Override
     public void configurePopupWindow(Window popupWindow) {
-        popupWindow.setWidth(64, Sizeable.UNITS_EM);
+        popupWindow.setWidth(63, Sizeable.UNITS_EM);
         popupWindow.setHeight("95%");
     }
 }

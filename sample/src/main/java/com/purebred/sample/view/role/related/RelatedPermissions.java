@@ -92,6 +92,7 @@ public class RelatedPermissions extends ToManyRelationship<Permission> {
             displayFields.setPropertyIds(new String[]{
                     "entityType",
                     "field",
+                    "permissions",
                     "lastModified",
                     "modifiedBy"
             });
@@ -212,11 +213,8 @@ public class RelatedPermissions extends ToManyRelationship<Permission> {
             Boolean isFieldSelected = fieldField.getValue() != null;
 
             getFormFields().setEnabled("create", isViewChecked && !isFieldSelected);
-//            getFormFields().setValue("create", isViewChecked && !isFieldSelected);
             getFormFields().setEnabled("edit", isViewChecked);
-//            getFormFields().setValue("edit", isViewChecked && !isFieldSelected);
             getFormFields().setEnabled("delete", isViewChecked && !isFieldSelected);
-//            getFormFields().setValue("delete", isViewChecked && !isFieldSelected);
         }
 
         @Override

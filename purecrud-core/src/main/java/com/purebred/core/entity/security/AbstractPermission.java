@@ -100,6 +100,33 @@ public abstract class AbstractPermission extends WritableEntity {
         this.delete = delete;
     }
 
+    public String getPermissions() {
+        StringBuilder permissions = new StringBuilder();
+        if (isCreate()) {
+            permissions.append("Create");
+        }
+        if (isView()) {
+            if (permissions.length() > 0) {
+                permissions.append(", ");
+            }
+            permissions.append("View");
+        }
+        if (isEdit()) {
+            if (permissions.length() > 0) {
+                permissions.append(", ");
+            }
+            permissions.append("Edit");
+        }
+        if (isDelete()) {
+            if (permissions.length() > 0) {
+                permissions.append(", ");
+            }
+            permissions.append("Delete");
+        }
+
+        return permissions.toString();
+    }
+
     public String getEntityTypeLabel() {
         if (getEntityType() == null) {
             return null;

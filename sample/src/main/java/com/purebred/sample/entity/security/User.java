@@ -32,7 +32,7 @@ import java.util.Set;
 @Table
 public class User extends AbstractUser {
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user")
     private Set<UserRole> userRoles = new HashSet<UserRole>();
 
     public User() {

@@ -113,13 +113,16 @@ public class TestDataInitializer {
 
     public void initializeRoles() {
         Role role = new Role("ROLE_USER");
+        role.setDescription("This role belongs to all users and is allows to login.");
         role.setAllowOrDenyByDefault(AllowOrDeny.DENY);
         roleDao.persist(role);
 
         role = new Role("ROLE_ADMIN");
+        role.setDescription("This role allows full access to everything.");
         roleDao.persist(role);
 
         role = new Role("ROLE_GUEST");
+        role.setDescription("This role demonstrates limited access.");
         role.setAllowOrDenyByDefault(AllowOrDeny.ALLOW);
         roleDao.persist(role);
         Permission permission = new Permission(Role.class.getName());

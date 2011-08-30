@@ -184,14 +184,6 @@ public abstract class Results<T> extends ResultsComponent<T> implements Walkable
         if (previousItemId != null) {
             loadItem(previousItemId, false);
         }
-
-        // workaround to Vaadin bug, to prevent the width of selects from growing
-//        Collection<FormField> formFields = getEntityForm().getFormFields().getFormFields();
-//        for (FormField formField : formFields) {
-//            if (formField.getField() instanceof AbstractSelect) {
-//                formField.getField().requestRepaintRequests();
-//            }
-//        }
     }
 
     public boolean hasPreviousItem() {
@@ -209,14 +201,6 @@ public abstract class Results<T> extends ResultsComponent<T> implements Walkable
         if (nextItemId != null) {
             loadItem(nextItemId, false);
         }
-
-        // workaround to Vaadin bug, to prevent the width of selects from growing
-//        Collection<FormField> formFields = getEntityForm().getFormFields().getFormFields();
-//        for (FormField formField : formFields) {
-//            if (formField.getField() instanceof AbstractSelect) {
-//                formField.getField().requestRepaintRequests();
-//            }
-//        }
     }
 
     public boolean hasNextItem() {
