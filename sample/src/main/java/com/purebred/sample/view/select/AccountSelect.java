@@ -24,8 +24,6 @@ import com.purebred.sample.dao.AccountDao;
 import com.purebred.sample.entity.Account;
 import com.purebred.sample.view.account.AccountQuery;
 import com.purebred.sample.view.account.AccountSearchForm;
-import com.vaadin.terminal.Sizeable;
-import com.vaadin.ui.Window;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 

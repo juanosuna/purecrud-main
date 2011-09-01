@@ -93,7 +93,8 @@ public class OpportunityQuery extends StructuredEntityQuery<Opportunity> {
     public Path buildOrderBy(Root<Opportunity> rootEntity) {
         if (getOrderByPropertyId().equals("account.name")) {
             return rootEntity.join("account", JoinType.LEFT).get("name");
-        } if (getOrderByPropertyId().equals("amountWeightedInUSDFormatted")) {
+        }
+        if (getOrderByPropertyId().equals("amountWeightedInUSDFormatted")) {
             return rootEntity.get("amountWeightedInUSD");
         } else {
             return null;

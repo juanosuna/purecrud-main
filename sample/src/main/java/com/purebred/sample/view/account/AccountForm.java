@@ -21,16 +21,14 @@ import com.purebred.core.view.entity.EntityForm;
 import com.purebred.core.view.entity.field.FormFields;
 import com.purebred.core.view.entity.field.SelectField;
 import com.purebred.core.view.entity.tomanyrelationship.ToManyRelationship;
-import com.purebred.sample.util.PhoneConversionValidator;
-import com.purebred.sample.util.PhonePropertyFormatter;
 import com.purebred.sample.dao.StateDao;
 import com.purebred.sample.entity.*;
+import com.purebred.sample.util.PhoneConversionValidator;
+import com.purebred.sample.util.PhonePropertyFormatter;
 import com.purebred.sample.view.account.related.RelatedContacts;
 import com.purebred.sample.view.account.related.RelatedOpportunities;
 import com.purebred.sample.view.select.UserSelect;
 import com.vaadin.data.Property;
-import com.vaadin.terminal.Sizeable;
-import com.vaadin.ui.Window;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 

@@ -20,13 +20,11 @@ package com.purebred.sample.view.select;
 import com.purebred.core.view.entity.entityselect.EntitySelect;
 import com.purebred.core.view.entity.entityselect.EntitySelectResults;
 import com.purebred.core.view.entity.field.DisplayFields;
-import com.purebred.sample.util.PhonePropertyFormatter;
 import com.purebred.sample.dao.ContactDao;
 import com.purebred.sample.entity.Contact;
+import com.purebred.sample.util.PhonePropertyFormatter;
 import com.purebred.sample.view.contact.ContactQuery;
 import com.purebred.sample.view.contact.ContactSearchForm;
-import com.vaadin.terminal.Sizeable;
-import com.vaadin.ui.Window;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 

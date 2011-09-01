@@ -24,8 +24,6 @@ import com.purebred.sample.dao.OpportunityDao;
 import com.purebred.sample.entity.Opportunity;
 import com.purebred.sample.view.opportunity.OpportunityQuery;
 import com.purebred.sample.view.opportunity.OpportunitySearchForm;
-import com.vaadin.terminal.Sizeable;
-import com.vaadin.ui.Window;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 

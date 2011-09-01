@@ -17,8 +17,6 @@
 
 package com.purebred.sample.view.user.related;
 
-import com.purebred.core.dao.EntityDao;
-import com.purebred.core.dao.GenericEntityDao;
 import com.purebred.core.dao.ToManyRelationshipQuery;
 import com.purebred.core.view.entity.field.DisplayFields;
 import com.purebred.core.view.entity.tomanyrelationship.ManyToManyRelationshipResults;
@@ -35,7 +33,6 @@ import org.springframework.stereotype.Component;
 import javax.annotation.Resource;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.*;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 

@@ -21,7 +21,6 @@ import com.purebred.core.dao.ToManyRelationshipQuery;
 import com.purebred.core.view.entity.field.DisplayFields;
 import com.purebred.core.view.entity.tomanyrelationship.ToManyAggregationRelationshipResults;
 import com.purebred.core.view.entity.tomanyrelationship.ToManyRelationship;
-import com.purebred.core.view.entity.tomanyrelationship.ToManyRelationshipResults;
 import com.purebred.sample.dao.OpportunityDao;
 import com.purebred.sample.entity.Account;
 import com.purebred.sample.entity.Opportunity;
@@ -155,7 +154,8 @@ public class RelatedOpportunities extends ToManyRelationship<Opportunity> {
         public Path buildOrderBy(Root<Opportunity> rootEntity) {
             if (getOrderByPropertyId().equals("account.name")) {
                 return rootEntity.join("account", JoinType.LEFT).get("name");
-            } if (getOrderByPropertyId().equals("amountWeightedInUSDFormatted")) {
+            }
+            if (getOrderByPropertyId().equals("amountWeightedInUSDFormatted")) {
                 return rootEntity.get("amountWeightedInUSD");
             } else {
                 return null;

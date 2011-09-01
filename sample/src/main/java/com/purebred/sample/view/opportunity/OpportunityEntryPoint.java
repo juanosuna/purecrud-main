@@ -17,7 +17,6 @@
 
 package com.purebred.sample.view.opportunity;
 
-import com.purebred.core.view.entity.EntryPoint;
 import com.purebred.core.view.entity.MainEntryPoint;
 import com.purebred.sample.entity.Opportunity;
 import org.springframework.context.annotation.Scope;

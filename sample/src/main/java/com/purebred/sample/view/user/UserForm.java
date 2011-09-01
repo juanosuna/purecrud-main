@@ -26,9 +26,7 @@ import com.purebred.sample.entity.security.Role;
 import com.purebred.sample.entity.security.User;
 import com.purebred.sample.entity.security.UserRole;
 import com.purebred.sample.view.user.related.RelatedRoles;
-import com.vaadin.terminal.Sizeable;
 import com.vaadin.ui.PasswordField;
-import com.vaadin.ui.Window;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 

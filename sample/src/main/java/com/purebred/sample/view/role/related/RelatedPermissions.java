@@ -27,10 +27,8 @@ import com.purebred.sample.dao.PermissionDao;
 import com.purebred.sample.entity.security.Permission;
 import com.purebred.sample.entity.security.Role;
 import com.vaadin.data.Property;
-import com.vaadin.terminal.Sizeable;
 import com.vaadin.ui.Field;
 import com.vaadin.ui.Select;
-import com.vaadin.ui.Window;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -229,6 +227,8 @@ public class RelatedPermissions extends ToManyRelationship<Permission> {
             super.create();
 
             getFormFields().setSelectItems("entityType", getEntityTypeItems());
+            getFormFields().setRequired("field", false);
+            syncTabAndSaveButtonErrors();
         }
 
         private Map<Object, String> getEntityTypeItems() {
@@ -260,8 +260,23 @@ public class RelatedPermissions extends ToManyRelationship<Permission> {
 
             if (newEntityType != null) {
                 Map<Object, String> fieldItems = getFieldItems(newEntityType);
-                getFormFields().setSelectItems("field", fieldItems, "All");
+                getFormFields().setSelectItems("field", fieldItems, "None");
+
+                getFormFields().setRequired("field", anotherPermissionHasNullField(newEntityType));
+                syncTabAndSaveButtonErrors();
             }
+        }
+
+        private boolean anotherPermissionHasNullField(String entityType) {
+            List<Permission> existingPermissions = getExistingPermissionsForParentRole();
+            for (Permission existingPermission : existingPermissions) {
+                if (existingPermission.getEntityType().equals(entityType) && existingPermission.getField() == null
+                        && !existingPermission.equals(getEntity())) {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         private Map<Object, String> getFieldItems(String entityType) {

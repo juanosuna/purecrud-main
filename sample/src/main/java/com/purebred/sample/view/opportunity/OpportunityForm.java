@@ -23,8 +23,6 @@ import com.purebred.core.view.entity.field.SelectField;
 import com.purebred.sample.entity.Opportunity;
 import com.purebred.sample.view.select.AccountSelect;
 import com.purebred.sample.view.select.UserSelect;
-import com.vaadin.terminal.Sizeable;
-import com.vaadin.ui.Window;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 

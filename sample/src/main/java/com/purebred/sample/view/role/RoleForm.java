@@ -26,7 +26,6 @@ import com.purebred.sample.view.role.related.RelatedPermissions;
 import com.purebred.sample.view.role.related.RelatedUsers;
 import com.vaadin.terminal.Sizeable;
 import com.vaadin.ui.TextArea;
-import com.vaadin.ui.Window;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
