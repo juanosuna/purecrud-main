@@ -218,6 +218,12 @@
 
             <dependency>
                 <groupId>org.vaadin.addons</groupId>
+                <artifactId>ckeditor-wrapper-for-vaadin</artifactId>
+                <version>1.4.1</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.vaadin.addons</groupId>
                 <artifactId>chameleon</artifactId>
                 <version>1.0.2</version>
             </dependency>

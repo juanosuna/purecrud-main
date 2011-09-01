@@ -287,13 +287,15 @@ public class RelatedPermissions extends ToManyRelationship<Permission> {
 
         @Override
         public String getEntityCaption() {
-            return "Permission Form";
-        }
-
-        @Override
-        public void configurePopupWindow(Window popupWindow) {
-            popupWindow.setWidth("95%");
-            popupWindow.setHeight(25, Sizeable.UNITS_EM);
+            if (getEntity().getEntityType() == null) {
+                return "Permission Form - New";
+            } else {
+                if (getEntity().getField() == null) {
+                    return "Permission Form - " + getEntity().getEntityTypeLabel();
+                } else {
+                    return "Permission Form - " + getEntity().getEntityTypeLabel() + "." + getEntity().getFieldLabel();
+                }
+            }
         }
     }
 }

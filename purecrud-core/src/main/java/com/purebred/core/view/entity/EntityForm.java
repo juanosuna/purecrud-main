@@ -34,6 +34,7 @@ import com.vaadin.data.Item;
 import com.vaadin.data.Validator;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.terminal.ErrorMessage;
+import com.vaadin.terminal.Sizeable;
 import com.vaadin.terminal.ThemeResource;
 import com.vaadin.terminal.UserError;
 import com.vaadin.ui.*;
@@ -72,6 +73,9 @@ public abstract class EntityForm<T> extends FormComponent<T> {
 
     public void configurePopupWindow(Window popupWindow) {
         popupWindow.setSizeUndefined();
+        if (!getViewableToManyRelationships().isEmpty()) {
+            popupWindow.setHeight("95%");
+        }
     }
 
     private List<MethodDelegate> persistListeners = new ArrayList<MethodDelegate>();

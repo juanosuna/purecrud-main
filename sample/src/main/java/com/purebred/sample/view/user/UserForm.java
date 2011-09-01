@@ -77,10 +77,4 @@ public class UserForm extends EntityForm<User> {
     public String getEntityCaption() {
         return "User Form";
     }
-
-    @Override
-    public void configurePopupWindow(Window popupWindow) {
-        popupWindow.setWidth(37, Sizeable.UNITS_EM);
-        popupWindow.setHeight("95%");
-    }
 }

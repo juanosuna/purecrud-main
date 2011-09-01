@@ -93,11 +93,5 @@ public class ContactSelect extends EntitySelect<Contact> {
             displayFields.setPropertyFormatter("mainPhone", new PhonePropertyFormatter());
         }
     }
-
-    @Override
-    public void configurePopupWindow(Window popupWindow) {
-        popupWindow.setWidth(45, Sizeable.UNITS_EM);
-        popupWindow.setHeight("95%");
-    }
 }
 

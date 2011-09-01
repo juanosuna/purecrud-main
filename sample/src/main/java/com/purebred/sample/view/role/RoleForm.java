@@ -69,10 +69,4 @@ public class RoleForm extends EntityForm<Role> {
 
         return toManyRelationships;
     }
-
-    @Override
-    public void configurePopupWindow(Window popupWindow) {
-        popupWindow.setWidth(66, Sizeable.UNITS_EM);
-        popupWindow.setHeight("95%");
-    }
 }

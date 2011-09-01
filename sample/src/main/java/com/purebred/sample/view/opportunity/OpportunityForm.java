@@ -82,10 +82,4 @@ public class OpportunityForm extends EntityForm<Opportunity> {
             return "Opportunity Form - " + getEntity().getName();
         }
     }
-
-    @Override
-    public void configurePopupWindow(Window popupWindow) {
-        popupWindow.setWidth(73, Sizeable.UNITS_EM);
-        popupWindow.setHeight(31, Sizeable.UNITS_EM);
-    }
 }

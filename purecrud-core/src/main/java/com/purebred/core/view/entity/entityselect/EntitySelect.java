@@ -36,6 +36,7 @@ public abstract class EntitySelect<T> extends EntryPoint<T> {
 
     public void configurePopupWindow(Window popupWindow) {
         popupWindow.setSizeUndefined();
+        popupWindow.setHeight("95%");
     }
 
     @Override

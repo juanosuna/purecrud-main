@@ -546,7 +546,10 @@ public class FormField extends DisplayField {
                 initializeValidators();
             }
 
-            field.addListener(new FieldValueChangeListener());
+            // Change listener causes erratic behavior for RichTextArea
+            if (!(field instanceof RichTextArea)) {
+                field.addListener(new FieldValueChangeListener());
+            }
         }
 
         isReadOnly = field.isReadOnly();

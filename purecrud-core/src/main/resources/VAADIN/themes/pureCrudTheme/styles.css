@@ -10,7 +10,7 @@
 }
 
 .v-textfield-error, .v-checkbox-error, .v-textarea-error, .v-richtextarea-error,
-.v-select-error .v-select-option, .v-datefield-error .v-textfield {
+.v-select-error .v-select-option, .v-datefield-error .v-textfield, .v-ckeditortextfield-error {
     border-color: red !important;
     border-width: 1px !important;
     background: none !important;

@@ -159,10 +159,4 @@ public class ContactForm extends EntityForm<Contact> {
             return "Contact Form - " + getEntity().getName();
         }
     }
-
-    @Override
-    public void configurePopupWindow(Window popupWindow) {
-        popupWindow.setWidth(66, Sizeable.UNITS_EM);
-        popupWindow.setHeight(30, Sizeable.UNITS_EM);
-    }
 }

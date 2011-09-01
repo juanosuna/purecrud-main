@@ -87,11 +87,5 @@ public class OpportunitySelect extends EntitySelect<Opportunity> {
 
         }
     }
-
-    @Override
-    public void configurePopupWindow(Window popupWindow) {
-        popupWindow.setWidth(58, Sizeable.UNITS_EM);
-        popupWindow.setHeight("95%");
-    }
 }
 
