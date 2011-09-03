@@ -4,12 +4,19 @@ package com.purebred.core.security;
 import com.purebred.core.dao.EntityDao;
 import com.purebred.core.entity.security.AbstractUser;
 import com.purebred.core.util.SpringApplicationContext;
+import com.purebred.core.util.assertion.Assert;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 @Service
 public class SecurityService {
+
+    private Map<String, AbstractUser> users = new HashMap<String, AbstractUser>();
 
     public String getCurrentLoginName() {
         if (SecurityContextHolder.getContext() != null && SecurityContextHolder.getContext().getAuthentication() != null
@@ -23,12 +30,24 @@ public class SecurityService {
 
     public AbstractUser getCurrentUser() {
         String loginName = getCurrentLoginName();
-        if (loginName != null) {
-            EntityDao dao = SpringApplicationContext.getBeanByTypeAndGenericArgumentType(EntityDao.class, AbstractUser.class);
-            return (AbstractUser) dao.findByBusinessKey("loginName", loginName);
-        } else {
-            return null;
+        AbstractUser user = users.get(loginName);
+        if (user == null) {
+            user = getCurrentUserImpl();
+            users.put(loginName, user);
         }
+
+        return user;
+    }
+
+    private AbstractUser getCurrentUserImpl() {
+        String loginName = getCurrentLoginName();
+        Assert.PROGRAMMING.assertTrue(loginName != null, "Current loginName is null");
+
+        EntityDao dao = SpringApplicationContext.getBeanByTypeAndGenericArgumentType(EntityDao.class, AbstractUser.class);
+        List<AbstractUser> users = dao.findByProperty("loginName", loginName);
+        Assert.DATABASE.assertTrue(users.size() == 1, "SecurityService did not find exactly one user with loginName: "
+                + loginName);
+        return users.get(0);
     }
 
     public void logout() {

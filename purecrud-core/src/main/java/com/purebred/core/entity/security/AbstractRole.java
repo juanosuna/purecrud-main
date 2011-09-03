@@ -134,12 +134,14 @@ public abstract class AbstractRole extends WritableEntity {
     }
 
     public boolean isViewAllowed(String entityType, String field) {
-        return getPermission(entityType, field) == null ? isViewAllowed(entityType)
+        return getPermission(entityType, field) == null ?
+                allowOrDenyByDefault == AllowOrDeny.ALLOW && isViewAllowed(entityType)
                 : getPermission(entityType, field).isView();
     }
 
     public boolean isEditAllowed(String entityType, String field) {
-        return getPermission(entityType, field) == null ? isEditAllowed(entityType)
+        return getPermission(entityType, field) == null ?
+                allowOrDenyByDefault == AllowOrDeny.ALLOW && isEditAllowed(entityType)
                 : getPermission(entityType, field).isEdit();
 
     }

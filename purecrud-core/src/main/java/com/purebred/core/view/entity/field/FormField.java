@@ -51,6 +51,7 @@ public class FormField extends DisplayField {
     private boolean isRequired;
     private boolean isReadOnly;
     private com.vaadin.ui.Label label;
+    private boolean isVisible;
     private AutoAdjustWidthMode autoAdjustWidthMode = AutoAdjustWidthMode.PARTIAL;
     private Integer defaultWidth;
     private boolean hasConversionError;
@@ -308,8 +309,19 @@ public class FormField extends DisplayField {
     }
 
     public void setVisible(boolean isVisible) {
+        this.isVisible = isVisible;
         getField().setVisible(isVisible);
         getFieldLabel().setVisible(isVisible);
+    }
+
+    public void allowView() {
+        getField().setVisible(isVisible);
+        getFieldLabel().setVisible(isVisible);
+    }
+
+    public void denyView() {
+        getField().setVisible(false);
+        getFieldLabel().setVisible(false);
     }
 
     public void setRequired(boolean isRequired) {
@@ -553,6 +565,7 @@ public class FormField extends DisplayField {
         }
 
         isReadOnly = field.isReadOnly();
+        isVisible = field.isVisible();
     }
 
     private void initializeValidators() {

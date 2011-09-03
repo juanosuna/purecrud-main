@@ -20,7 +20,6 @@ package com.purebred.core.view.entity;
 import com.purebred.core.dao.EntityQuery;
 import com.purebred.core.entity.WritableEntity;
 import com.purebred.core.view.entity.field.DisplayField;
-import com.purebred.core.view.entity.field.DisplayFields;
 import com.purebred.core.view.entity.field.format.EmptyPropertyFormatter;
 import com.vaadin.data.Container;
 import com.vaadin.data.Property;
@@ -38,7 +37,6 @@ import java.util.List;
 
 public class ResultsTable extends Table {
 
-
     private ResultsComponent results;
 
     protected ResultsTable(ResultsComponent results) {
@@ -47,23 +45,15 @@ public class ResultsTable extends Table {
         initialize();
     }
 
-    public DisplayFields getEntityFields() {
-        return results.getDisplayFields();
-    }
-
-    public Class getEntityType() {
-        return results.getEntityType();
-    }
-
     public void initialize() {
         setSizeUndefined();
         setEditable(true);
         setTableFieldFactory(new TableButtonLinkFactory());
 
-        EnhancedBeanItemContainer dataSource = new EnhancedBeanItemContainer(getEntityType(),
+        EnhancedBeanItemContainer dataSource = new EnhancedBeanItemContainer(results.getEntityType(),
                 results.getDisplayFields());
         dataSource.setNonSortablePropertyIds(results.getDisplayFields().getNonSortablePropertyIds());
-        String[] propertyIds = getEntityFields().getViewablePropertyIdsAsArray();
+        String[] propertyIds = results.getDisplayFields().getViewablePropertyIdsAsArray();
         for (String propertyId : propertyIds) {
             dataSource.addNestedContainerProperty(propertyId);
         }
@@ -75,8 +65,8 @@ public class ResultsTable extends Table {
         setColumnCollapsingAllowed(true);
         setCacheRate(1);
 
-        setVisibleColumns(getEntityFields().getViewablePropertyIdsAsArray());
-        setColumnHeaders(getEntityFields().getViewableLabelsAsArray());
+        setVisibleColumns(results.getDisplayFields().getViewablePropertyIdsAsArray());
+        setColumnHeaders(results.getDisplayFields().getViewableLabelsAsArray());
     }
 
     @Override
@@ -168,7 +158,7 @@ public class ResultsTable extends Table {
             DisplayField displayField = results.getDisplayFields().getField(colId.toString());
             PropertyFormatter propertyFormatter = displayField.getPropertyFormatter();
 
-            if (propertyFormatter.getClass().equals(EmptyPropertyFormatter.class)) {
+            if (EmptyPropertyFormatter.class.equals(propertyFormatter.getClass())) {
                 return super.formatPropertyValue(rowId, colId, property);
             } else {
                 return propertyFormatter.format(property.getValue());

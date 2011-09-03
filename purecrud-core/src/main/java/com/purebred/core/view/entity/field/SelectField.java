@@ -38,13 +38,10 @@ public class SelectField extends CustomField {
     private MessageSource uiMessageSource;
 
     private TextField field;
-
     private EntitySelect entitySelect;
 
     private Button clearButton;
     private Button searchButton;
-
-    private Window popupWindow;
 
     private EntityForm entityForm;
     private String propertyId;

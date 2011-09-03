@@ -19,14 +19,17 @@ package com.purebred.core.dao;
 
 import com.purebred.core.entity.IdentifiableEntity;
 import com.purebred.core.util.ReflectionUtil;
+import com.sun.deploy.panel.CacheSettingsDialog;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.*;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+import javax.persistence.TypedQuery;
 import javax.persistence.criteria.*;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -118,6 +121,15 @@ public abstract class EntityDao<T, ID extends Serializable> {
         criteria.setCacheable(true);
 
         return (T) criteria.uniqueResult();
+    }
+
+    public List<T> findByProperty(String propertyName, Object propertyValue) {
+        Query query = getEntityManager().createQuery("select e from " + getEntityType().getSimpleName()
+                + " e WHERE e." + propertyName + "=:propertyValue");
+
+        query.setParameter("propertyValue", propertyValue);
+
+        return query.getResultList();
     }
 
     @Transactional

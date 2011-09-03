@@ -142,6 +142,4 @@ public abstract class AbstractPermission extends WritableEntity {
             return labelDepot.getFieldLabel(getEntityType(), getField());
         }
     }
-
-    public abstract AbstractRole getRole();
 }

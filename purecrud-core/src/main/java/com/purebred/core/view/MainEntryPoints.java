@@ -43,7 +43,9 @@ public abstract class MainEntryPoints extends TabSheet {
         for (MainEntryPoint entryPoint : entryPoints) {
             AbstractUser user = securityService.getCurrentUser();
 
-            if (user.isViewAllowed(entryPoint.getEntityType().getName())) {
+            if (user.isViewAllowed(entryPoint.getEntityType().getName())
+                    && !entryPoint.getResultsComponent().getDisplayFields().getViewablePropertyIds().isEmpty()) {
+
                 viewableEntryPoints.add(entryPoint);
             }
         }
@@ -81,9 +83,7 @@ public abstract class MainEntryPoints extends TabSheet {
         @Override
         public void selectedTabChange(SelectedTabChangeEvent event) {
             MainEntryPoint entryPoint = (MainEntryPoint) getSelectedTab();
-            if (entryPoint.getResultsComponent().getEntityQuery().getResultCount() == 0) {
-                entryPoint.getResultsComponent().search();
-            }
+            entryPoint.getResultsComponent().search();
             if (entryPoint.getResultsComponent() instanceof Results) {
                 ((Results) entryPoint.getResultsComponent()).applySecurityToCRUDButtons();
             }

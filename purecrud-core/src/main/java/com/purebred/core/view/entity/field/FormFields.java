@@ -20,10 +20,7 @@ package com.purebred.core.view.entity.field;
 import com.purebred.core.security.SecurityService;
 import com.purebred.core.util.MethodDelegate;
 import com.purebred.core.util.assertion.Assert;
-import com.purebred.core.view.entity.EntityForm;
-import com.purebred.core.view.entity.FormComponent;
-import com.purebred.core.view.entity.LeftLabelGridLayout;
-import com.purebred.core.view.entity.TopLabelGridLayout;
+import com.purebred.core.view.entity.*;
 import com.vaadin.data.Validator;
 import com.vaadin.terminal.ErrorMessage;
 import com.vaadin.ui.AbstractComponent;
@@ -255,6 +252,54 @@ public class FormFields extends DisplayFields {
         return tabNames;
     }
 
+    public Set<String> getViewableTabNames() {
+        if (getForm() instanceof SearchForm) return getTabNames();
+
+        Set<String> viewableTabNames = new LinkedHashSet<String>();
+        Set<String> tabNames = getTabNames();
+        for (String tabName : tabNames) {
+            Set<FormField> fields = getFormFields(tabName);
+            for (FormField field : fields) {
+                if (securityService.getCurrentUser().isViewAllowed(getEntityType().getName(), field.getPropertyId())) {
+                    viewableTabNames.add(tabName);
+                    break;
+                }
+            }
+        }
+
+        return viewableTabNames;
+    }
+
+    public Set<FormField> getViewableFormFields() {
+        if (getForm() instanceof SearchForm) return getFormFields();
+
+        Set<FormField> viewableFormFields = new LinkedHashSet<FormField>();
+        Set<FormField> formFields = getFormFields();
+        for (FormField formField : formFields) {
+            if (securityService.getCurrentUser().isViewAllowed(getEntityType().getName(), formField.getPropertyId())) {
+                viewableFormFields.add(formField);
+                break;
+            }
+        }
+
+        return viewableFormFields;
+    }
+
+    public Set<FormField> getEditableFormFields() {
+        if (getForm() instanceof SearchForm) return getFormFields();
+
+        Set<FormField> editableFormFields = new LinkedHashSet<FormField>();
+        Set<FormField> formFields = getFormFields();
+        for (FormField formField : formFields) {
+            if (securityService.getCurrentUser().isEditAllowed(getEntityType().getName(), formField.getPropertyId())) {
+                editableFormFields.add(formField);
+                break;
+            }
+        }
+
+        return editableFormFields;
+    }
+
     @Override
     public String getLabel(String propertyId) {
         if (((FormField) getField(propertyId)).getFieldLabel().getValue() == null) {
@@ -367,10 +412,28 @@ public class FormFields extends DisplayFields {
     public void applySecurityIsEditable() {
         Collection<FormField> formFields = getFormFields();
         for (FormField formField : formFields) {
-            if (!securityService.getCurrentUser().isEditAllowed(getEntityType().getName(), formField.getPropertyId())) {
-                formField.setReadOnly(true);
+            if (formField.getField() instanceof SelectField) {
+                SelectField selectField = (SelectField) formField.getField();
+                String toOneType = selectField.getEntitySelect().getEntityType().getName();
+                if (!securityService.getCurrentUser().isEditAllowed(getEntityType().getName(), formField.getPropertyId())
+                        || !securityService.getCurrentUser().isViewAllowed(toOneType)
+                        || selectField.getEntitySelect().getResultsComponent().getDisplayFields().getViewablePropertyIds().isEmpty()) {
+                    formField.setReadOnly(true);
+                } else {
+                    formField.restoreIsReadOnly();
+                }
             } else {
-                formField.restoreIsReadOnly();
+                if (!securityService.getCurrentUser().isEditAllowed(getEntityType().getName(), formField.getPropertyId())) {
+                    formField.setReadOnly(true);
+                } else {
+                    formField.restoreIsReadOnly();
+                }
+            }
+            if (getForm() instanceof SearchForm
+                    || securityService.getCurrentUser().isViewAllowed(getEntityType().getName(), formField.getPropertyId())) {
+                formField.allowView();
+            } else {
+                formField.denyView();
             }
         }
     }

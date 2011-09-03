@@ -22,12 +22,10 @@ import com.purebred.core.security.SecurityService;
 import com.purebred.core.util.assertion.Assert;
 import com.purebred.core.view.MainApplication;
 import com.purebred.core.view.MessageSource;
-import com.purebred.core.view.entity.field.FormField;
 import com.purebred.core.view.entity.util.ActionContextMenu;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.event.ItemClickEvent;
 import com.vaadin.terminal.ThemeResource;
-import com.vaadin.ui.AbstractSelect;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.HorizontalLayout;
@@ -120,8 +118,20 @@ public abstract class Results<T> extends ResultsComponent<T> implements Walkable
     }
 
     public void applySecurityToCRUDButtons() {
-        newButton.setVisible(securityService.getCurrentUser().isCreateAllowed(getEntityType().getName()));
-        editButton.setVisible(securityService.getCurrentUser().isEditAllowed(getEntityType().getName()));
+        boolean hasViewableFields = !getEntityForm().getFormFields().getViewableFormFields().isEmpty();
+
+        boolean isViewAllowed = securityService.getCurrentUser().isViewAllowed(getEntityType().getName())
+                && hasViewableFields;
+        viewButton.setVisible(isViewAllowed);
+
+        boolean hasEditableFields = !getEntityForm().getFormFields().getEditableFormFields().isEmpty();
+        boolean isEditAllowed = securityService.getCurrentUser().isEditAllowed(getEntityType().getName())
+                && isViewAllowed && hasEditableFields;
+        editButton.setVisible(isEditAllowed);
+
+        newButton.setVisible(securityService.getCurrentUser().isCreateAllowed(getEntityType().getName())
+            && isEditAllowed);
+
         deleteButton.setVisible(securityService.getCurrentUser().isDeleteAllowed(getEntityType().getName()));
     }
 
@@ -241,17 +251,22 @@ public abstract class Results<T> extends ResultsComponent<T> implements Walkable
 
     public void selectionChanged() {
         Collection itemIds = (Collection) getResultsTable().getValue();
-        boolean isEditAllowed = securityService.getCurrentUser().isEditAllowed(getEntityType().getName());
+        boolean hasViewableFields = !getEntityForm().getFormFields().getViewableFormFields().isEmpty();
+        boolean isViewAllowed = securityService.getCurrentUser().isViewAllowed(getEntityType().getName())
+                && hasViewableFields;
+        boolean isEditAllowed = securityService.getCurrentUser().isEditAllowed(getEntityType().getName())
+                && isViewAllowed;
         boolean isDeleteAllowed = securityService.getCurrentUser().isDeleteAllowed(getEntityType().getName());
+
         if (itemIds.size() == 1) {
-            actionContextMenu.setActionEnabled("entityResults.view", true);
+            actionContextMenu.setActionEnabled("entityResults.view", isViewAllowed);
             actionContextMenu.setActionEnabled("entityResults.edit", isEditAllowed);
             actionContextMenu.setActionEnabled("entityResults.delete", isDeleteAllowed);
             getResultsTable().removeActionHandler(actionContextMenu);
             getResultsTable().addActionHandler(actionContextMenu);
-            editButton.setEnabled(true);
-            viewButton.setEnabled(true);
-            deleteButton.setEnabled(true);
+            editButton.setEnabled(isEditAllowed);
+            viewButton.setEnabled(isViewAllowed);
+            deleteButton.setEnabled(isDeleteAllowed);
         } else if (itemIds.size() > 1) {
             actionContextMenu.setActionEnabled("entityResults.view", false);
             actionContextMenu.setActionEnabled("entityResults.edit", false);
@@ -260,7 +275,7 @@ public abstract class Results<T> extends ResultsComponent<T> implements Walkable
             getResultsTable().addActionHandler(actionContextMenu);
             editButton.setEnabled(false);
             viewButton.setEnabled(false);
-            deleteButton.setEnabled(true);
+            deleteButton.setEnabled(isDeleteAllowed);
         } else {
             getResultsTable().removeActionHandler(actionContextMenu);
             editButton.setEnabled(false);

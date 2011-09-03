@@ -289,7 +289,7 @@ public abstract class FormComponent<T> extends CustomComponent {
     }
 
     protected void resetContextMenu() {
-        Set<String> tabNames = getFormFields().getTabNames();
+        Set<String> tabNames = getFormFields().getViewableTabNames();
         for (String tabName : tabNames) {
             TabSheet.Tab tab = getTabByName(tabName);
 
@@ -333,8 +333,9 @@ public abstract class FormComponent<T> extends CustomComponent {
     }
 
     public void selectFirstTab() {
-        if (tabSheet != null) {
-            tabSheet.setSelectedTab(tabSheet.getTab(0).getComponent());
+        if (tabSheet != null && getFormFields().getTabNames().iterator().hasNext()) {
+            String firstTabName = getFormFields().getTabNames().iterator().next();
+            tabSheet.setSelectedTab(getTabByName(firstTabName).getComponent());
         }
     }
 
@@ -400,9 +401,11 @@ public abstract class FormComponent<T> extends CustomComponent {
             FormGridLayout gridLayout = (FormGridLayout) form.getLayout();
             FormFields formFields = getFormFields();
             String currentTabName = getCurrentTabName();
-            if (formFields.containsPropertyId(currentTabName, propertyId.toString())
-                    && securityService.getCurrentUser().isViewAllowed(getEntityType().getName(), propertyId.toString())) {
-                gridLayout.addField(getFormFields().getFormField(propertyId.toString()));
+            if (formFields.containsPropertyId(currentTabName, propertyId.toString())) {
+                if (FormComponent.this instanceof SearchForm
+                        || securityService.getCurrentUser().isViewAllowed(getEntityType().getName(), propertyId.toString())) {
+                    gridLayout.addField(getFormFields().getFormField(propertyId.toString()));
+                }
             }
         }
 

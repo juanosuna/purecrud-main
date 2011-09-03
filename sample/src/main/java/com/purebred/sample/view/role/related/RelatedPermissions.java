@@ -18,6 +18,7 @@
 package com.purebred.sample.view.role.related;
 
 import com.purebred.core.dao.ToManyRelationshipQuery;
+import com.purebred.core.entity.WritableEntity;
 import com.purebred.core.view.entity.EntityForm;
 import com.purebred.core.view.entity.field.DisplayFields;
 import com.purebred.core.view.entity.field.FormFields;
@@ -201,6 +202,7 @@ public class RelatedPermissions extends ToManyRelationship<Permission> {
 
             formFields.addValueChangeListener("view", this, "syncCRUDCheckboxes");
             formFields.addValueChangeListener("field", this, "syncCRUDCheckboxes");
+            formFields.addValueChangeListener("field", this, "syncIsRequiredIndicator");
         }
 
         public void syncCRUDCheckboxes(Property.ValueChangeEvent event) {
@@ -227,8 +229,16 @@ public class RelatedPermissions extends ToManyRelationship<Permission> {
             super.create();
 
             getFormFields().setSelectItems("entityType", getEntityTypeItems());
-            getFormFields().setRequired("field", false);
-            syncTabAndSaveButtonErrors();
+            syncIsRequiredIndicator(null);
+//            getFormFields().setRequired("field", false);
+//            syncTabAndSaveButtonErrors();
+        }
+
+
+        @Override
+        public void refresh() {
+            super.refresh();
+            syncIsRequiredIndicator(null);
         }
 
         private Map<Object, String> getEntityTypeItems() {
@@ -262,9 +272,13 @@ public class RelatedPermissions extends ToManyRelationship<Permission> {
                 Map<Object, String> fieldItems = getFieldItems(newEntityType);
                 getFormFields().setSelectItems("field", fieldItems, "None");
 
-                getFormFields().setRequired("field", anotherPermissionHasNullField(newEntityType));
-                syncTabAndSaveButtonErrors();
+                syncIsRequiredIndicator(null);
             }
+        }
+
+        public void syncIsRequiredIndicator(Property.ValueChangeEvent event) {
+            getFormFields().setRequired("field", anotherPermissionHasNullField(getEntity().getEntityType()));
+            syncTabAndSaveButtonErrors();
         }
 
         private boolean anotherPermissionHasNullField(String entityType) {

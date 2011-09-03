@@ -25,6 +25,7 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 import org.apache.commons.lang.exception.ExceptionUtils;
+import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.access.AccessDeniedException;
 import org.vaadin.dialogs.ConfirmDialog;
@@ -121,11 +122,24 @@ public class MainApplication extends Application implements HttpServletRequestLi
                     messageSource.getMessage("mainApplication.dataConstraintViolation"),
                     violationException.getMessage(),
                     Window.Notification.TYPE_ERROR_MESSAGE);
-        }
-        else {
+        } else if (cause instanceof ConstraintViolationException) {
+            ConstraintViolationException violationException = (ConstraintViolationException) cause;
+            getMainWindow().showNotification(
+                    messageSource.getMessage("mainApplication.dataConstraintViolation"),
+                    violationException.getMessage(),
+                    Window.Notification.TYPE_ERROR_MESSAGE);
+        } else {
             String fullStackTrace = ExceptionUtils.getFullStackTrace(event.getThrowable());
             openErrorWindow(fullStackTrace);
         }
+    }
+
+    public void showError(String errorMessage) {
+        getMainWindow().showNotification(errorMessage, Window.Notification.TYPE_ERROR_MESSAGE);
+    }
+
+    public void showWarning(String warningMessage) {
+        getMainWindow().showNotification(warningMessage, Window.Notification.TYPE_WARNING_MESSAGE);
     }
 
     public static SystemMessages getSystemMessages() {

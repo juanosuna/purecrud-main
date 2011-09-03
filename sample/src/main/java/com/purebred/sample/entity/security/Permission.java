@@ -42,7 +42,6 @@ public class Permission extends AbstractPermission {
         super(entityName);
     }
 
-    @Override
     public Role getRole() {
         return role;
     }

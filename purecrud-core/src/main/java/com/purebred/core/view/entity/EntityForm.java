@@ -71,15 +71,15 @@ public abstract class EntityForm<T> extends FormComponent<T> {
     private Button refreshButton;
     private boolean isValidationEnabled = true;
 
+    private List<MethodDelegate> persistListeners = new ArrayList<MethodDelegate>();
+    private List<MethodDelegate> closeListeners = new ArrayList<MethodDelegate>();
+
     public void configurePopupWindow(Window popupWindow) {
         popupWindow.setSizeUndefined();
         if (!getViewableToManyRelationships().isEmpty()) {
             popupWindow.setHeight("95%");
         }
     }
-
-    private List<MethodDelegate> persistListeners = new ArrayList<MethodDelegate>();
-    private List<MethodDelegate> closeListeners = new ArrayList<MethodDelegate>();
 
     public List<ToManyRelationship> getToManyRelationships() {
         return new ArrayList<ToManyRelationship>();
@@ -92,7 +92,8 @@ public abstract class EntityForm<T> extends FormComponent<T> {
         for (ToManyRelationship toManyRelationship : toManyRelationships) {
             AbstractUser user = securityService.getCurrentUser();
 
-            if (user.isViewAllowed(toManyRelationship.getResultsComponent().getEntityType().getName())) {
+            if (user.isViewAllowed(toManyRelationship.getResultsComponent().getEntityType().getName())
+                    && !toManyRelationship.getResultsComponent().getDisplayFields().getViewablePropertyIds().isEmpty()) {
                 viewableToManyRelationships.add(toManyRelationship);
             }
         }
@@ -182,8 +183,8 @@ public abstract class EntityForm<T> extends FormComponent<T> {
         cancelButton.addStyleName("small default");
         footerLayout.addComponent(cancelButton);
 
-        refreshButton = new Button(uiMessageSource.getMessage("entityForm.reset"), this, "reset");
-        refreshButton.setDescription(uiMessageSource.getMessage("entityForm.reset.description"));
+        refreshButton = new Button(uiMessageSource.getMessage("entityForm.refresh"), this, "refresh");
+        refreshButton.setDescription(uiMessageSource.getMessage("entityForm.refresh.description"));
         refreshButton.setIcon(new ThemeResource("icons/16/refresh.png"));
         refreshButton.addStyleName("small default");
         footerLayout.addComponent(refreshButton);
@@ -318,18 +319,12 @@ public abstract class EntityForm<T> extends FormComponent<T> {
 
         if (tabSheet == null) return;
 
+        Set<String> viewableTabNames = getFormFields().getViewableTabNames();
         Set<String> tabNames = getFormFields().getTabNames();
         for (String tabName : tabNames) {
             TabSheet.Tab tab = getTabByName(tabName);
 
             Set<FormField> fields = getFormFields().getFormFields(tabName);
-            boolean isViewAllowed = false;
-            for (FormField field : fields) {
-                if (securityService.getCurrentUser().isViewAllowed(getEntityType().getName(), field.getPropertyId())) {
-                    isViewAllowed = true;
-                    break;
-                }
-            }
 
             if (getFormFields().isTabOptional(tabName)) {
                 boolean isTabEmpty = true;
@@ -342,9 +337,9 @@ public abstract class EntityForm<T> extends FormComponent<T> {
 
                 setIsRequiredEnable(tabName, !isTabEmpty);
                 tab.setClosable(!isViewMode());
-                tab.setVisible(!isTabEmpty && isViewAllowed);
+                tab.setVisible(!isTabEmpty && viewableTabNames.contains(tabName));
             } else {
-                tab.setVisible(isViewAllowed);
+                tab.setVisible(viewableTabNames.contains(tabName));
             }
         }
 
@@ -359,7 +354,7 @@ public abstract class EntityForm<T> extends FormComponent<T> {
 
     @Override
     protected void resetContextMenu() {
-        Set<String> tabNames = getFormFields().getTabNames();
+        Set<String> tabNames = getFormFields().getViewableTabNames();
         for (String tabName : tabNames) {
             TabSheet.Tab tab = getTabByName(tabName);
 
@@ -608,7 +603,7 @@ public abstract class EntityForm<T> extends FormComponent<T> {
         getForm().setComponentError(null);
         saveButton.setComponentError(null);
 
-        Set<String> tabNames = getFormFields().getTabNames();
+        Set<String> tabNames = getFormFields().getViewableTabNames();
         for (String tabName : tabNames) {
             setTabError(tabName, null);
         }
@@ -622,7 +617,7 @@ public abstract class EntityForm<T> extends FormComponent<T> {
     }
 
     public void syncTabAndSaveButtonErrors() {
-        Set<String> tabNames = getFormFields().getTabNames();
+        Set<String> tabNames = getFormFields().getViewableTabNames();
         boolean formHasErrors = false;
         for (String tabName : tabNames) {
             if (getFormFields().hasError(tabName)) {
@@ -645,7 +640,7 @@ public abstract class EntityForm<T> extends FormComponent<T> {
     }
 
     public boolean hasError() {
-        Set<String> tabNames = getFormFields().getTabNames();
+        Set<String> tabNames = getFormFields().getViewableTabNames();
         for (String tabName : tabNames) {
             if (getFormFields().hasError(tabName)) {
                 return true;
@@ -655,7 +650,7 @@ public abstract class EntityForm<T> extends FormComponent<T> {
         return false;
     }
 
-    public void reset() {
+    public void refresh() {
         clearAllErrors(true);
         BeanItem beanItem = (BeanItem) getForm().getItemDataSource();
         if (beanItem == null) {

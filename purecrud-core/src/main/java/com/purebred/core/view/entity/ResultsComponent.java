@@ -19,12 +19,10 @@ package com.purebred.core.view.entity;
 
 import com.purebred.core.dao.EntityDao;
 import com.purebred.core.dao.EntityQuery;
-import com.purebred.core.security.SecurityService;
 import com.purebred.core.util.ReflectionUtil;
 import com.purebred.core.view.MessageSource;
 import com.purebred.core.view.entity.field.DisplayFields;
 import com.purebred.core.view.entity.field.LabelDepot;
-import com.purebred.core.view.entity.field.format.DefaultFormats;
 import com.vaadin.data.Property;
 import com.vaadin.data.util.MethodProperty;
 import com.vaadin.data.validator.IntegerValidator;
@@ -44,7 +42,6 @@ public abstract class ResultsComponent<T> extends CustomComponent {
 
     @Resource
     private LabelDepot labelDepot;
-
 
     private ResultsTable resultsTable;
     private DisplayFields displayFields;

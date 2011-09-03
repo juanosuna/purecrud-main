@@ -34,6 +34,12 @@ public abstract class EntityQuery<T> {
     private String orderByPropertyId;
     private OrderDirection orderDirection = OrderDirection.ASC;
 
+    private PropertyDescriptor[] descriptors;
+
+    protected EntityQuery() {
+        descriptors = PropertyUtils.getPropertyDescriptors(this);
+    }
+
     public abstract List<T> execute();
 
     public void postWire() {
@@ -121,7 +127,6 @@ public abstract class EntityQuery<T> {
         setOrderDirection(OrderDirection.ASC);
 
         try {
-            PropertyDescriptor[] descriptors = PropertyUtils.getPropertyDescriptors(this);
             for (PropertyDescriptor descriptor : descriptors) {
                 Method writeMethod = descriptor.getWriteMethod();
                 Method readMethod = descriptor.getReadMethod();
