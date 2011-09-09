@@ -25,9 +25,12 @@
     <context-param>
         <param-name>contextConfigLocation</param-name>
         <param-value>
+            classpath:/spring/applicationContext-properties.xml
             classpath:/spring/applicationContext-data-access.xml
-            classpath:/spring/applicationContext-service.xml
+            classpath:/spring/applicationContext-core-scan.xml
+            classpath:/spring/applicationContext-messages.xml
             classpath:/spring/applicationContext-security.xml
+            classpath:/spring/applicationContext-domain-scan.xml
             classpath:/spring/applicationContext-scan.xml
         </param-value>
     </context-param>

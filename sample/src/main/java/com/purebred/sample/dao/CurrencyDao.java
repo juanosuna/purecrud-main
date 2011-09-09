@@ -19,7 +19,7 @@ package com.purebred.sample.dao;
 
 import com.purebred.core.dao.EntityDao;
 import com.purebred.sample.entity.Currency;
-import com.purebred.sample.service.ecbfx.EcbfxService;
+import com.purebred.domain.ecbfx.EcbfxService;
 import org.springframework.stereotype.Repository;
 
 import javax.annotation.Resource;

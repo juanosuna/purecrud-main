@@ -18,13 +18,22 @@
 
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns:context="http://www.springframework.org/schema/context"
-       xsi:schemaLocation="
-           http://www.springframework.org/schema/beans
-           http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
-           http://www.springframework.org/schema/context
-           http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+           http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 
-    <context:component-scan base-package="com.purebred.sample"/>
+    <bean id="defaultSystemProperties" class="com.purebred.core.util.DefaultSystemProperties"
+          init-method="initialize"/>
+
+    <bean id="propertiesConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer"
+          depends-on="defaultSystemProperties">
+        <property name="ignoreResourceNotFound" value="true"/>
+        <property name="locations">
+            <list>
+                <value>classpath:database.${DB}.properties</value>
+                <value>classpath:database.test.properties</value>
+                <value>classpath:application.properties</value>
+            </list>
+        </property>
+    </bean>
 
 </beans>

@@ -17,7 +17,8 @@
 
 package com.purebred.sample.service;
 
-import com.purebred.sample.service.ecbfx.EcbfxService;
+import com.purebred.domain.ecbfx.EcbfxService;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import javax.annotation.Resource;
@@ -32,6 +33,7 @@ import static org.junit.Assert.assertTrue;
  * User: Juan
  * Date: 7/30/11
  */
+@Ignore
 public class EcbfxServiceTest extends AbstractServiceTest {
     @Resource
     private EcbfxService ecbfxService;

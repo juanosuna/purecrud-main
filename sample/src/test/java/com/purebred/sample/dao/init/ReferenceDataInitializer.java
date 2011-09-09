@@ -17,11 +17,12 @@
 
 package com.purebred.sample.dao.init;
 
+import com.purebred.core.dao.EntityDao;
 import com.purebred.sample.dao.*;
 import com.purebred.sample.entity.*;
 import com.purebred.sample.entity.Currency;
-import com.purebred.sample.service.geonames.GeoNamesService;
-import com.purebred.sample.service.geoplanet.GeoPlanetService;
+import com.purebred.domain.geonames.GeoNamesService;
+import com.purebred.domain.geoplanet.GeoPlanetService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -141,41 +142,57 @@ public class ReferenceDataInitializer {
         return entities.get(ReferenceDataInitializer.random(0, entities.size() - 1));
     }
 
+    public static boolean hasExistingEntities(EntityDao dao) {
+        return dao.countAll() > 0;
+    }
+
     public void initialize() {
         initializeReferenceEntities();
-        initializeCountriesAndCurrencies();
-        initializeStates();
+        if (!hasExistingEntities(countryDao) && !hasExistingEntities(currencyDao)) {
+            initializeCountriesAndCurrencies();
+        }
+        if (!hasExistingEntities(stateDao)) {
+            initializeStates();
+        }
     }
 
     private void initializeReferenceEntities() {
-        for (String accountType : ACCOUNT_TYPES) {
-            AccountType referenceEntity = new AccountType(accountType);
-            accountTypeDao.persist(referenceEntity);
+        if (!hasExistingEntities(accountTypeDao)) {
+            for (String accountType : ACCOUNT_TYPES) {
+                AccountType referenceEntity = new AccountType(accountType);
+                accountTypeDao.persist(referenceEntity);
+            }
+            accountTypeDao.getEntityManager().flush();
         }
-        accountTypeDao.getEntityManager().flush();
 
-        for (String industry : INDUSTRIES) {
-            Industry referenceEntity = new Industry(industry);
-            industryDao.persist(referenceEntity);
+        if (!hasExistingEntities(industryDao)) {
+            for (String industry : INDUSTRIES) {
+                Industry referenceEntity = new Industry(industry);
+                industryDao.persist(referenceEntity);
+            }
+            industryDao.getEntityManager().flush();
         }
-        industryDao.getEntityManager().flush();
 
-        for (int i = 0, lead_sourcesLength = LEAD_SOURCES.length; i < lead_sourcesLength; i++) {
-            String leadSource = LEAD_SOURCES[i];
-            LeadSource referenceEntity = new LeadSource(leadSource);
-            referenceEntity.setSortOrder(i);
-            leadSourceDao.persist(referenceEntity);
+        if (!hasExistingEntities(leadSourceDao)) {
+            for (int i = 0, lead_sourcesLength = LEAD_SOURCES.length; i < lead_sourcesLength; i++) {
+                String leadSource = LEAD_SOURCES[i];
+                LeadSource referenceEntity = new LeadSource(leadSource);
+                referenceEntity.setSortOrder(i);
+                leadSourceDao.persist(referenceEntity);
+            }
+            leadSourceDao.getEntityManager().flush();
         }
-        leadSourceDao.getEntityManager().flush();
 
-        for (int i = 0, sales_stagesLength = SALES_STAGES.length; i < sales_stagesLength; i++) {
-            String salesStage = SALES_STAGES[i];
-            SalesStage referenceEntity = new SalesStage(salesStage);
-            referenceEntity.setSortOrder(i);
-            referenceEntity.setProbability(SALES_STAGE_PROBABILITIES.get(salesStage));
-            salesStageDao.persist(referenceEntity);
+        if (!hasExistingEntities(salesStageDao)) {
+            for (int i = 0, sales_stagesLength = SALES_STAGES.length; i < sales_stagesLength; i++) {
+                String salesStage = SALES_STAGES[i];
+                SalesStage referenceEntity = new SalesStage(salesStage);
+                referenceEntity.setSortOrder(i);
+                referenceEntity.setProbability(SALES_STAGE_PROBABILITIES.get(salesStage));
+                salesStageDao.persist(referenceEntity);
+            }
+            salesStageDao.getEntityManager().flush();
         }
-        salesStageDao.getEntityManager().flush();
     }
 
     private void initializeCountriesAndCurrencies() {

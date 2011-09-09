@@ -204,8 +204,7 @@
         UUID varchar(255) not null unique,
         LOGIN_NAME varchar(16) not null,
         LOGIN_PASSWORD varchar(16) not null,
-        primary key (ID),
-        unique (LOGIN_NAME)
+        primary key (ID)
     );
 
     create table SAMPLE.USER_ROLE (
@@ -375,6 +374,10 @@
         add constraint FK_STATE_COUNTRY 
         foreign key (COUNTRY_ID) 
         references SAMPLE.COUNTRY;
+
+    create index IDX_USER_ROLE_ROLE on SAMPLE.USER_ROLE (ROLE_ID);
+
+    create index IDX_USER_ROLE_USER on SAMPLE.USER_ROLE (USER_ID);
 
     alter table SAMPLE.USER_ROLE 
         add constraint FK_USER_ROLE_ROLE 

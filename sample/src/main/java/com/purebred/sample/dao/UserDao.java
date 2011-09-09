@@ -38,13 +38,6 @@ public class UserDao extends EntityDao<User, Long> {
         return query.getResultList();
     }
 
-    public User findByName(String loginName) {
-        Query query = getEntityManager().createQuery("SELECT u FROM User u WHERE u.loginName = :loginName");
-        query.setParameter("loginName", loginName);
-
-        return (User) query.getSingleResult();
-    }
-
     @Transactional
     @Override
     public void remove(User user) {

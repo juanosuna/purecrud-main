@@ -17,7 +17,8 @@
 
 package com.purebred.sample.service;
 
-import com.purebred.sample.service.geonames.GeoNamesService;
+import com.purebred.domain.geonames.GeoNamesService;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import javax.annotation.Resource;
@@ -30,6 +31,7 @@ import static org.junit.Assert.assertTrue;
  * User: Juan
  * Date: 7/30/11
  */
+@Ignore
 public class GeoNamesServiceTest extends AbstractServiceTest {
     @Resource
     private GeoNamesService geoNamesService;

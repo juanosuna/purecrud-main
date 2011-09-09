@@ -15,9 +15,10 @@
  * from Brown Bag Consulting LLC.
  */
 
-package com.purebred.sample.service.geonames;
+package com.purebred.domain.geonames;
 
-import com.purebred.sample.service.RestClientService;
+import com.purebred.domain.RestClientService;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Service;
@@ -67,8 +68,8 @@ public class GeoNamesService extends RestClientService {
     }
 
     @Bean
-    public GeoNamesClient getGeoNamesClient() throws Exception {
-        return create("http://api.geonames.org", GeoNamesClient.class);
+    public GeoNamesClient getGeoNamesClient(@Value("${geoNamesService.url}") String url) throws Exception {
+        return create(url, GeoNamesClient.class);
     }
 
     @Path("/")

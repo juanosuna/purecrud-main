@@ -15,20 +15,20 @@
  * from Brown Bag Consulting LLC.
  */
 
-package com.purebred.sample.service.ecbfx;
+package com.purebred.domain.ecbfx;
 
-import com.purebred.sample.service.RestClientService;
+import com.purebred.domain.RestClientService;
 import org.apache.commons.lang.time.DateUtils;
 import org.joda.money.CurrencyUnit;
 import org.joda.money.IllegalCurrencyException;
 import org.joda.money.Money;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import javax.ws.rs.GET;
-import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.xml.bind.annotation.*;
 import java.math.BigDecimal;
@@ -43,6 +43,7 @@ import java.util.*;
 public class EcbfxService extends RestClientService {
 
     private static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
+
     private Date rateDay;
     private Date fetchDay;
     private Map<String, BigDecimal> rates;
@@ -105,11 +106,10 @@ public class EcbfxService extends RestClientService {
     }
 
     @Bean
-    ECBFXClient getEcbfxClient() throws Exception {
-        return create("http://www.ecb.int/stats", ECBFXClient.class);
+    ECBFXClient getEcbfxClient(@Value("${ecbfxService.url}") String url) throws Exception {
+        return create(url, ECBFXClient.class);
     }
 
-    @Path("/eurofxref/eurofxref-daily.xml")
     static interface ECBFXClient {
         @GET
         @Produces("application/xml")

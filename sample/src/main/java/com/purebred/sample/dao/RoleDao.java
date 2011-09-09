@@ -41,15 +41,8 @@ public class RoleDao extends EntityDao<Role, Long> {
     public Role findByName(String name) {
         Query query = getEntityManager().createQuery("SELECT r FROM Role r WHERE r.name = :name");
 
-//        Query query = getEntityManager().createQuery("SELECT r FROM Role r WHERE r.name = :name");
         query.setParameter("name", name);
 
         return (Role) query.getSingleResult();
-    }
-
-    @Transactional
-    @Override
-    public void remove(Role role) {
-        // todo implement me
     }
 }

@@ -23,7 +23,4 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public class AccountDao extends EntityDao<Account, Long> {
-    public Object getObject() {
-        return null;
-    }
 }

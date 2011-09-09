@@ -19,6 +19,13 @@ package com.purebred.core.entity;
 
 import java.io.Serializable;
 
+/**
+ * Any entity that is identifiable with the serializable id property
+ */
 public interface IdentifiableEntity {
+    /**
+     * Gets the primary key
+     * @return
+     */
     Serializable getId();
 }

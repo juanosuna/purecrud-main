@@ -33,8 +33,11 @@ import javax.persistence.PersistenceContext;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {
+        "classpath:/spring/applicationContext-properties.xml",
         "classpath:/spring/applicationContext-data-access.xml",
-        "classpath:/spring/applicationContext-service.xml",
+        "classpath:/spring/applicationContext-messages.xml",
+        "classpath:/spring/applicationContext-core-scan.xml",
+        "classpath:/spring/applicationContext-domain-scan.xml",
         "classpath:/spring/applicationContext-scan.xml"
 })
 @Transactional

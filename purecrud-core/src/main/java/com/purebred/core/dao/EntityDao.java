@@ -19,7 +19,6 @@ package com.purebred.core.dao;
 
 import com.purebred.core.entity.IdentifiableEntity;
 import com.purebred.core.util.ReflectionUtil;
-import com.sun.deploy.panel.CacheSettingsDialog;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
@@ -81,28 +80,22 @@ public abstract class EntityDao<T, ID extends Serializable> {
         return getEntityManager().getReference(getEntityType(), primaryKey);
     }
 
+    public Long countAll() {
+        Query query = getEntityManager().createQuery("SELECT COUNT(e) from " + getEntityType().getSimpleName() + " e");
+
+        return (Long) query.getSingleResult();
+    }
+
     public List<T> findAll() {
-        return executeQuery("select c from " + getEntityType().getSimpleName() + " c");
+        Query query = getEntityManager().createQuery("SELECT e FROM " + getEntityType().getSimpleName() + " e");
+
+        return query.getResultList();
     }
 
-    public List<T> findAll(Class<T> t) {
-        return executeQuery("select c from " + t.getSimpleName() + " c");
-    }
+    public List<T> findAll(Class<T> type) {
+        Query query = getEntityManager().createQuery("SELECT e FROM " + type.getSimpleName() + " e");
 
-    public List<T> executeQuery(String query) {
-        return getEntityManager().createQuery(query).getResultList();
-    }
-
-    public List<T> executeNativeQuery(String query) {
-        return getEntityManager().createNativeQuery(query).getResultList();
-    }
-
-    public List<T> executeQuery(String query, int firstResult, int maxResults) {
-        Query q = getEntityManager().createQuery(query);
-        q.setFirstResult(firstResult);
-        q.setMaxResults(maxResults);
-
-        return q.getResultList();
+        return query.getResultList();
     }
 
     public T find(ID id) {

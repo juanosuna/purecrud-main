@@ -17,29 +17,24 @@
 
 package com.purebred.core.entity;
 
+import com.purebred.core.security.SecurityService;
 import com.purebred.core.util.SpringApplicationContext;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 
+import javax.annotation.Resource;
 import javax.persistence.*;
 import java.util.Date;
 
+/**
+ * Base class for entities wishing to be audited. This means that creation and modification timestamps
+ * are logged as well as the login name of the user responsible for the creation or modification.
+ * This class also versions entities in order to handle concurrent optimistic writes gracefully.
+ * Finally, any instances of this class are automatically autowired by Spring, allowing injection
+ * of resources into entities.
+ *
+ */
 @MappedSuperclass
 @EntityListeners({AuditableEntity.WritableEntityListener.class})
 public abstract class AuditableEntity implements IdentifiableEntity {
-
-    public static final String SYSTEM_USER = "system";
-
-    // todo change to use autowiring
-    public static String getCurrentUser() {
-        if (SecurityContextHolder.getContext() != null && SecurityContextHolder.getContext().getAuthentication() != null
-                && SecurityContextHolder.getContext().getAuthentication().getPrincipal() != null) {
-            UserDetails user = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-            return user.getUsername();
-        } else {
-            return SYSTEM_USER;
-        }
-    }
 
     @Version
     private Integer version;
@@ -62,60 +57,75 @@ public abstract class AuditableEntity implements IdentifiableEntity {
         SpringApplicationContext.autowire(this);
     }
 
+    /**
+     * Gets the version number, which is incremented every time this entity's changes are updated
+     *
+     * @return version number starting at 0
+     */
     public Integer getVersion() {
         return version;
     }
 
+    /**
+     * Gets the last time changes were saved to the database
+     *
+     * @return timestamp
+     */
     public Date getLastModified() {
         return lastModified;
     }
 
-    public void setLastModified(Date lastModified) {
-        this.lastModified = lastModified;
-    }
-
+    /**
+     * Gets the login name of the user who made the last modifications
+     * @return login name of the user entity
+     */
     public String getModifiedBy() {
         return modifiedBy;
     }
 
-    public void setModifiedBy(String modifiedBy) {
-        this.modifiedBy = modifiedBy;
-    }
-
+    /**
+     * Gets the time this entity was created in the database
+     *
+     * @return timestamp
+     */
     public Date getCreated() {
         return created;
     }
 
-    public void setCreated(Date created) {
-        this.created = created;
-    }
-
+    /**
+     * Gets the login name of the user who created this entity
+     * @return login name of the user entity
+     */
     public String getCreatedBy() {
         return createdBy;
     }
 
-    public void setCreatedBy(String createdBy) {
-        this.createdBy = createdBy;
-    }
-
+    // todo see if this is really necessary
     public void updateLastModified() {
         new WritableEntityListener().onPreUpdate(this);
     }
 
     public static class WritableEntityListener {
+        @Resource
+        private SecurityService securityService;
+
+        public WritableEntityListener() {
+            SpringApplicationContext.autowire(this);
+        }
+
         @PrePersist
         public void onPrePersist(AuditableEntity writableEntity) {
             writableEntity.created = new Date();
             writableEntity.lastModified = writableEntity.created;
 
-            writableEntity.createdBy = getCurrentUser();
+            writableEntity.createdBy = securityService.getCurrentLoginName();
             writableEntity.modifiedBy = writableEntity.createdBy;
         }
 
         @PreUpdate
         public void onPreUpdate(AuditableEntity writableEntity) {
             writableEntity.lastModified = new Date();
-            writableEntity.modifiedBy = getCurrentUser();
+            writableEntity.modifiedBy = securityService.getCurrentLoginName();
         }
     }
 }

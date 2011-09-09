@@ -16,15 +16,17 @@ import java.util.Map;
 @Service
 public class SecurityService {
 
+    public static final String SYSTEM_USER = "system";
+
     private Map<String, AbstractUser> users = new HashMap<String, AbstractUser>();
 
-    public String getCurrentLoginName() {
+    public static String getCurrentLoginName() {
         if (SecurityContextHolder.getContext() != null && SecurityContextHolder.getContext().getAuthentication() != null
                 && SecurityContextHolder.getContext().getAuthentication().getPrincipal() != null) {
             UserDetails user = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
             return user.getUsername();
         } else {
-            return null;
+            return SYSTEM_USER;
         }
     }
 

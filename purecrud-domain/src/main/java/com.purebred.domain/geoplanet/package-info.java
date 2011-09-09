@@ -15,19 +15,8 @@
  * from Brown Bag Consulting LLC.
  */
 
-package com.purebred.sample.service;
+@javax.xml.bind.annotation.XmlSchema(
+        namespace = "http://where.yahooapis.com/v1/schema.rng",
+        elementFormDefault = XmlNsForm.QUALIFIED) package com.purebred.domain.geoplanet;
 
-import org.jboss.resteasy.client.spring.RestClientProxyFactoryBean;
-
-import java.net.URI;
-
-public class RestClientService {
-
-    public <T> T create(String uri, Class<T> clazz) throws Exception {
-        RestClientProxyFactoryBean restClientFactory = new RestClientProxyFactoryBean();
-        restClientFactory.setBaseUri(new URI(uri));
-        restClientFactory.setServiceInterface(clazz);
-        restClientFactory.afterPropertiesSet();
-        return (T) restClientFactory.getObject();
-    }
-}
+import javax.xml.bind.annotation.XmlNsForm;

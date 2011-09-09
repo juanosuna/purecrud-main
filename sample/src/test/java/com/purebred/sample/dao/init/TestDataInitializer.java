@@ -161,6 +161,13 @@ public class TestDataInitializer {
         userRole = new UserRole(user, adminRole);
         userRoleDao.persist(userRole);
 
+        user = new User("system", "system");
+        userDao.persist(user);
+        userRole = new UserRole(user, anyUserRole);
+        userRoleDao.persist(userRole);
+        userRole = new UserRole(user, adminRole);
+        userRoleDao.persist(userRole);
+
         user = new User("guest", "guest");
         userDao.persist(user);
         userRole = new UserRole(user, anyUserRole);

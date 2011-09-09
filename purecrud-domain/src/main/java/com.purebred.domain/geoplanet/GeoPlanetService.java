@@ -15,9 +15,10 @@
  * from Brown Bag Consulting LLC.
  */
 
-package com.purebred.sample.service.geoplanet;
+package com.purebred.domain.geoplanet;
 
-import com.purebred.sample.service.RestClientService;
+import com.purebred.domain.RestClientService;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Service;
@@ -72,11 +73,10 @@ public class GeoPlanetService extends RestClientService {
     }
 
     @Bean
-    public GeoPlanetClient getGeoPlanetClient() throws Exception {
-        return create("http://query.yahooapis.com/v1/public", GeoPlanetClient.class);
+    public GeoPlanetClient getGeoPlanetClient(@Value("${geoPlanetService.url}") String url) throws Exception {
+        return create(url, GeoPlanetClient.class);
     }
 
-    @Path("/yql")
     public static interface GeoPlanetClient {
         @GET
         @Produces("application/xml")

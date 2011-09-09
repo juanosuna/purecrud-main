@@ -21,7 +21,7 @@ package com.purebred.sample.entity;
 import com.purebred.core.entity.WritableEntity;
 import com.purebred.core.view.entity.field.format.DefaultFormats;
 import com.purebred.sample.entity.security.User;
-import com.purebred.sample.service.ecbfx.EcbfxService;
+import com.purebred.domain.ecbfx.EcbfxService;
 import org.hibernate.annotations.ForeignKey;
 import org.hibernate.annotations.Index;
 import org.hibernate.validator.constraints.NotBlank;
