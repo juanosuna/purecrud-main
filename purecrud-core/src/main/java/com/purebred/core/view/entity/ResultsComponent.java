@@ -19,6 +19,7 @@ package com.purebred.core.view.entity;
 
 import com.purebred.core.dao.EntityDao;
 import com.purebred.core.dao.EntityQuery;
+import com.purebred.core.entity.IdentifiableEntity;
 import com.purebred.core.util.ReflectionUtil;
 import com.purebred.core.view.MessageSource;
 import com.purebred.core.view.entity.field.DisplayFields;

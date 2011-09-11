@@ -43,7 +43,7 @@ import java.util.List;
  *
  * @see IdentifiableEntity
  */
-public abstract class EntityDao<T extends IdentifiableEntity, ID extends Serializable> {
+public abstract class EntityDao<T, ID extends Serializable> {
 
     @PersistenceContext
     private EntityManager entityManager;
@@ -103,7 +103,7 @@ public abstract class EntityDao<T extends IdentifiableEntity, ID extends Seriali
      * @return attached but hollow entity
      */
     public T getReference(T entity) {
-        Object primaryKey = entity.getId();
+        Object primaryKey = ((IdentifiableEntity) entity).getId();
         return getEntityManager().getReference(getEntityType(), primaryKey);
     }
 

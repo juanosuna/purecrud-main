@@ -204,7 +204,8 @@
         UUID varchar(255) not null unique,
         LOGIN_NAME varchar(16) not null,
         LOGIN_PASSWORD varchar(16) not null,
-        primary key (ID)
+        primary key (ID),
+        unique (LOGIN_NAME)
     );
 
     create table SAMPLE.USER_ROLE (
