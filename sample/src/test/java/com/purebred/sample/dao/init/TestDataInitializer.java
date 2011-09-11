@@ -105,8 +105,8 @@ public class TestDataInitializer {
             initializeAccount(contact, i);
             contactDao.persist(contact);
             if (i % 50 == 0) {
-                contactDao.getEntityManager().flush();
-                contactDao.getEntityManager().clear();
+                contactDao.flush();
+                contactDao.clear();
             }
         }
     }
@@ -146,7 +146,7 @@ public class TestDataInitializer {
         permission.setView(true);
         permissionDao.persist(permission);
 
-        roleDao.getEntityManager().flush();
+        roleDao.flush();
     }
 
     public void initializeUsers() {
@@ -175,7 +175,7 @@ public class TestDataInitializer {
         userRole = new UserRole(user, guestRole);
         userRoleDao.persist(userRole);
 
-        userDao.getEntityManager().flush();
+        userDao.flush();
     }
 
     private void initializeAccount(Contact contact, int i) {

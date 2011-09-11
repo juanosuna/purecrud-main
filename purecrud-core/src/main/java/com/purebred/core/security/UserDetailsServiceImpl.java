@@ -12,7 +12,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         EntityDao dao = SpringApplicationContext.getBeanByTypeAndGenericArgumentType(EntityDao.class, AbstractUser.class);
-        AbstractUser user = (AbstractUser) dao.findByBusinessKey("loginName", username);
+        AbstractUser user = (AbstractUser) dao.findByNaturalId("loginName", username);
         return new UserDetailsImpl(user);
     }
 }

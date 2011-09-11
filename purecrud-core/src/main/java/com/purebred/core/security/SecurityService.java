@@ -10,7 +10,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @Service
@@ -46,10 +45,7 @@ public class SecurityService {
         Assert.PROGRAMMING.assertTrue(loginName != null, "Current loginName is null");
 
         EntityDao dao = SpringApplicationContext.getBeanByTypeAndGenericArgumentType(EntityDao.class, AbstractUser.class);
-        List<AbstractUser> users = dao.findByProperty("loginName", loginName);
-        Assert.DATABASE.assertTrue(users.size() == 1, "SecurityService did not find exactly one user with loginName: "
-                + loginName);
-        return users.get(0);
+        return (AbstractUser) dao.findByNaturalId("loginName", loginName);
     }
 
     public void logout() {

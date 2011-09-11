@@ -17,25 +17,9 @@
 
 package com.purebred.core.dao;
 
-import javax.persistence.TypedQuery;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.Path;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-import java.util.List;
-
 public abstract class ToManyRelationshipQuery<T, P> extends StructuredEntityQuery<T> {
 
     public abstract void setParent(P p);
 
     public abstract P getParent();
-
-    public abstract List<Predicate> buildCriteria(CriteriaBuilder builder, Root<T> rootEntity);
-
-    public abstract void setParameters(TypedQuery typedQuery);
-
-    public abstract Path buildOrderBy(Root<T> rootEntity);
-
-    public abstract void addFetchJoins(Root<T> rootEntity);
-
 }

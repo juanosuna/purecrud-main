@@ -29,6 +29,7 @@ import java.util.Set;
 
 @MappedSuperclass
 public abstract class AbstractUser extends WritableEntity {
+    @NaturalId
     private String loginName;
     private String loginPassword;
 

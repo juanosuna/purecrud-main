@@ -18,6 +18,7 @@
 package com.purebred.core.view.entity;
 
 import com.purebred.core.dao.EntityDao;
+import com.purebred.core.entity.IdentifiableEntity;
 import com.purebred.core.entity.WritableEntity;
 import com.purebred.core.entity.security.AbstractUser;
 import com.purebred.core.security.SecurityService;
@@ -473,7 +474,7 @@ public abstract class EntityForm<T> extends FormComponent<T> {
     }
 
     void refreshNavigationButtonStates() {
-        if (getEntityDao().isPersistent(getEntity())) {
+        if (getEntityDao().isPersistent((IdentifiableEntity) getEntity())) {
             previousButton.setEnabled(((WalkableResults) getResults()).hasPreviousItem());
             nextButton.setEnabled(((WalkableResults) getResults()).hasNextItem());
         } else {

@@ -162,7 +162,7 @@ public class ReferenceDataInitializer {
                 AccountType referenceEntity = new AccountType(accountType);
                 accountTypeDao.persist(referenceEntity);
             }
-            accountTypeDao.getEntityManager().flush();
+            accountTypeDao.flush();
         }
 
         if (!hasExistingEntities(industryDao)) {
@@ -170,7 +170,7 @@ public class ReferenceDataInitializer {
                 Industry referenceEntity = new Industry(industry);
                 industryDao.persist(referenceEntity);
             }
-            industryDao.getEntityManager().flush();
+            industryDao.flush();
         }
 
         if (!hasExistingEntities(leadSourceDao)) {
@@ -180,7 +180,7 @@ public class ReferenceDataInitializer {
                 referenceEntity.setSortOrder(i);
                 leadSourceDao.persist(referenceEntity);
             }
-            leadSourceDao.getEntityManager().flush();
+            leadSourceDao.flush();
         }
 
         if (!hasExistingEntities(salesStageDao)) {
@@ -191,7 +191,7 @@ public class ReferenceDataInitializer {
                 referenceEntity.setProbability(SALES_STAGE_PROBABILITIES.get(salesStage));
                 salesStageDao.persist(referenceEntity);
             }
-            salesStageDao.getEntityManager().flush();
+            salesStageDao.flush();
         }
     }
 
@@ -223,7 +223,7 @@ public class ReferenceDataInitializer {
             }
         }
 
-        countryDao.getEntityManager().flush();
+        countryDao.flush();
     }
 
     private void initializeStates() {
@@ -234,6 +234,6 @@ public class ReferenceDataInitializer {
             stateDao.persist(state);
         }
 
-        stateDao.getEntityManager().flush();
+        stateDao.flush();
     }
 }

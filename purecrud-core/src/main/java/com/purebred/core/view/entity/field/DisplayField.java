@@ -157,6 +157,7 @@ public class DisplayField {
 
     public void setFormLink(String propertyId, EntityForm entityForm) {
         formLink = new FormLink(propertyId, entityForm);
+        entityForm.postWire();
     }
 
     public FormLink getFormLink() {
