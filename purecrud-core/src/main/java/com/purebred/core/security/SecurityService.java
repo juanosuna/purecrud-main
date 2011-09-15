@@ -3,6 +3,7 @@ package com.purebred.core.security;
 
 import com.purebred.core.dao.EntityDao;
 import com.purebred.core.entity.security.AbstractUser;
+import com.purebred.core.util.ReflectionUtil;
 import com.purebred.core.util.SpringApplicationContext;
 import com.purebred.core.util.assertion.Assert;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 @Service
 public class SecurityService {
@@ -33,19 +35,30 @@ public class SecurityService {
         String loginName = getCurrentLoginName();
         AbstractUser user = users.get(loginName);
         if (user == null) {
-            user = getCurrentUserImpl();
+            user = findCurrentUser(loginName);
             users.put(loginName, user);
         }
 
         return user;
     }
 
-    private AbstractUser getCurrentUserImpl() {
-        String loginName = getCurrentLoginName();
+    public static AbstractUser findCurrentUser(String loginName) {
+
         Assert.PROGRAMMING.assertTrue(loginName != null, "Current loginName is null");
 
-        EntityDao dao = SpringApplicationContext.getBeanByTypeAndGenericArgumentType(EntityDao.class, AbstractUser.class);
-        return (AbstractUser) dao.findByNaturalId("loginName", loginName);
+        EntityDao userDao = null;
+        Set<EntityDao> daos = SpringApplicationContext.getBeansByTypeAndGenericArgumentType(EntityDao.class, AbstractUser.class);
+        for (EntityDao dao : daos) {
+            Class argType = ReflectionUtil.getGenericArgumentType(dao.getClass());
+            if (argType != null && AbstractUser.class.equals(argType.getSuperclass())) {
+                userDao = dao;
+            }
+        }
+        Assert.PROGRAMMING.assertTrue(userDao != null,
+                "No instance of EntityDao found with a generic argument type that is a subclass of " +
+                        AbstractUser.class.getName());
+
+        return (AbstractUser) userDao.findByNaturalId("loginName", loginName);
     }
 
     public void logout() {

@@ -44,7 +44,11 @@ public class StringUtil {
     }
 
     public static int approximateColumnWidth(String s) {
-        return (int) Math.ceil(FONT_METRICS.stringWidth(s) * 0.1);
+        return (int) Math.ceil(FONT_METRICS.stringWidth(s) * 0.1) + 1;
+    }
+
+    public static int approximateColumnPixelWidth(String s) {
+        return FONT_METRICS.stringWidth(s) + 30;
     }
 
     public static String extractAfterPeriod(String str) {

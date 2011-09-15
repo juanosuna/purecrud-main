@@ -27,6 +27,10 @@ import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+/**
+ * A permission for controlling view, create, edit or delete actions against an
+ * entity type or a field/property within an entity type.
+ */
 @MappedSuperclass
 public abstract class AbstractPermission extends WritableEntity {
 

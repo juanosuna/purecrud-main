@@ -164,7 +164,7 @@ public class FormField extends DisplayField {
         this.autoAdjustWidthMode = autoAdjustWidthMode;
     }
 
-    public void autoAdjustWidth() {
+    public void autoAdjustTextFieldWidth() {
         Assert.PROGRAMMING.assertTrue(getField() instanceof AbstractTextField,
                 "FormField.autoAdjustWidth can only be called on text fields");
 

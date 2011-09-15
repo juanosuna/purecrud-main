@@ -117,8 +117,8 @@ public class RelatedOpportunities extends ToManyRelationship<Opportunity> {
         private Account account;
 
         @Override
-        public void setParent(Account account) {
-            this.account = account;
+        public void setParent(Account parent) {
+            this.account = parent;
         }
 
         @Override

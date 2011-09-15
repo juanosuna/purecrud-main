@@ -330,7 +330,7 @@ public class FormFields extends DisplayFields {
         Set<FormField> formFields = getFormFields();
         for (FormField formField : formFields) {
             if (formField.getField() instanceof AbstractTextField) {
-                formField.autoAdjustWidth();
+                formField.autoAdjustTextFieldWidth();
             }
         }
     }

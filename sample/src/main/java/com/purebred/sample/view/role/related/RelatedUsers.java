@@ -136,8 +136,8 @@ public class RelatedUsers extends ToManyRelationship<User> {
         private Role role;
 
         @Override
-        public void setParent(Role role) {
-            this.role = role;
+        public void setParent(Role parent) {
+            this.role = parent;
         }
 
         @Override

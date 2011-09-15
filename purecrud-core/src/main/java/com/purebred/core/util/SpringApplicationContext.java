@@ -61,7 +61,7 @@ public class SpringApplicationContext implements ApplicationContextAware {
         T foundBean = null;
         for (T bean : beans) {
             Class argType = ReflectionUtil.getGenericArgumentType(bean.getClass());
-            if (argType != null && genericArgumentType.isAssignableFrom(argType)) {
+            if (argType != null && genericArgumentType.equals(argType)) {
                 if (foundBean == null) {
                     foundBean = bean;
                 } else {
@@ -77,6 +77,20 @@ public class SpringApplicationContext implements ApplicationContextAware {
             throw new RuntimeException("No bean found for type " + type
                     + " and generic argument type " + genericArgumentType);
         }
+    }
+
+    public static <T> Set<T> getBeansByTypeAndGenericArgumentType(Class<T> type, Class genericArgumentType) {
+        Set<T> beans = getBeansByType(type);
+        Set<T> beansWithGenericArgumentType = new HashSet<T>();
+
+        for (T bean : beans) {
+            Class argType = ReflectionUtil.getGenericArgumentType(bean.getClass());
+            if (argType != null && genericArgumentType.isAssignableFrom(argType)) {
+                beansWithGenericArgumentType.add(bean);
+            }
+        }
+
+        return beansWithGenericArgumentType;
     }
 }
 

@@ -69,6 +69,7 @@
     <orderEntry type="library" name="Maven: org.vaadin.addons:animator:1.6.4" level="project" />
     <orderEntry type="library" name="Maven: org.vaadin.addons:contextmenu:3.1.0" level="project" />
     <orderEntry type="library" name="Maven: org.vaadin.addons:confirmdialog:1.1.1" level="project" />
+    <orderEntry type="library" name="Maven: org.vaadin.addons:stepper:1.1.0" level="project" />
     <orderEntry type="library" name="Maven: org.vaadin.addons:chameleon:1.0.2" level="project" />
     <orderEntry type="library" name="Maven: org.vaadin.addons:chameleon-blue:1.0.2" level="project" />
     <orderEntry type="library" name="Maven: org.vaadin.addons:chameleon-dark:1.0.2" level="project" />

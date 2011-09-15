@@ -18,7 +18,6 @@
 package com.purebred.sample.view.role.related;
 
 import com.purebred.core.dao.ToManyRelationshipQuery;
-import com.purebred.core.entity.WritableEntity;
 import com.purebred.core.view.entity.EntityForm;
 import com.purebred.core.view.entity.field.DisplayFields;
 import com.purebred.core.view.entity.field.FormFields;
@@ -123,8 +122,8 @@ public class RelatedPermissions extends ToManyRelationship<Permission> {
         private Role role;
 
         @Override
-        public void setParent(Role role) {
-            this.role = role;
+        public void setParent(Role parent) {
+            this.role = parent;
         }
 
         @Override

@@ -244,28 +244,38 @@ public class BeanPropertyType {
     public boolean isValidatable() {
         BeanPropertyType beanPropertyType = parent;
         while (beanPropertyType != null) {
-            try {
-                Class containingType = beanPropertyType.getContainerType();
-                String id = beanPropertyType.getId();
+            Class containingType = beanPropertyType.getContainerType();
+            String id = beanPropertyType.getId();
 
-                PropertyDescriptor descriptor = BeanUtils.getPropertyDescriptor(containingType, id);
-                Method readMethod = descriptor.getReadMethod();
-                Valid validAnnotation = null;
-                if (readMethod != null) {
-                    validAnnotation = readMethod.getAnnotation(Valid.class);
-                }
-                if (validAnnotation == null) {
-                    Field field = containingType.getDeclaredField(id);
-                    validAnnotation = field.getAnnotation(Valid.class);
+            PropertyDescriptor descriptor = BeanUtils.getPropertyDescriptor(containingType, id);
+            Method readMethod = descriptor.getReadMethod();
+            Valid validAnnotation = null;
+            if (readMethod != null) {
+                validAnnotation = readMethod.getAnnotation(Valid.class);
+            }
+            if (validAnnotation == null) {
+                Field field = null;
+                Class currentType = containingType;
+                while(field == null && !currentType.equals(Object.class)) {
+                    try {
+                        field = currentType.getDeclaredField(id);
+                    } catch (NoSuchFieldException e) {
+                        currentType = currentType.getSuperclass();
+                    } catch (SecurityException e) {
+                        throw new RuntimeException(e);
+                    }
                 }
 
-                if (validAnnotation == null) {
-                    return false;
-                } else {
-                    beanPropertyType = beanPropertyType.getParent();
-                }
-            } catch (NoSuchFieldException e) {
-                throw new RuntimeException(e);
+                Assert.PROGRAMMING.assertTrue(field != null, "Cannot find field: "
+                        + containingType.getName() + "." + id);
+
+                validAnnotation = field.getAnnotation(Valid.class);
+            }
+
+            if (validAnnotation == null) {
+                return false;
+            } else {
+                beanPropertyType = beanPropertyType.getParent();
             }
         }
 

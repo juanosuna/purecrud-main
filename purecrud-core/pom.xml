@@ -184,6 +184,11 @@
         </dependency>
 
         <dependency>
+           <groupId>org.vaadin.addons</groupId>
+           <artifactId>stepper</artifactId>
+        </dependency>
+
+        <dependency>
             <groupId>org.vaadin.addons</groupId>
             <artifactId>chameleon</artifactId>
         </dependency>

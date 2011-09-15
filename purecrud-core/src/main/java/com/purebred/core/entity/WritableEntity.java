@@ -17,6 +17,8 @@
 
 package com.purebred.core.entity;
 
+import org.hibernate.annotations.GenericGenerator;
+
 import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -25,10 +27,10 @@ import java.util.UUID;
 
 /**
  * Base class for entities that are writable by end users.
- *
+ * <p/>
  * This class requires that entities use a generated Long id as the primary key. This is a surrogate key
  * that should have no business meaning.
- *
+ * <p/>
  * It also generates a unique UUID that is used in the default equals and hashcode logic. Developers are free
  * to override this logic and use their own logic based on business keys, which is the "ideal" best practice.
  * However, the UUID approach also correctly solves the equality problem where transient and non-transient entities
@@ -37,13 +39,13 @@ import java.util.UUID;
  * from having to properly implement equals/hashcode by identifying business keys for every entity.
  * Of course, even with the UUIDs, developers should make sure to annotate business keys so that unique
  * constraints are generated in the DDL, even if these business keys are not used in equals/hashcode.
- *
  */
 @MappedSuperclass
 public abstract class WritableEntity extends AuditableEntity {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(generator = "sequence")
+    @GenericGenerator(name = "sequence", strategy = "com.purebred.core.util.TableNameSequenceGenerator")
     private Long id;
 
     @Column(unique = true, nullable = false, updatable = false)

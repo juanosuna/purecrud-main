@@ -175,7 +175,7 @@ public abstract class ResultsComponent<T> extends CustomComponent {
         pageSizeMenu.setNewItemsAllowed(false);
         pageSizeMenu.setNullSelectionAllowed(false);
         pageSizeMenu.setImmediate(true);
-        pageSizeMenu.setWidth(7, UNITS_EM);
+        pageSizeMenu.setWidth(8, UNITS_EM);
         navigationButtons.addComponent(pageSizeMenu);
 
         firstButton = new Button(null, getResultsTable(), "firstPage");

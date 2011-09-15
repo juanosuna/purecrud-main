@@ -17,9 +17,25 @@
 
 package com.purebred.core.dao;
 
+/**
+ * A structured query for finding entities that are related to a parent through a "to-many" relationship.
+ *
+ * @param <T> type of entity being queried
+ * @param <P> type of the parent of the to-many relationship
+ */
 public abstract class ToManyRelationshipQuery<T, P> extends StructuredEntityQuery<T> {
 
-    public abstract void setParent(P p);
-
+    /**
+     * Get the parent entity for the query.
+     *
+     * @return parent entity
+     */
     public abstract P getParent();
+
+    /**
+     * Set the parent entity for the query.
+     *
+     * @param parent parent entity
+     */
+    public abstract void setParent(P parent);
 }
