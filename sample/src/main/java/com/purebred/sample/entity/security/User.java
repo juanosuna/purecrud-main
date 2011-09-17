@@ -32,22 +32,10 @@ import java.util.Set;
 @Table
 public class User extends AbstractUser {
 
-    @OneToMany(mappedBy = "user")
-    private Set<UserRole> userRoles = new HashSet<UserRole>();
-
     public User() {
     }
 
     public User(String loginName, String loginPassword) {
         super(loginName, loginPassword);
-    }
-
-    @Override
-    public Set<UserRole> getUserRoles() {
-        return userRoles;
-    }
-
-    public void setUserRoles(Set<UserRole> userRoles) {
-        this.userRoles = (Set<UserRole>) userRoles;
     }
 }

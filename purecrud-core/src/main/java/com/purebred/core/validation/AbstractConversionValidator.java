@@ -18,8 +18,8 @@
 package com.purebred.core.validation;
 
 
-import com.purebred.core.view.entity.EntityForm;
-import com.purebred.core.view.entity.field.FormField;
+import com.purebred.core.view.EntityForm;
+import com.purebred.core.view.field.FormField;
 import com.vaadin.data.Validator;
 
 public abstract class AbstractConversionValidator implements Validator {

@@ -55,7 +55,8 @@ public abstract class EntityQuery<T> {
     public abstract List<T> execute();
 
     /**
-     * This method can be overridden if any initialization is required after all Spring beans have been wired.
+     * Can be overridden if any initialization is required after all Spring beans have been wired.
+     * Overriding methods should call super.
      */
     public void postWire() {
     }

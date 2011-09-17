@@ -17,7 +17,7 @@
 
 package com.purebred.sample.view.account;
 
-import com.purebred.core.view.entity.MainEntryPoint;
+import com.purebred.core.view.MainEntryPoint;
 import com.purebred.sample.entity.Account;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -40,7 +40,7 @@ public class AccountEntryPoint extends MainEntryPoint<Account> {
     }
 
     @Override
-    public AccountResults getResultsComponent() {
+    public AccountResults getResults() {
         return accountResults;
     }
 

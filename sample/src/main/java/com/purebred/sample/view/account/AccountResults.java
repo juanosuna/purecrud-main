@@ -17,9 +17,9 @@
 
 package com.purebred.sample.view.account;
 
-import com.purebred.core.view.entity.Results;
-import com.purebred.core.view.entity.ResultsTable;
-import com.purebred.core.view.entity.field.DisplayFields;
+import com.purebred.core.view.CrudResults;
+import com.purebred.core.view.ResultsTable;
+import com.purebred.core.view.field.DisplayFields;
 import com.purebred.sample.dao.AccountDao;
 import com.purebred.sample.entity.Account;
 import com.purebred.sample.util.PhonePropertyFormatter;
@@ -31,7 +31,7 @@ import javax.annotation.Resource;
 
 @Component
 @Scope("prototype")
-public class AccountResults extends Results<Account> {
+public class AccountResults extends CrudResults<Account> {
 
     @Resource
     private AccountDao accountDao;

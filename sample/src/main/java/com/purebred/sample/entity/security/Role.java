@@ -33,36 +33,10 @@ import java.util.Set;
 @Table
 public class Role extends AbstractRole {
 
-    @OneToMany(mappedBy = "role", cascade = CascadeType.ALL)
-    private Set<UserRole> userRoles = new HashSet<UserRole>();
-
-    @OneToMany(mappedBy = "role", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<Permission> permissions = new HashSet<Permission>();
-
     public Role() {
     }
 
     public Role(String name) {
         super(name);
-    }
-
-    @Override
-    public Set<UserRole> getUserRoles() {
-        return userRoles;
-    }
-
-    @Override
-    public void setUserRoles(Set<? extends AbstractUserRole> userRoles) {
-        this.userRoles = (Set<UserRole>) userRoles;
-    }
-
-    @Override
-    public Set<Permission> getPermissions() {
-        return permissions;
-    }
-
-    @Override
-    public void setPermissions(Set<? extends AbstractPermission> permissions) {
-        this.permissions = (Set<Permission>) permissions;
     }
 }

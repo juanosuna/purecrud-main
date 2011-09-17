@@ -21,17 +21,26 @@ import com.purebred.core.entity.WritableEntity;
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.validator.constraints.NotBlank;
 
-import javax.persistence.MappedSuperclass;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.HashSet;
 import java.util.Set;
 
-@MappedSuperclass
+@Entity
+@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
+@Table
 public abstract class AbstractUser extends WritableEntity {
     @NaturalId
     private String loginName;
     private String loginPassword;
+    private boolean accountExpired = false;
+    private boolean accountLocked = false;
+    private boolean credentialsExpired = false;
+    private boolean enabled = true;
+
+    @OneToMany(mappedBy = "user")
+    private Set<AbstractUserRole> userRoles = new HashSet<AbstractUserRole>();
 
     public AbstractUser() {
     }
@@ -63,7 +72,45 @@ public abstract class AbstractUser extends WritableEntity {
         this.loginPassword = loginPassword;
     }
 
-    public abstract Set<? extends AbstractUserRole> getUserRoles();
+    public boolean isAccountExpired() {
+        return accountExpired;
+    }
+
+    public void setAccountExpired(boolean accountExpired) {
+        this.accountExpired = accountExpired;
+    }
+
+    public boolean isAccountLocked() {
+        return accountLocked;
+    }
+
+    public void setAccountLocked(boolean accountLocked) {
+        this.accountLocked = accountLocked;
+    }
+
+    public boolean isCredentialsExpired() {
+        return credentialsExpired;
+    }
+
+    public void setCredentialsExpired(boolean credentialsExpired) {
+        this.credentialsExpired = credentialsExpired;
+    }
+
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
+
+    public Set<AbstractUserRole> getUserRoles() {
+        return userRoles;
+    }
+
+    public void setUserRoles(Set<AbstractUserRole> userRoles) {
+        this.userRoles = userRoles;
+    }
 
     public Set<AbstractRole> getRoles() {
         Set<AbstractRole> roles = new HashSet<AbstractRole>();

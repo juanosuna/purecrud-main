@@ -17,7 +17,7 @@
 
 package com.purebred.sample.view.role;
 
-import com.purebred.core.view.entity.MainEntryPoint;
+import com.purebred.core.view.MainEntryPoint;
 import com.purebred.sample.entity.security.Role;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -40,7 +40,7 @@ public class RoleEntryPoint extends MainEntryPoint<Role> {
     }
 
     @Override
-    public RoleResults getResultsComponent() {
+    public RoleResults getResults() {
         return roleResults;
     }
 

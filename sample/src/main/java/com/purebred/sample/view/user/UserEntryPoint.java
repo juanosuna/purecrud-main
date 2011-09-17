@@ -17,7 +17,7 @@
 
 package com.purebred.sample.view.user;
 
-import com.purebred.core.view.entity.MainEntryPoint;
+import com.purebred.core.view.MainEntryPoint;
 import com.purebred.sample.entity.security.User;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -40,7 +40,7 @@ public class UserEntryPoint extends MainEntryPoint<User> {
     }
 
     @Override
-    public UserResults getResultsComponent() {
+    public UserResults getResults() {
         return userResults;
     }
 

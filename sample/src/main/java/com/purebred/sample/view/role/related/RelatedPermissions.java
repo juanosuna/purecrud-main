@@ -18,11 +18,11 @@
 package com.purebred.sample.view.role.related;
 
 import com.purebred.core.dao.ToManyRelationshipQuery;
-import com.purebred.core.view.entity.EntityForm;
-import com.purebred.core.view.entity.field.DisplayFields;
-import com.purebred.core.view.entity.field.FormFields;
-import com.purebred.core.view.entity.tomanyrelationship.ToManyCompositionRelationshipResults;
-import com.purebred.core.view.entity.tomanyrelationship.ToManyRelationship;
+import com.purebred.core.view.EntityForm;
+import com.purebred.core.view.field.DisplayFields;
+import com.purebred.core.view.field.FormFields;
+import com.purebred.core.view.tomanyrelationship.ToManyCompositionRelationshipResults;
+import com.purebred.core.view.tomanyrelationship.ToManyRelationship;
 import com.purebred.sample.dao.PermissionDao;
 import com.purebred.sample.entity.security.Permission;
 import com.purebred.sample.entity.security.Role;
@@ -53,7 +53,7 @@ public class RelatedPermissions extends ToManyRelationship<Permission> {
     }
 
     @Override
-    public RelatedPermissionsResults getResultsComponent() {
+    public RelatedPermissionsResults getResults() {
         return relatedPermissionsResults;
     }
 

@@ -27,7 +27,7 @@
           p:servletClass="com.purebred.core.util.SpringApplicationServlet">
         <property name="initParameters">
             <props>
-                <prop key="application">com.purebred.core.view.MainApplication</prop>
+                <prop key="application">com.purebred.core.MainApplication</prop>
                 <prop key="productionMode">true</prop>
                 <prop key="widgetset">com.purebred.core.view.AppWidgetSet</prop>
             </props>

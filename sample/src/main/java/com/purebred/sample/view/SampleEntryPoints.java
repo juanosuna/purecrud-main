@@ -17,8 +17,8 @@
 
 package com.purebred.sample.view;
 
+import com.purebred.core.view.MainEntryPoint;
 import com.purebred.core.view.MainEntryPoints;
-import com.purebred.core.view.entity.MainEntryPoint;
 import com.purebred.sample.view.account.AccountEntryPoint;
 import com.purebred.sample.view.contact.ContactEntryPoint;
 import com.purebred.sample.view.opportunity.OpportunityEntryPoint;

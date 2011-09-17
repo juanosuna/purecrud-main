@@ -18,18 +18,31 @@
 package com.purebred.core.entity.security;
 
 import com.purebred.core.entity.AuditableEntity;
+import org.hibernate.annotations.ForeignKey;
+import org.hibernate.annotations.Index;
 
-import javax.persistence.Column;
-import javax.persistence.Embeddable;
-import javax.persistence.EmbeddedId;
-import javax.persistence.MappedSuperclass;
+import javax.persistence.*;
 import java.io.Serializable;
 
-@MappedSuperclass
+@Entity
+@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
+@Table
 public abstract class AbstractUserRole extends AuditableEntity {
 
     @EmbeddedId
     private Id id = new Id();
+
+    @Index(name = "IDX_USER_ROLE_USER")
+    @ForeignKey(name = "FK_USER_ROLE_USER")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(insertable = false, updatable = false)
+    private AbstractUser user;
+
+    @Index(name = "IDX_USER_ROLE_ROLE")
+    @ForeignKey(name = "FK_USER_ROLE_ROLE")
+    @JoinColumn(insertable = false, updatable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    private AbstractRole role;
 
     public AbstractUserRole(Long userId, Long roleId) {
         id.userId = userId;
@@ -39,13 +52,23 @@ public abstract class AbstractUserRole extends AuditableEntity {
     public AbstractUserRole() {
     }
 
+    public AbstractUserRole(AbstractUser user, AbstractRole role) {
+        this(user.getId(), role.getId());
+        this.user = user;
+        this.role = role;
+    }
+
     public Id getId() {
         return id;
     }
 
-    public abstract AbstractUser getUser();
+    public AbstractUser getUser() {
+        return user;
+    }
 
-    public abstract AbstractRole getRole();
+    public AbstractRole getRole() {
+        return role;
+    }
 
     @Embeddable
     public static class Id implements Serializable {

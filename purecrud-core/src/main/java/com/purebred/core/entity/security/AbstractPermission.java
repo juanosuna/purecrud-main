@@ -18,12 +18,13 @@
 package com.purebred.core.entity.security;
 
 import com.purebred.core.entity.WritableEntity;
-import com.purebred.core.view.entity.field.LabelDepot;
+import com.purebred.core.view.field.LabelDepot;
+import org.hibernate.annotations.ForeignKey;
+import org.hibernate.annotations.Index;
 import org.hibernate.validator.constraints.NotBlank;
 
 import javax.annotation.Resource;
-import javax.persistence.MappedSuperclass;
-import javax.persistence.Transient;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -31,7 +32,8 @@ import javax.validation.constraints.Size;
  * A permission for controlling view, create, edit or delete actions against an
  * entity type or a field/property within an entity type.
  */
-@MappedSuperclass
+@Entity
+@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public abstract class AbstractPermission extends WritableEntity {
 
     @Transient
@@ -45,6 +47,12 @@ public abstract class AbstractPermission extends WritableEntity {
     private boolean create;
     private boolean edit;
     private boolean delete;
+
+    @Index(name = "IDX_PERMISSION_ROLE")
+    @ForeignKey(name = "FK_PERMISSION_ROLE")
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
+    private AbstractRole role;
+
 
     public AbstractPermission() {
     }
@@ -145,5 +153,13 @@ public abstract class AbstractPermission extends WritableEntity {
         } else {
             return labelDepot.getFieldLabel(getEntityType(), getField());
         }
+    }
+
+    public AbstractRole getRole() {
+        return role;
+    }
+
+    public void setRole(AbstractRole role) {
+        this.role = role;
     }
 }

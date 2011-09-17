@@ -26,27 +26,14 @@ import org.hibernate.annotations.Index;
 import javax.persistence.*;
 
 @Entity
-@Table(uniqueConstraints = @UniqueConstraint(columnNames = {"ENTITY_TYPE", "FIELD"}))
 @ValidPermission
+@Table(uniqueConstraints = @UniqueConstraint(columnNames = {"ENTITY_TYPE", "FIELD"}))
 public class Permission extends AbstractPermission {
-
-    @Index(name = "IDX_PERMISSION_ROLE")
-    @ForeignKey(name = "FK_PERMISSION_ROLE")
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
-    private Role role;
 
     public Permission() {
     }
 
     public Permission(String entityName) {
         super(entityName);
-    }
-
-    public Role getRole() {
-        return role;
-    }
-
-    public void setRole(Role role) {
-        this.role = role;
     }
 }

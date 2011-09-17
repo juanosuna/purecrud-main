@@ -18,6 +18,8 @@
 package com.purebred.sample.dao;
 
 import com.purebred.core.dao.EntityDao;
+import com.purebred.core.entity.security.AbstractPermission;
+import com.purebred.core.entity.security.AbstractRole;
 import com.purebred.sample.entity.security.Permission;
 import com.purebred.sample.entity.security.Role;
 import org.springframework.stereotype.Repository;
@@ -47,7 +49,7 @@ public class PermissionDao extends EntityDao<Permission, Long> {
         return query.getResultList();
     }
 
-    public List<Permission> findByRoleEntityTypeAndField(Role role, String entityType, String field) {
+    public List<Permission> findByRoleEntityTypeAndField(AbstractRole role, String entityType, String field) {
         Query query = getEntityManager().createQuery("SELECT p FROM Permission p WHERE p.role = :role" +
                 " AND p.entityType = :entityType AND p.field = :field");
         query.setParameter("role", role);

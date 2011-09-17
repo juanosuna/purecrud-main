@@ -19,7 +19,7 @@ package com.purebred.sample.entity;
 
 
 import com.purebred.core.entity.WritableEntity;
-import com.purebred.core.view.entity.field.format.DefaultFormats;
+import com.purebred.core.view.field.format.DefaultFormats;
 import com.purebred.sample.entity.security.User;
 import com.purebred.domain.ecbfx.EcbfxService;
 import com.purebred.sample.util.ValidPhone;

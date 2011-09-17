@@ -17,9 +17,9 @@
 
 package com.purebred.sample.view.select;
 
-import com.purebred.core.view.entity.entityselect.EntitySelect;
-import com.purebred.core.view.entity.entityselect.EntitySelectResults;
-import com.purebred.core.view.entity.field.DisplayFields;
+import com.purebred.core.view.entityselect.EntitySelect;
+import com.purebred.core.view.entityselect.EntitySelectResults;
+import com.purebred.core.view.field.DisplayFields;
 import com.purebred.sample.dao.AccountDao;
 import com.purebred.sample.entity.Account;
 import com.purebred.sample.view.account.AccountQuery;
@@ -45,7 +45,7 @@ public class AccountSelect extends EntitySelect<Account> {
     }
 
     @Override
-    public AccountSelectResults getResultsComponent() {
+    public AccountSelectResults getResults() {
         return accountSelectResults;
     }
 

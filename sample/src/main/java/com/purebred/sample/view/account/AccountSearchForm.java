@@ -17,8 +17,8 @@
 
 package com.purebred.sample.view.account;
 
-import com.purebred.core.view.entity.SearchForm;
-import com.purebred.core.view.entity.field.FormFields;
+import com.purebred.core.view.SearchForm;
+import com.purebred.core.view.field.FormFields;
 import com.purebred.sample.dao.StateDao;
 import com.purebred.sample.entity.Country;
 import com.purebred.sample.entity.State;

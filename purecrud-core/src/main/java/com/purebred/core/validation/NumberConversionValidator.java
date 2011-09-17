@@ -19,8 +19,8 @@ package com.purebred.core.validation;
 
 
 import com.purebred.core.util.ReflectionUtil;
-import com.purebred.core.view.entity.field.FormField;
-import com.purebred.core.view.entity.field.format.JDKFormatPropertyFormatter;
+import com.purebred.core.view.field.FormField;
+import com.purebred.core.view.field.format.JDKFormatPropertyFormatter;
 import com.vaadin.data.util.PropertyFormatter;
 
 import java.text.Format;

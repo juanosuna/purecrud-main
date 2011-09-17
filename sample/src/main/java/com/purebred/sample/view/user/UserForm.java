@@ -17,9 +17,9 @@
 
 package com.purebred.sample.view.user;
 
-import com.purebred.core.view.entity.EntityForm;
-import com.purebred.core.view.entity.field.FormFields;
-import com.purebred.core.view.entity.tomanyrelationship.ToManyRelationship;
+import com.purebred.core.view.EntityForm;
+import com.purebred.core.view.field.FormFields;
+import com.purebred.core.view.tomanyrelationship.ToManyRelationship;
 import com.purebred.sample.dao.RoleDao;
 import com.purebred.sample.dao.UserRoleDao;
 import com.purebred.sample.entity.security.Role;
@@ -58,8 +58,13 @@ public class UserForm extends EntityForm<User> {
     @Override
     public void configureFields(FormFields formFields) {
         formFields.setPosition("loginName", 1, 1);
-        formFields.setPosition("loginPassword", 2, 1);
+        formFields.setPosition("loginPassword", 1, 2);
         formFields.setField("loginPassword", new PasswordField());
+
+        formFields.setPosition("accountExpired", 2, 1);
+        formFields.setPosition("accountLocked", 2, 2);
+        formFields.setPosition("credentialsExpired", 3, 1);
+        formFields.setPosition("enabled", 3, 2);
 
         addPersistListener(this, "onPersist");
     }

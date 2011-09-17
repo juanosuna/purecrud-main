@@ -19,9 +19,6 @@ package com.purebred.core.view;
 
 import com.purebred.core.entity.security.AbstractUser;
 import com.purebred.core.security.SecurityService;
-import com.purebred.core.view.entity.EntryPoint;
-import com.purebred.core.view.entity.MainEntryPoint;
-import com.purebred.core.view.entity.Results;
 import com.vaadin.ui.TabSheet;
 
 import javax.annotation.PostConstruct;
@@ -29,14 +26,33 @@ import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Main entry points into the PureCRUD application, presented as a Vaadin Tabsheet.
+ *
+ * Each entry point is presented as a Vaadin Tab.
+ */
 public abstract class MainEntryPoints extends TabSheet {
 
     @Resource
     private SecurityService securityService;
 
+    /**
+     * Get all the entry points of the application, including those the user doesn't
+     * have permission to view.
+     *
+     * Implementer should return all entry points and let PureCRUD take care of
+     * security handling.
+     *
+     * @return all entry points into the application
+     */
     public abstract List<MainEntryPoint> getEntryPoints();
 
-    public List<MainEntryPoint> getViewableEntryPoints() {
+    /**
+     * Get all entry points that the user has security permission to view.
+     *
+     * @return all entry points user is permitted to view
+     */
+    public final List<MainEntryPoint> getViewableEntryPoints() {
         List<MainEntryPoint> entryPoints = getEntryPoints();
         List<MainEntryPoint> viewableEntryPoints = new ArrayList<MainEntryPoint>();
 
@@ -44,7 +60,7 @@ public abstract class MainEntryPoints extends TabSheet {
             AbstractUser user = securityService.getCurrentUser();
 
             if (user.isViewAllowed(entryPoint.getEntityType().getName())
-                    && !entryPoint.getResultsComponent().getDisplayFields().getViewablePropertyIds().isEmpty()) {
+                    && !entryPoint.getResults().getDisplayFields().getViewablePropertyIds().isEmpty()) {
 
                 viewableEntryPoints.add(entryPoint);
             }
@@ -53,12 +69,22 @@ public abstract class MainEntryPoints extends TabSheet {
         return viewableEntryPoints;
     }
 
+    /**
+     * Name of the Vaadin theme used to style this application.
+     * Default is "pureCrudTheme." Implementer can override this name and provide
+     * their custom theme.
+     *
+     * @return name of Vaadin theme
+     */
     public String getTheme() {
         return "pureCrudTheme";
     }
 
+    /**
+     * Called after Spring constructs this bean. Overriding methods should call super.
+     */
     @PostConstruct
-    public void postConstruct() {
+    protected void postConstruct() {
         setSizeUndefined();
         List<MainEntryPoint> entryPoints = getViewableEntryPoints();
         for (MainEntryPoint entryPoint : entryPoints) {
@@ -67,10 +93,14 @@ public abstract class MainEntryPoints extends TabSheet {
 
         addListener(new TabChangeListener());
         if (entryPoints.size() > 0) {
-            entryPoints.get(0).getResultsComponent().search();
+            entryPoints.get(0).getResults().search();
         }
     }
 
+    /**
+     * Can be overridden if any initialization is required after all Spring beans have been wired.
+     * Overriding methods should call super.
+     */
     public void postWire() {
         List<MainEntryPoint> entryPoints = getViewableEntryPoints();
         for (EntryPoint entryPoint : entryPoints) {
@@ -83,9 +113,9 @@ public abstract class MainEntryPoints extends TabSheet {
         @Override
         public void selectedTabChange(SelectedTabChangeEvent event) {
             MainEntryPoint entryPoint = (MainEntryPoint) getSelectedTab();
-            entryPoint.getResultsComponent().search();
-            if (entryPoint.getResultsComponent() instanceof Results) {
-                ((Results) entryPoint.getResultsComponent()).applySecurityToCRUDButtons();
+            entryPoint.getResults().search();
+            if (entryPoint.getResults() instanceof CrudResults) {
+                ((CrudResults) entryPoint.getResults()).applySecurityToCRUDButtons();
             }
         }
     }

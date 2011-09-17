@@ -21,16 +21,17 @@ import com.purebred.core.entity.WritableEntity;
 import com.purebred.core.util.assertion.Assert;
 import org.hibernate.validator.constraints.NotBlank;
 
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.Lob;
-import javax.persistence.MappedSuperclass;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.util.HashSet;
 import java.util.Set;
 
-@MappedSuperclass
+@Entity
+@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
+@Table
 public abstract class AbstractRole extends WritableEntity {
+
     private String name;
 
     @Enumerated(EnumType.STRING)
@@ -38,6 +39,13 @@ public abstract class AbstractRole extends WritableEntity {
 
     @Lob
     private String description;
+
+
+    @OneToMany(mappedBy = "role", cascade = CascadeType.ALL)
+    private Set<AbstractUserRole> userRoles = new HashSet<AbstractUserRole>();
+
+    @OneToMany(mappedBy = "role", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<AbstractPermission> permissions = new HashSet<AbstractPermission>();
 
     public AbstractRole() {
     }
@@ -74,13 +82,21 @@ public abstract class AbstractRole extends WritableEntity {
         this.description = description;
     }
 
-    public abstract Set<? extends AbstractUserRole> getUserRoles();
+    public Set<AbstractUserRole> getUserRoles() {
+        return userRoles;
+    }
 
-    public abstract void setUserRoles(Set<? extends AbstractUserRole> userRoles);
+    public void setUserRoles(Set<AbstractUserRole> userRoles) {
+        this.userRoles = userRoles;
+    }
 
-    public abstract Set<? extends AbstractPermission> getPermissions();
+    public Set<AbstractPermission> getPermissions() {
+        return permissions;
+    }
 
-    public abstract void setPermissions(Set<? extends AbstractPermission> permissions);
+    public void setPermissions(Set<AbstractPermission> permissions) {
+        this.permissions = permissions;
+    }
 
     public AbstractPermission getPermission(String entityType) {
         Set<? extends AbstractPermission> permissions = getPermissions();

@@ -17,9 +17,9 @@
 
 package com.purebred.sample.view.opportunity;
 
-import com.purebred.core.view.entity.Results;
-import com.purebred.core.view.entity.ResultsTable;
-import com.purebred.core.view.entity.field.DisplayFields;
+import com.purebred.core.view.ResultsTable;
+import com.purebred.core.view.CrudResults;
+import com.purebred.core.view.field.DisplayFields;
 import com.purebred.sample.dao.OpportunityDao;
 import com.purebred.sample.entity.Opportunity;
 import com.vaadin.terminal.Sizeable;
@@ -30,7 +30,7 @@ import javax.annotation.Resource;
 
 @Component
 @Scope("prototype")
-public class OpportunityResults extends Results<Opportunity> {
+public class OpportunityResults extends CrudResults<Opportunity> {
 
     @Resource
     private OpportunityDao opportunityDao;

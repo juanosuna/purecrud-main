@@ -202,6 +202,10 @@
         MODIFIED_BY varchar(255) not null,
         VERSION integer,
         UUID varchar(255) not null unique,
+        ACCOUNT_EXPIRED boolean not null,
+        ACCOUNT_LOCKED boolean not null,
+        CREDENTIALS_EXPIRED boolean not null,
+        ENABLED boolean not null,
         LOGIN_NAME varchar(16) not null,
         LOGIN_PASSWORD varchar(16) not null,
         primary key (ID),
@@ -362,12 +366,7 @@
         foreign key (LEAD_SOURCE_ID) 
         references SAMPLE.LEAD_SOURCE;
 
-    create index IDX_PERMISSION_ROLE on SAMPLE.PERMISSION (ROLE_ID);
-
-    alter table SAMPLE.PERMISSION 
-        add constraint FK_PERMISSION_ROLE 
-        foreign key (ROLE_ID) 
-        references SAMPLE.ROLE;
+    create index PERMISSIONIDX_PERMISSION_ROLE on SAMPLE.PERMISSION (ROLE_ID);
 
     create index IDX_STATE_COUNTRY on SAMPLE.STATE (COUNTRY_ID);
 
@@ -376,19 +375,15 @@
         foreign key (COUNTRY_ID) 
         references SAMPLE.COUNTRY;
 
-    create index IDX_USER_ROLE_ROLE on SAMPLE.USER_ROLE (ROLE_ID);
+    create index USER_ROLEIDX_USER_ROLE_ROLE on SAMPLE.USER_ROLE (ROLE_ID);
 
-    create index IDX_USER_ROLE_USER on SAMPLE.USER_ROLE (USER_ID);
+    create index USER_ROLEIDX_USER_ROLE_USER on SAMPLE.USER_ROLE (USER_ID);
 
-    alter table SAMPLE.USER_ROLE 
-        add constraint FK_USER_ROLE_ROLE 
-        foreign key (ROLE_ID) 
-        references SAMPLE.ROLE;
+    create sequence SAMPLE.SEQ_ABSTRACT_PERMISSION;
 
-    alter table SAMPLE.USER_ROLE 
-        add constraint FK_USER_ROLE_USER 
-        foreign key (USER_ID) 
-        references SAMPLE.USER;
+    create sequence SAMPLE.SEQ_ABSTRACT_ROLE;
+
+    create sequence SAMPLE.SEQ_ABSTRACT_USER;
 
     create sequence SAMPLE.SEQ_ACCOUNT;
 
@@ -397,9 +392,3 @@
     create sequence SAMPLE.SEQ_CONTACT;
 
     create sequence SAMPLE.SEQ_OPPORTUNITY;
-
-    create sequence SAMPLE.SEQ_PERMISSION;
-
-    create sequence SAMPLE.SEQ_ROLE;
-
-    create sequence SAMPLE.SEQ_USER;

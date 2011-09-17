@@ -18,7 +18,6 @@
 package com.purebred.core.util;
 
 import com.purebred.core.util.assertion.Assert;
-import com.purebred.core.validation.AssertTrueForProperties;
 import org.springframework.beans.BeanUtils;
 
 import javax.persistence.Temporal;
@@ -256,7 +255,7 @@ public class BeanPropertyType {
             if (validAnnotation == null) {
                 Field field = null;
                 Class currentType = containingType;
-                while(field == null && !currentType.equals(Object.class)) {
+                while (field == null && !currentType.equals(Object.class)) {
                     try {
                         field = currentType.getDeclaredField(id);
                     } catch (NoSuchFieldException e) {

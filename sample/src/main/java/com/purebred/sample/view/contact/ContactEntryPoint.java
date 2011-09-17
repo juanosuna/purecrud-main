@@ -17,7 +17,7 @@
 
 package com.purebred.sample.view.contact;
 
-import com.purebred.core.view.entity.MainEntryPoint;
+import com.purebred.core.view.MainEntryPoint;
 import com.purebred.sample.entity.Contact;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -40,7 +40,7 @@ public class ContactEntryPoint extends MainEntryPoint<Contact> {
     }
 
     @Override
-    public ContactResults getResultsComponent() {
+    public ContactResults getResults() {
         return contactResults;
     }
 

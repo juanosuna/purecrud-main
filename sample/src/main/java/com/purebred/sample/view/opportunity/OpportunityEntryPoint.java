@@ -17,7 +17,7 @@
 
 package com.purebred.sample.view.opportunity;
 
-import com.purebred.core.view.entity.MainEntryPoint;
+import com.purebred.core.view.MainEntryPoint;
 import com.purebred.sample.entity.Opportunity;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -40,7 +40,7 @@ public class OpportunityEntryPoint extends MainEntryPoint<Opportunity> {
     }
 
     @Override
-    public OpportunityResults getResultsComponent() {
+    public OpportunityResults getResults() {
         return opportunityResults;
     }
 

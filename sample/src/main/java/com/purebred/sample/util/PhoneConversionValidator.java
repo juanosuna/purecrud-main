@@ -19,7 +19,7 @@ package com.purebred.sample.util;
 
 
 import com.purebred.core.validation.AbstractConversionValidator;
-import com.purebred.core.view.entity.field.FormField;
+import com.purebred.core.view.field.FormField;
 import com.vaadin.data.util.PropertyFormatter;
 
 public class PhoneConversionValidator extends AbstractConversionValidator {

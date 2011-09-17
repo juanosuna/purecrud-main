@@ -20,6 +20,10 @@ package com.purebred.core.entity;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 
+/**
+ * Base class for entities that are read-only by end users and that represent
+ * things like menu selects like states or countries.
+ */
 @MappedSuperclass
 public abstract class ReferenceEntity implements IdentifiableEntity, Comparable {
 
@@ -44,6 +48,7 @@ public abstract class ReferenceEntity implements IdentifiableEntity, Comparable 
         this.displayName = displayName;
     }
 
+    @Override
     public String getId() {
         return id;
     }
@@ -52,10 +57,22 @@ public abstract class ReferenceEntity implements IdentifiableEntity, Comparable 
         this.id = id;
     }
 
+    /**
+     * Get caption text for displaying to the user in menus. The display name
+     * can be different than the id but doesn't have to be.
+     *
+     * @return friendly name that identifies this entity to an end-user
+     */
     public String getDisplayName() {
         return displayName;
     }
 
+    /**
+     * Set caption text for displaying to the user in menus. The display name
+     * can be different than the id but doesn't have to be.
+     *
+     * @param  displayName friendly name that identifies this entity to an end-user
+     */
     public void setDisplayName(String displayName) {
         this.displayName = displayName;
     }

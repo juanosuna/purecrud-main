@@ -17,9 +17,9 @@
 
 package com.purebred.sample.view.opportunity;
 
-import com.purebred.core.view.entity.EntityForm;
-import com.purebred.core.view.entity.field.FormFields;
-import com.purebred.core.view.entity.field.SelectField;
+import com.purebred.core.view.EntityForm;
+import com.purebred.core.view.field.FormFields;
+import com.purebred.core.view.field.SelectField;
 import com.purebred.sample.entity.Opportunity;
 import com.purebred.sample.view.select.AccountSelect;
 import com.purebred.sample.view.select.UserSelect;

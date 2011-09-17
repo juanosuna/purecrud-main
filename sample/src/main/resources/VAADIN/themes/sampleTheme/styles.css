@@ -10,11 +10,7 @@
     background: #d3d3d3;
 }
 
-.p-entity-select-window {
-    background: #ecffec;
-}
-
-.p-entry-point {
+.p-entry-point .p-entity-select-window .p-form-component .p-results-component {
     background: #ecffec;
 }
 
@@ -22,8 +18,8 @@
     border-color: black !important;
 }
 
-.p-form-component {
-    background: #ecffec;
+.v-tabsheet-tabitem-selected {
+    border-color: #ecffec !important;
 }
 
 .p-search-form {
@@ -31,16 +27,7 @@
     border-color: #a9a9a9
 }
 
-.p-results-component {
-    background: #ecffec;
-}
-
-.v-tabsheet-tabitem-selected {
-    border-color: #ecffec !important;
-}
-
 .v-tabsheet-content {
-    border: none !important;
     background-color: #ecffec !important;
 }
 
@@ -57,10 +44,6 @@
     border-bottom: none !important;
 }
 
-.v-tabsheet-tabitemcell-first .v-tabsheet-tabitem {
-    border-left: none !important;
-}
-
 .v-tabsheet-tabitem-selected {
     background-color: #ecffec !important;
     color: black !important;
@@ -68,16 +51,9 @@
 
 .v-tabsheet-tabitem .v-caption {
     background: transparent url(img/grad-light-top.png) repeat-x;
-    border: none;
-    margin: 0;
-}
-
-.p-entity-form .v-form fieldset {
-    border: none !important;
 }
 
 .v-window-outerheader {
-    /*background: #403f3f;*/
     background: #787878;
 }
 

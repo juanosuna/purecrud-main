@@ -17,10 +17,10 @@
 
 package com.purebred.sample.view.role;
 
-import com.purebred.core.view.entity.EntityForm;
-import com.purebred.core.view.entity.field.FormField;
-import com.purebred.core.view.entity.field.FormFields;
-import com.purebred.core.view.entity.tomanyrelationship.ToManyRelationship;
+import com.purebred.core.view.EntityForm;
+import com.purebred.core.view.field.FormField;
+import com.purebred.core.view.field.FormFields;
+import com.purebred.core.view.tomanyrelationship.ToManyRelationship;
 import com.purebred.sample.entity.security.Role;
 import com.purebred.sample.view.role.related.RelatedPermissions;
 import com.purebred.sample.view.role.related.RelatedUsers;

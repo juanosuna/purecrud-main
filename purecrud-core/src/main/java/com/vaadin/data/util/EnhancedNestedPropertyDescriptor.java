@@ -17,8 +17,8 @@
 
 package com.vaadin.data.util;
 
-import com.purebred.core.view.entity.field.DisplayField;
-import com.purebred.core.view.entity.field.format.EmptyPropertyFormatter;
+import com.purebred.core.view.field.DisplayField;
+import com.purebred.core.view.field.format.EmptyPropertyFormatter;
 import com.vaadin.data.Property;
 
 public class EnhancedNestedPropertyDescriptor<BT> implements VaadinPropertyDescriptor<BT> {

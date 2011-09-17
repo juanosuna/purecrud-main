@@ -18,9 +18,9 @@
 package com.purebred.sample.view.role.related;
 
 import com.purebred.core.dao.ToManyRelationshipQuery;
-import com.purebred.core.view.entity.field.DisplayFields;
-import com.purebred.core.view.entity.tomanyrelationship.ManyToManyRelationshipResults;
-import com.purebred.core.view.entity.tomanyrelationship.ToManyRelationship;
+import com.purebred.core.view.field.DisplayFields;
+import com.purebred.core.view.tomanyrelationship.ManyToManyRelationshipResults;
+import com.purebred.core.view.tomanyrelationship.ToManyRelationship;
 import com.purebred.sample.dao.UserDao;
 import com.purebred.sample.dao.UserRoleDao;
 import com.purebred.sample.entity.security.Role;
@@ -49,7 +49,7 @@ public class RelatedUsers extends ToManyRelationship<User> {
     }
 
     @Override
-    public RelatedUsersResults getResultsComponent() {
+    public RelatedUsersResults getResults() {
         return relatedUsersResults;
     }
 
@@ -92,7 +92,7 @@ public class RelatedUsers extends ToManyRelationship<User> {
         @Override
         public void add() {
             Role parentRole = relatedUsersQuery.getParent();
-            userSelect.getResultsComponent().getEntityQuery().setDoesNotBelongToRole(parentRole);
+            userSelect.getResults().getEntityQuery().setDoesNotBelongToRole(parentRole);
             super.add();
         }
 

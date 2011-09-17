@@ -17,8 +17,8 @@
 
 package com.purebred.sample.view.user;
 
-import com.purebred.core.view.entity.SearchForm;
-import com.purebred.core.view.entity.field.FormFields;
+import com.purebred.core.view.SearchForm;
+import com.purebred.core.view.field.FormFields;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 

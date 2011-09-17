@@ -18,9 +18,9 @@
 package com.purebred.sample.view.account.related;
 
 import com.purebred.core.dao.ToManyRelationshipQuery;
-import com.purebred.core.view.entity.field.DisplayFields;
-import com.purebred.core.view.entity.tomanyrelationship.ToManyAggregationRelationshipResults;
-import com.purebred.core.view.entity.tomanyrelationship.ToManyRelationship;
+import com.purebred.core.view.field.DisplayFields;
+import com.purebred.core.view.tomanyrelationship.ToManyAggregationRelationshipResults;
+import com.purebred.core.view.tomanyrelationship.ToManyRelationship;
 import com.purebred.sample.dao.OpportunityDao;
 import com.purebred.sample.entity.Account;
 import com.purebred.sample.entity.Opportunity;
@@ -47,7 +47,7 @@ public class RelatedOpportunities extends ToManyRelationship<Opportunity> {
     }
 
     @Override
-    public RelatedOpportunitiesResults getResultsComponent() {
+    public RelatedOpportunitiesResults getResults() {
         return relatedOpportunitiesResults;
     }
 

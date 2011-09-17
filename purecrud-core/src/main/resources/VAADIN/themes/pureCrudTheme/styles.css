@@ -1,20 +1,8 @@
 @import "../chameleon/styles.css";
 @import "../chameleon-blue/styles.css";
 
-.v-table-body {
-    overflow: hidden !important;
-}
-
 .v-textfield.v-readonly {
     border: 1px solid #bcbdbe;
-}
-
-.v-textfield-error, .v-checkbox-error, .v-textarea-error, .v-richtextarea-error,
-.v-select-error .v-select-option, .v-datefield-error .v-textfield, .v-ckeditortextfield-error {
-    border-color: red !important;
-    border-width: 1px !important;
-    background: none !important;
-    border-image: none !important;
 }
 
 .v-form fieldset {
@@ -23,6 +11,32 @@
 
 .p-search-form fieldset {
     border: thin #add8e6 solid;
+}
+
+.v-tabsheet-tabitem {
+    background-color: rgb(5, 134, 252) !important;
+    color: rgb(247, 248, 249) !important;
+}
+
+.v-table-row.v-selected .v-button-link .v-button-caption, .v-table-row-odd.v-selected .v-button-link .v-button-caption {
+    color: white;
+}
+
+.p-required-field-indicator {
+    color: red;
+    padding-left: 2px;
+}
+
+.v-table-body {
+    overflow: hidden !important;
+}
+
+.v-textfield-error, .v-checkbox-error, .v-textarea-error, .v-richtextarea-error,
+.v-select-error .v-select-option, .v-datefield-error .v-textfield, .v-ckeditortextfield-error {
+    border-color: red !important;
+    border-width: 1px !important;
+    background: none !important;
+    border-image: none !important;
 }
 
 .v-filterselect-error {
@@ -37,17 +51,8 @@
     padding-right: 7px;
 }
 
-.v-tabsheet-tabitem {
-    background-color: rgb(5, 134, 252) !important;
-    color: rgb(247, 248, 249) !important;
-}
-
 .v-tabsheet-tabitem-selected .v-caption {
     text-shadow: none !important;
-}
-
-.v-table-row.v-selected .v-button-link .v-button-caption, .v-table-row-odd.v-selected .v-button-link .v-button-caption {
-    color: white;
 }
 
 .v-gridlayout .v-gridlayout-spacing-on {
@@ -77,11 +82,25 @@
     visibility: collapse;
 }
 
-.p-required-field-indicator {
-    color: red;
-    padding-left: 2px;
-}
-
 .p-form-component-footer {
     padding-left: 1em;
 }
+
+.v-tabsheet-content {
+    border: none !important;
+}
+
+.v-tabsheet-tabitemcell-first .v-tabsheet-tabitem {
+    border-left: none !important;
+}
+
+.v-tabsheet-tabitem .v-caption {
+    border: none;
+    margin: 0;
+}
+
+.p-entity-form .v-form fieldset {
+    border: none !important;
+}
+
+

@@ -17,9 +17,9 @@
 
 package com.purebred.sample.view.select;
 
-import com.purebred.core.view.entity.entityselect.EntitySelect;
-import com.purebred.core.view.entity.entityselect.EntitySelectResults;
-import com.purebred.core.view.entity.field.DisplayFields;
+import com.purebred.core.view.entityselect.EntitySelect;
+import com.purebred.core.view.entityselect.EntitySelectResults;
+import com.purebred.core.view.field.DisplayFields;
 import com.purebred.sample.dao.ContactDao;
 import com.purebred.sample.entity.Contact;
 import com.purebred.sample.util.PhonePropertyFormatter;
@@ -46,7 +46,7 @@ public class ContactSelect extends EntitySelect<Contact> {
     }
 
     @Override
-    public ContactSelectResults getResultsComponent() {
+    public ContactSelectResults getResults() {
         return contactSelectResults;
     }
 

@@ -17,7 +17,7 @@
 
 package com.vaadin.data.util;
 
-import com.purebred.core.view.entity.field.DisplayFields;
+import com.purebred.core.view.field.DisplayFields;
 
 import java.util.Collection;
 import java.util.HashSet;

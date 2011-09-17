@@ -17,9 +17,9 @@
 
 package com.purebred.sample.view.select;
 
-import com.purebred.core.view.entity.entityselect.EntitySelect;
-import com.purebred.core.view.entity.entityselect.EntitySelectResults;
-import com.purebred.core.view.entity.field.DisplayFields;
+import com.purebred.core.view.entityselect.EntitySelect;
+import com.purebred.core.view.entityselect.EntitySelectResults;
+import com.purebred.core.view.field.DisplayFields;
 import com.purebred.sample.dao.RoleDao;
 import com.purebred.sample.entity.security.Role;
 import com.purebred.sample.view.role.RoleQuery;
@@ -45,7 +45,7 @@ public class RoleSelect extends EntitySelect<Role> {
     }
 
     @Override
-    public RoleSelectResults getResultsComponent() {
+    public RoleSelectResults getResults() {
         return roleSelectResults;
     }
 
