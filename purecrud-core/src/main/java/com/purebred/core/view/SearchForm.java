@@ -17,19 +17,22 @@
 
 package com.purebred.core.view;
 
-import com.purebred.core.view.field.FormFields;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.terminal.ThemeResource;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
 
 import javax.annotation.PostConstruct;
-import javax.annotation.Resource;
 
+/**
+ * Search form bound to a POJO that contains query criteria.
+ *
+ * @param <T> type of POJO
+ */
 public abstract class SearchForm<T> extends FormComponent<T> {
 
-    private FormFields formFields;
-
+    private Results results;
 
     @PostConstruct
     @Override
@@ -37,8 +40,6 @@ public abstract class SearchForm<T> extends FormComponent<T> {
         super.postConstruct();
 
         getForm().addStyleName("p-search-form");
-
-//        getForm().setCaption(getEntityCaption());
     }
 
     @Override
@@ -46,6 +47,19 @@ public abstract class SearchForm<T> extends FormComponent<T> {
         super.postWire();
         BeanItem beanItem = createBeanItem(getResults().getEntityQuery());
         getForm().setItemDataSource(beanItem, getFormFields().getPropertyIds());
+    }
+
+    /**
+     * Get results UI component connected to this search form.
+     *
+     * @return results UI component
+     */
+    public Results getResults() {
+        return results;
+    }
+
+    void setResults(Results results) {
+        this.results = results;
     }
 
     @Override
@@ -69,16 +83,10 @@ public abstract class SearchForm<T> extends FormComponent<T> {
 //        footerLayout.setComponentAlignment(searchButton, Alignment.MIDDLE_RIGHT);
     }
 
-    public FormFields getFormFields() {
-        return formFields;
-    }
-
-    @Resource
-    public void setFormFields(FormFields formFields) {
-        this.formFields = formFields;
-        formFields.setForm(this);
-    }
-
+    /**
+     * Clear the contains of the search form and execute empty query, thus
+     * returning all results.
+     */
     public void clear() {
         getResults().getEntityQuery().clear();
         getResults().getResultsTable().setSortContainerPropertyId(null);
@@ -89,8 +97,16 @@ public abstract class SearchForm<T> extends FormComponent<T> {
         requestRepaintAll();
     }
 
+    /**
+     * Execute search.
+     */
     public void search() {
         getForm().commit();
         getResults().search();
+    }
+
+    @Override
+    protected Component animate(Component component) {
+        return super.animate(component, true);
     }
 }

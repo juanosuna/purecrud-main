@@ -86,6 +86,12 @@ public class RelatedPermissions extends ToManyRelationship<Permission> {
         }
 
         @Override
+        public void postWire() {
+            permissionForm.setRelatedPermissionsQuery(relatedPermissionsQuery);
+            super.postWire();
+        }
+
+        @Override
         public void configureFields(DisplayFields displayFields) {
             displayFields.setPropertyIds(new String[]{
                     "entityType",
@@ -179,6 +185,8 @@ public class RelatedPermissions extends ToManyRelationship<Permission> {
 
         @Resource
         private PermissionDao permissionDao;
+
+        private RelatedPermissionsQuery relatedPermissionsQuery;
 
         @Override
         public void configureFields(FormFields formFields) {
@@ -306,9 +314,16 @@ public class RelatedPermissions extends ToManyRelationship<Permission> {
             return fieldItems;
         }
 
+        public RelatedPermissionsQuery getRelatedPermissionsQuery() {
+            return relatedPermissionsQuery;
+        }
+
+        public void setRelatedPermissionsQuery(RelatedPermissionsQuery relatedPermissionsQuery) {
+            this.relatedPermissionsQuery = relatedPermissionsQuery;
+        }
+
         private List<Permission> getExistingPermissionsForParentRole() {
-            RelatedPermissionsResults results = (RelatedPermissionsResults) getResults();
-            Role role = (Role) results.getEntityQuery().getParent();
+            Role role = (Role) relatedPermissionsQuery.getParent();
 
             return permissionDao.findByRole(role);
         }

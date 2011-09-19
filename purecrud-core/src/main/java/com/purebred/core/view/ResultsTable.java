@@ -35,6 +35,9 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.HashSet;
 import java.util.List;
 
+/**
+ * Table for displaying results.
+ */
 public class ResultsTable extends Table {
 
     private Results results;
@@ -45,7 +48,7 @@ public class ResultsTable extends Table {
         initialize();
     }
 
-    public void initialize() {
+    private void initialize() {
         setSizeUndefined();
         setEditable(true);
         setTableFieldFactory(new TableButtonLinkFactory());
@@ -93,46 +96,74 @@ public class ResultsTable extends Table {
         }
     }
 
+    /**
+     * Get the offset of the first result displayed, starting with 1.
+     *
+     * @return offset of first result, or 0 if there are no results
+     */
     public int getFirstResult() {
         EntityQuery query = results.getEntityQuery();
         return query.getResultCount() == 0 ? 0 : query.getFirstResult() + 1;
     }
 
+    /**
+     * Set the offset of the first result displayed, starting with 1.
+     *
+     * @param firstResult offset of first result, or 0 if there are no results
+     */
     public void setFirstResult(int firstResult) {
         clearSelection();
         results.getEntityQuery().setFirstResult(firstResult - 1);
         executeCurrentQuery();
     }
 
+    /**
+     * Re-execute query.
+     */
     public void refresh() {
         clearSelection();
         executeCurrentQuery();
     }
 
+    /**
+     * Go first page and re-execute query.
+     */
     public void firstPage() {
         clearSelection();
         results.getEntityQuery().firstPage();
         executeCurrentQuery();
     }
 
+    /**
+     * Go previous page and re-execute query.
+     */
     public void previousPage() {
         clearSelection();
         results.getEntityQuery().previousPage();
         executeCurrentQuery();
     }
 
+    /**
+     * Go next page and re-execute query.
+     */
     public void nextPage() {
         clearSelection();
         results.getEntityQuery().nextPage();
         executeCurrentQuery();
     }
 
+    /**
+     * Go last page and re-execute query.
+     */
     public void lastPage() {
         clearSelection();
         results.getEntityQuery().lastPage();
         executeCurrentQuery();
     }
 
+    /**
+     * Execute the current query.
+     */
     public void executeCurrentQuery() {
         List entities = results.getEntityQuery().execute();
         getContainerDataSource().removeAllItems();
@@ -143,6 +174,9 @@ public class ResultsTable extends Table {
         setPageLength(Math.min(entities.size(), results.getPageSize()));
     }
 
+    /**
+     * Clear any selected rows.
+     */
     public void clearSelection() {
         if (isMultiSelect()) {
             setValue(new HashSet());
@@ -168,7 +202,7 @@ public class ResultsTable extends Table {
         }
     }
 
-    public class TableButtonLinkFactory implements TableFieldFactory {
+    private class TableButtonLinkFactory implements TableFieldFactory {
         public Field createField(Container container, Object itemId,
                                  Object propertyId, Component uiContext) {
 
@@ -185,7 +219,7 @@ public class ResultsTable extends Table {
         }
     }
 
-    public class ButtonLinkClickListener implements Button.ClickListener {
+    private class ButtonLinkClickListener implements Button.ClickListener {
         private DisplayField.FormLink formLink;
         private BeanItem item;
 
@@ -201,9 +235,14 @@ public class ResultsTable extends Table {
                 WritableEntity propertyBean = (WritableEntity) PropertyUtils.getProperty(parentBean,
                         formLink.getPropertyId());
                 EntityForm entityForm = formLink.getEntityForm();
+                entityForm.addCancelListener(results, "search");
                 entityForm.addCloseListener(results, "search");
                 entityForm.load(propertyBean);
-                entityForm.open(false);
+                EntityFormWindow entityFormWindow = EntityFormWindow.open(entityForm);
+                entityFormWindow.addCloseListener(results, "search");
+                if (!entityForm.getViewableToManyRelationships().isEmpty()) {
+                    entityFormWindow.setHeight("95%");
+                }
             } catch (IllegalAccessException e) {
                 throw new RuntimeException(e);
             } catch (InvocationTargetException e) {
@@ -214,7 +253,7 @@ public class ResultsTable extends Table {
         }
     }
 
-    public static class ButtonLink extends Button {
+    private static class ButtonLink extends Button {
         private Property itemProperty;
 
         public ButtonLink(Property itemProperty) {

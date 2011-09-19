@@ -23,6 +23,7 @@ import com.purebred.core.security.SecurityService;
 import com.purebred.core.util.assertion.Assert;
 import com.purebred.core.view.util.MessageSource;
 import com.purebred.core.view.menu.ActionContextMenu;
+import com.vaadin.data.Property;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.event.ItemClickEvent;
 import com.vaadin.terminal.ThemeResource;
@@ -35,6 +36,11 @@ import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import java.util.Collection;
 
+/**
+ * Results with CRUD buttons to create, view, edit and delete items in the results.
+ *
+ * @param <T> type of entity in the results
+ */
 public abstract class CrudResults<T> extends Results<T> implements WalkableResults {
 
     @Resource(name = "uiMessageSource")
@@ -57,6 +63,11 @@ public abstract class CrudResults<T> extends Results<T> implements WalkableResul
         super();
     }
 
+    /**
+     * Get the entity form used for viewing/editing items in the results.
+     *
+     * @return entity form
+     */
     public abstract EntityForm<T> getEntityForm();
 
     @PostConstruct
@@ -97,7 +108,8 @@ public abstract class CrudResults<T> extends Results<T> implements WalkableResul
         deleteButton.addStyleName("small default");
         crudButtons.addComponent(deleteButton);
 
-        addSelectionChangedListener(this, "selectionChanged");
+        getResultsTable().addListener(Property.ValueChangeEvent.class, this, "selectionChanged");
+//        addSelectionChangedListener(this, "selectionChanged");
         actionContextMenu.addAction("entityResults.view", this, "view");
         actionContextMenu.addAction("entityResults.edit", this, "edit");
         actionContextMenu.addAction("entityResults.delete", this, "delete");
@@ -107,16 +119,20 @@ public abstract class CrudResults<T> extends Results<T> implements WalkableResul
         getCrudButtons().setComponentAlignment(crudButtons, Alignment.MIDDLE_LEFT);
 
         getResultsTable().addListener(new DoubleClickListener());
+        getEntityForm().addCancelListener(this, "search");
+        getEntityForm().addCloseListener(this, "search");
     }
 
     @Override
     public void postWire() {
         super.postWire();
-        getEntityForm().setResults(this);
         getEntityForm().postWire();
 
     }
 
+    /**
+     * Apply current security permissions to CRUD buttons so that they are enabled if and only if allowed.
+     */
     public void applySecurityToCRUDButtons() {
         boolean hasViewableFields = !getEntityForm().getFormFields().getViewableFormFields().isEmpty();
 
@@ -135,38 +151,54 @@ public abstract class CrudResults<T> extends Results<T> implements WalkableResul
         deleteButton.setVisible(securityService.getCurrentUser().isDeleteAllowed(getEntityType().getName()));
     }
 
+    /**
+     * Create a new entity and open edit form to edit new entity
+     */
     public void create() {
         getEntityForm().setViewMode(false);
         applyViewMode();
         getEntityForm().create();
+        EntityFormWindow entityFormWindow = EntityFormWindow.open(getEntityForm());
+        entityFormWindow.addCloseListener(this, "search");
     }
 
+    /**
+     * View an entity and open form in read-only mode.
+     */
     public void view() {
         getEntityForm().setViewMode(true);
         editOrView();
     }
 
+    /**
+     * Edit the selected entity and open edit form to edit selected entity
+     */
     public void edit() {
         getEntityForm().setViewMode(false);
         editOrView();
     }
 
-    public void editOrView() {
+    private void editOrView() {
         Collection itemIds = (Collection) getResultsTable().getValue();
         Assert.PROGRAMMING.assertTrue(itemIds.size() == 1);
         editOrView(itemIds.iterator().next());
     }
 
-    public void editOrView(Object itemId) {
+    private void editOrView(Object itemId) {
         loadItem(itemId);
-        getEntityForm().open(true);
+        ResultsConnectedEntityForm resultsConnectedEntityForm = new ResultsConnectedEntityForm(getEntityForm(), this);
+        EntityFormWindow entityFormWindow = EntityFormWindow.open(resultsConnectedEntityForm);
+        entityFormWindow.addCloseListener(this, "search");
+        if (!getEntityForm().getViewableToManyRelationships().isEmpty()) {
+            entityFormWindow.setHeight("95%");
+        }
     }
 
-    public void loadItem(Object itemId) {
+    private void loadItem(Object itemId) {
         loadItem(itemId, true);
     }
 
-    public void loadItem(Object itemId, boolean selectFirstTab) {
+    private void loadItem(Object itemId, boolean selectFirstTab) {
 
         getEntityForm().restoreIsReadOnly();
 
@@ -177,7 +209,7 @@ public abstract class CrudResults<T> extends Results<T> implements WalkableResul
         applyViewMode();
     }
 
-    public void applyViewMode() {
+    private void applyViewMode() {
         if (getEntityForm().isViewMode()) {
             getEntityForm().setReadOnly(true);
         } else {
@@ -185,6 +217,7 @@ public abstract class CrudResults<T> extends Results<T> implements WalkableResul
         }
     }
 
+    @Override
     public void editOrViewPreviousItem() {
         Object previousItemId = getResultsTable().getContainerDataSource().prevItemId(currentItemId);
         if (previousItemId == null && getEntityQuery().hasPreviousPage()) {
@@ -196,11 +229,13 @@ public abstract class CrudResults<T> extends Results<T> implements WalkableResul
         }
     }
 
+    @Override
     public boolean hasPreviousItem() {
         Object previousItemId = getResultsTable().getContainerDataSource().prevItemId(currentItemId);
         return previousItemId != null || getEntityQuery().hasPreviousPage();
     }
 
+    @Override
     public void editOrViewNextItem() {
         Object nextItemId = getResultsTable().getContainerDataSource().nextItemId(currentItemId);
         if (nextItemId == null && getEntityQuery().hasNextPage()) {
@@ -213,6 +248,7 @@ public abstract class CrudResults<T> extends Results<T> implements WalkableResul
         }
     }
 
+    @Override
     public boolean hasNextItem() {
         Object nextItemId = getResultsTable().getContainerDataSource().nextItemId(currentItemId);
         return nextItemId != null || getEntityQuery().hasNextPage();
@@ -234,6 +270,9 @@ public abstract class CrudResults<T> extends Results<T> implements WalkableResul
         viewButton.setEnabled(false);
     }
 
+    /**
+     * Delete selected entities. First, pops up confirmation dialog.
+     */
     public void delete() {
         ConfirmDialog.show(MainApplication.getInstance().getMainWindow(),
                 uiMessageSource.getMessage("entityResults.confirmationCaption"),
@@ -249,8 +288,17 @@ public abstract class CrudResults<T> extends Results<T> implements WalkableResul
                 });
     }
 
-    public void selectionChanged() {
+    private int previousSelectionCount;
+
+    public void selectionChanged(Property.ValueChangeEvent event) {
         Collection itemIds = (Collection) getResultsTable().getValue();
+
+        if (itemIds.size() == previousSelectionCount) {
+            return;
+        } else {
+            previousSelectionCount = itemIds.size();
+        }
+
         boolean hasViewableFields = !getEntityForm().getFormFields().getViewableFormFields().isEmpty();
         boolean isViewAllowed = securityService.getCurrentUser().isViewAllowed(getEntityType().getName())
                 && hasViewableFields;
@@ -284,7 +332,7 @@ public abstract class CrudResults<T> extends Results<T> implements WalkableResul
         }
     }
 
-    public class DoubleClickListener implements ItemClickEvent.ItemClickListener {
+    class DoubleClickListener implements ItemClickEvent.ItemClickListener {
         public void itemClick(ItemClickEvent event) {
             if (event.isDoubleClick()) {
                 getEntityForm().setViewMode(false);

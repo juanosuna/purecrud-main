@@ -35,6 +35,12 @@ import javax.annotation.Resource;
 import java.io.Serializable;
 import java.util.Collection;
 
+/**
+ * Results component that is bound the results of a query.
+ * Also, provides paging, sorting and adding/removing columns and re-ordering columns.
+ *
+ * @param <T> type of entity displayed in the results
+ */
 public abstract class Results<T> extends CustomComponent {
 
     @Resource(name = "uiMessageSource")
@@ -59,8 +65,32 @@ public abstract class Results<T> extends CustomComponent {
     protected Results() {
     }
 
+    /**
+     * Configure the fields/columns to be displayed in the results
+     *
+     * @param displayFields used for configuring fields/columns
+     */
     public abstract void configureFields(DisplayFields displayFields);
 
+    /**
+     * Get the DAO that can be used to execute queries and perform CRUD operations
+     *
+     * @return DAO of the entity type for these results
+     */
+    public abstract EntityDao<T, ? extends Serializable> getEntityDao();
+
+    /**
+     * Get the query used to create these results
+     *
+     * @return query used to create these results
+     */
+    public abstract EntityQuery<T> getEntityQuery();
+
+    /**
+     * Get the fields to be displayed in the results.
+     *
+     * @return fields to be displayed in the results
+     */
     public DisplayFields getDisplayFields() {
         return displayFields;
     }
@@ -74,14 +104,20 @@ public abstract class Results<T> extends CustomComponent {
         return ReflectionUtil.getGenericArgumentType(getClass());
     }
 
-    public abstract EntityDao<T, ? extends Serializable> getEntityDao();
-
+    /**
+     * Get the underlying UI table component used to display results.
+     *
+     * @return UI table component
+     */
     public ResultsTable getResultsTable() {
         return resultsTable;
     }
 
-    public abstract EntityQuery<T> getEntityQuery();
-
+    /**
+     * Get horizontal layout of CRUD buttons
+     *
+     * @return horizontal layout of CRUD buttons, create, edit, view, delete
+     */
     public HorizontalLayout getCrudButtons() {
         return crudButtons;
     }
@@ -121,17 +157,22 @@ public abstract class Results<T> extends CustomComponent {
         labelDepot.trackLabels(displayFields);
     }
 
+    private void setCustomSizeUndefined() {
+        setSizeUndefined();
+        getCompositionRoot().setSizeUndefined();
+    }
+
+    /**
+     * Configure the results table. Maybe overridden to make any configuration changes to the Vaadin table
+     *
+     * @param resultsTable Vaadin table
+     */
     public void configureTable(ResultsTable resultsTable) {
     }
 
     @Override
     public void addComponent(Component c) {
         ((ComponentContainer) getCompositionRoot()).addComponent(c);
-    }
-
-    public void setCustomSizeUndefined() {
-        setSizeUndefined();
-        getCompositionRoot().setSizeUndefined();
     }
 
     private HorizontalLayout createNavigationLine() {
@@ -276,34 +317,72 @@ public abstract class Results<T> extends CustomComponent {
         getEntityQuery().postWire();
     }
 
-    public void selectPageSize(Integer size) {
-        pageSizeMenu.select(size);
+    /**
+     * Change the page size selection
+     *
+     * @param pageSize new page size
+     */
+    public void selectPageSize(Integer pageSize) {
+        pageSizeMenu.select(pageSize);
     }
 
+    /**
+     * Get currently selected page size
+     *
+     * @return currently selected page size
+     */
     public int getPageSize() {
         return getEntityQuery().getPageSize();
     }
 
+    /**
+     * Set the page size in the entity query
+     *
+     * @param pageSize new page size
+     */
     public void setPageSize(int pageSize) {
         getEntityQuery().setPageSize(pageSize);
     }
 
+    /**
+     * Add a listener that detects row-selection changes in the results
+     *
+     * @param target target object to invoke listener on
+     * @param methodName name of method to invoke when selection occurs
+     */
     public void addSelectionChangedListener(Object target, String methodName) {
         resultsTable.addListener(Property.ValueChangeEvent.class, target, methodName);
     }
 
+    /**
+     * Get the currently selected value in the results table. Could be a single entity or a collection of entities.
+     *
+     * @return either single entity or collection of entities
+     */
     public Object getSelectedValue() {
         return getResultsTable().getValue();
     }
 
+    /**
+     * Get the currently selected values in the results table.
+     *
+     * @return collection of entities
+     */
     public Collection getSelectedValues() {
         return (Collection) getResultsTable().getValue();
     }
 
+    /**
+     * Execute current query and refresh results. Any existing selected rows are cleared.
+     */
     public void search() {
         searchImpl(true);
     }
 
+    /**
+     * Execute current query and refresh results.
+     * @param clearSelection true if row selection should be cleared
+     */
     protected void searchImpl(boolean clearSelection) {
         getEntityQuery().firstPage();
         getResultsTable().executeCurrentQuery();
@@ -313,6 +392,9 @@ public abstract class Results<T> extends CustomComponent {
         }
     }
 
+    /**
+     * Refresh the label displaying the result count
+     */
     protected void refreshResultCountLabel() {
         EntityQuery query = getEntityQuery();
         String caption = uiMessageSource.getMessage("entityResults.caption",

@@ -37,9 +37,26 @@ import com.vaadin.ui.*;
 import javax.persistence.Lob;
 import java.util.*;
 
+/**
+ * A field in a form. Wraps Vaadin field component, while providing other features and integration with PureCRUD.
+ *
+ * Automatically generates labels with required asterisks.
+ * Keeps track of row and column positions in the form grid layout.
+ */
 public class FormField extends DisplayField {
+    /**
+     * Property id for displaying captions in select fields.
+     */
     public static final String DEFAULT_DISPLAY_PROPERTY_ID = "displayName";
+
+    /**
+     * Default text field width in EM
+     */
     public static final Integer DEFAULT_TEXT_FIELD_WIDTH = 11;
+
+    /**
+     * Default select field width in EM
+     */
     public static final Integer DEFAULT_SELECT_FIELD_WIDTH = 11;
 
     private String tabName = "";
@@ -56,10 +73,16 @@ public class FormField extends DisplayField {
     private Integer defaultWidth;
     private boolean hasConversionError;
 
-    public FormField(FormFields formFields, String propertyId) {
+    FormField(FormFields formFields, String propertyId) {
         super(formFields, propertyId);
     }
 
+    /**
+     * Get Vaadin label for this field. Label is automatically generated from property ID unless configured
+     * by the application.
+     *
+     * @return Vaadin label for this field
+     */
     public com.vaadin.ui.Label getFieldLabel() {
         if (label == null) {
             String labelText = generateLabelText();
@@ -82,50 +105,113 @@ public class FormField extends DisplayField {
         }
     }
 
+    /**
+     * Set the field label, thus overriding default generated label.
+     *
+     * @param labelText display label
+     */
     public void setFieldLabel(String labelText) {
         getFieldLabel().setValue(labelText);
     }
 
+    /**
+     * Get the name of the tab this field resides in.
+     *
+     * @return name of tab that contains this field
+     */
     public String getTabName() {
         return tabName;
     }
 
+    /**
+     * Set the name of the tab this field resides in.
+     *
+     * @param tabName name of tab that contains this field
+     */
     public void setTabName(String tabName) {
         this.tabName = tabName;
     }
 
+    /**
+     * Get the column start position of this field, starting with 1 not 0
+     *
+     * @return column start position
+     */
     public Integer getColumnStart() {
         return columnStart;
     }
 
+    /**
+     * Set the column start position of this field, starting with 1 not 0
+     *
+     * @param columnStart column start position
+     */
     public void setColumnStart(Integer columnStart) {
         this.columnStart = columnStart;
     }
 
+    /**
+     * Get the row start position of this field, starting with 1 not 0
+     *
+     * @return row start position
+     */
     public Integer getRowStart() {
         return rowStart;
     }
 
+    /**
+     * Set the row start position of this field, starting with 1 not 0
+     *
+     * @param rowStart row start position
+     */
     public void setRowStart(Integer rowStart) {
         this.rowStart = rowStart;
     }
 
+    /**
+     * Get the column end position of this field
+     *
+     * @return column end position
+     */
     public Integer getColumnEnd() {
         return columnEnd;
     }
 
+    /**
+     * Set the column end position of this field
+     *
+     * @param columnEnd column end position
+     */
     public void setColumnEnd(Integer columnEnd) {
         this.columnEnd = columnEnd;
     }
 
+    /**
+     * Get the row end position of this field
+     *
+     * @return row end position
+     */
     public Integer getRowEnd() {
         return rowEnd;
     }
 
+    /**
+     * Set the row end position of this field
+     *
+     * @param rowEnd row end position
+     */
     public void setRowEnd(Integer rowEnd) {
         this.rowEnd = rowEnd;
     }
 
+    /**
+     * Get the underlying Vaadin field. The field is intelligently and automatically generated based on the property type.
+     *
+     * In most cases, applications will not need to access Vaadin APIs directly. However,
+     * it is exposed in case Vaadin features are needed that are not available in PureCRUD.
+     *
+     * @return Vaadin field
+     */
     public Field getField() {
         if (field == null) {
             field = generateField();
@@ -135,10 +221,24 @@ public class FormField extends DisplayField {
         return field;
     }
 
+    /**
+     * Get the underlying Vaadin field. The field is intelligently and automatically generated based on the property type.
+     *
+     * In most cases, applications will not need to access Vaadin APIs directly. However,
+     * it is exposed in case Vaadin features are needed that are not available in PureCRUD.
+     *
+     * @return Vaadin field
+     */
     public void setField(Field field) {
         setField(field, true);
     }
 
+    /**
+     * Set the underlying Vaadin field, overriding the automatically generated one.
+     *
+     * @param field Vaadin field
+     * @param initializeDefaults allow PureCRUD to initialize the default settings for Vaadin field
+     */
     public void setField(Field field, boolean initializeDefaults) {
         this.field = field;
         if (initializeDefaults) {
@@ -146,7 +246,7 @@ public class FormField extends DisplayField {
         }
     }
 
-    public void initWidthAndMaxLengthDefaults(AbstractTextField abstractTextField) {
+    private void initWidthAndMaxLengthDefaults(AbstractTextField abstractTextField) {
         defaultWidth = MathUtil.maxIgnoreNull(DEFAULT_TEXT_FIELD_WIDTH, getBeanPropertyType().getMinimumLength());
         abstractTextField.setWidth(defaultWidth, Sizeable.UNITS_EM);
 
@@ -156,15 +256,25 @@ public class FormField extends DisplayField {
         }
     }
 
+    /**
+     * Get auto-adjust-width mode
+     *
+     * @return auto-adjust-width mode
+     */
     public AutoAdjustWidthMode getAutoAdjustWidthMode() {
         return autoAdjustWidthMode;
     }
 
+    /**
+     * Set auto-adjust-width mode
+     *
+     * @param autoAdjustWidthMode auto-adjust-width mode
+     */
     public void setAutoAdjustWidthMode(AutoAdjustWidthMode autoAdjustWidthMode) {
         this.autoAdjustWidthMode = autoAdjustWidthMode;
     }
 
-    public void autoAdjustTextFieldWidth() {
+    void autoAdjustTextFieldWidth() {
         Assert.PROGRAMMING.assertTrue(getField() instanceof AbstractTextField,
                 "FormField.autoAdjustWidth can only be called on text fields");
 
@@ -182,10 +292,20 @@ public class FormField extends DisplayField {
         }
     }
 
+    /**
+     * Get width of the field
+     *
+     * @return width of the field
+     */
     public float getWidth() {
         return getField().getWidth();
     }
 
+    /**
+     * Manually set width of the field.
+     * @param width
+     * @param unit
+     */
     public void setWidth(float width, int unit) {
         getField().setWidth(width, unit);
     }
@@ -356,17 +476,6 @@ public class FormField extends DisplayField {
         if (getField() instanceof SelectField) {
             ((SelectField) getField()).setButtonVisible(!isReadOnly);
         }
-//        if (getField() instanceof AbstractSelect) {
-//            AbstractSelect select = (AbstractSelect) getField();
-//            if (!select.isMultiSelect()) {
-//                if (isReadOnly) {
-//                    originalField = field;
-//                    field = new TextField();
-//                } else {
-//                    field = originalField;
-//                }
-//            }
-//        }
 
         getField().setReadOnly(isReadOnly);
     }
@@ -375,17 +484,6 @@ public class FormField extends DisplayField {
         if (getField() instanceof SelectField) {
             ((SelectField) getField()).setButtonVisible(!isReadOnly);
         }
-//        if (getField() instanceof AbstractSelect) {
-//            AbstractSelect select = (AbstractSelect) getField();
-//            if (!select.isMultiSelect()) {
-//                if (isReadOnly) {
-//                    originalField = field;
-//                    field = new TextField();
-//                } else {
-//                    field = originalField;
-//                }
-//            }
-//        }
         getField().setReadOnly(isReadOnly);
     }
 

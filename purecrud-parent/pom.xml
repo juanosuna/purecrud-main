@@ -31,7 +31,7 @@
         <hibernate.version>3.6.7.Final</hibernate.version>
         <vaadin.version>6.6.6</vaadin.version>
         <gwt.version>2.3.0</gwt.version>
-        <h2.version>1.3.159</h2.version>
+        <h2.version>1.3.160</h2.version>
     </properties>
 
     <distributionManagement>
@@ -170,7 +170,7 @@
             <dependency>
                 <groupId>net.sf.ehcache</groupId>
                 <artifactId>ehcache</artifactId>
-                <version>2.4.3</version>
+                <version>2.4.5</version>
                 <type>pom</type>
             </dependency>
 
@@ -279,12 +279,12 @@
             <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-api</artifactId>
-                <version>1.6.1</version>
+                <version>1.6.2</version>
             </dependency>
             <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-log4j12</artifactId>
-                <version>1.6.1</version>
+                <version>1.6.2</version>
             </dependency>
 
             <dependency>
@@ -296,13 +296,13 @@
             <dependency>
                 <groupId>com.googlecode.libphonenumber</groupId>
                 <artifactId>libphonenumber</artifactId>
-                <version>3.7</version>
+                <version>3.9</version>
             </dependency>
 
             <dependency>
                 <groupId>junit</groupId>
                 <artifactId>junit</artifactId>
-                <version>4.8.2</version>
+                <version>4.9</version>
                 <scope>test</scope>
             </dependency>
 
@@ -367,7 +367,7 @@
                 <plugin>
                     <groupId>org.codehaus.mojo</groupId>
                     <artifactId>sql-maven-plugin</artifactId>
-                    <version>1.4</version>
+                    <version>1.5</version>
                     <dependencies>
                         <dependency>
                             <groupId>com.h2database</groupId>
@@ -401,7 +401,7 @@
                 <plugin>
                     <groupId>org.mortbay.jetty</groupId>
                     <artifactId>jetty-maven-plugin</artifactId>
-                    <version>7.4.5.v20110725</version>
+                    <version>7.5.1.v20110908</version>
                 </plugin>
                 <plugin>
                     <groupId>org.codehaus.mojo</groupId>

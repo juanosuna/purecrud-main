@@ -19,6 +19,8 @@ package com.purebred.core.view.tomanyrelationship;
 
 import com.purebred.core.entity.WritableEntity;
 import com.purebred.core.util.assertion.Assert;
+import com.purebred.core.view.EntityFormWindow;
+import com.purebred.core.view.ResultsConnectedEntityForm;
 import com.purebred.core.view.WalkableResults;
 import com.purebred.core.view.EntityForm;
 import com.vaadin.data.util.BeanItem;
@@ -37,6 +39,8 @@ public abstract class ToManyCompositionRelationshipResults<T> extends ToManyRela
 
     private Object currentItemId;
 
+    private ResultsConnectedEntityForm resultsConnectedEntityForm;
+
     @PostConstruct
     @Override
     public void postConstruct() {
@@ -52,31 +56,25 @@ public abstract class ToManyCompositionRelationshipResults<T> extends ToManyRela
         actionContextMenu.addAction("entityResults.edit", this, "edit");
 
         getResultsTable().addListener(new DoubleClickListener());
+        resultsConnectedEntityForm = new ResultsConnectedEntityForm(getEntityForm(), this);
     }
 
     @Override
     public void postWire() {
         super.postWire();
 
-        getEntityForm().setResults(this);
         getEntityForm().postWire();
-//        getEntityForm().addPersistListener(this, "itemCreated");
     }
 
     @Override
     public void add() {
         getEntityForm().create();
+        EntityFormWindow entityFormWindow = EntityFormWindow.open(getEntityForm());
+        entityFormWindow.addCloseListener(this, "search");
 
         T value = getEntityForm().getEntity();
         setReferenceToParent(value);
     }
-
-//    public void itemCreated() {
-//        T entity = getEntityForm().getEntity();
-////        getEntityDao().persist(entity);
-//
-////        setReferencesToParentAndPersist(entity);
-//    }
 
     public void edit() {
         Collection itemIds = (Collection) getResultsTable().getValue();
@@ -86,7 +84,11 @@ public abstract class ToManyCompositionRelationshipResults<T> extends ToManyRela
 
     public void editImpl(Object itemId) {
         loadItem(itemId);
-        getEntityForm().open(true);
+        EntityFormWindow entityFormWindow = EntityFormWindow.open(resultsConnectedEntityForm);
+        entityFormWindow.addCloseListener(this, "search");
+        if (!getEntityForm().getViewableToManyRelationships().isEmpty()) {
+            entityFormWindow.setHeight("95%");
+        }
     }
 
     public void loadItem(Object itemId) {

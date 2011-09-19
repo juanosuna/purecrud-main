@@ -18,6 +18,7 @@
 package com.purebred.core.view.menu;
 
 import com.purebred.core.util.MethodDelegate;
+import com.purebred.core.util.ObjectUtil;
 import com.purebred.core.util.assertion.Assert;
 import com.purebred.core.view.util.MessageSource;
 import com.vaadin.event.Action;
@@ -73,7 +74,24 @@ public class ActionContextMenu implements Action.Handler {
         }
     }
 
-    public static class ContextMenuAction {
+//    @Override
+//    public boolean equals(Object o) {
+//        if (this == o) return true;
+//        if (o == null || getClass() != o.getClass()) return false;
+//
+//        ActionContextMenu that = (ActionContextMenu) o;
+//
+//        if (!ObjectUtil.isEqualDeep(actions.values(), that.actions.values())) return false;
+//
+//        return true;
+//    }
+//
+//    @Override
+//    public int hashCode() {
+//        return ObjectUtil.hashCodeDeep(actions.values());
+//    }
+
+    private static class ContextMenuAction {
         private Action action;
         private boolean enabled = false;
         private MethodDelegate methodDelegate;
@@ -98,6 +116,28 @@ public class ActionContextMenu implements Action.Handler {
         public void setEnabled(boolean enabled) {
             this.enabled = enabled;
         }
+
+//        @Override
+//        public boolean equals(Object o) {
+//            if (this == o) return true;
+//            if (o == null || getClass() != o.getClass()) return false;
+//
+//            ContextMenuAction that = (ContextMenuAction) o;
+//
+//            if (enabled != that.enabled) return false;
+//            if (!action.equals(that.action)) return false;
+//            if (!methodDelegate.equals(that.methodDelegate)) return false;
+//
+//            return true;
+//        }
+//
+//        @Override
+//        public int hashCode() {
+//            int result = action.hashCode();
+//            result = 31 * result + (enabled ? 1 : 0);
+//            result = 31 * result + methodDelegate.hashCode();
+//            return result;
+//        }
     }
 }
 

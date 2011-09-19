@@ -25,10 +25,7 @@ import org.apache.commons.lang.ClassUtils;
 import org.springframework.beans.BeanUtils;
 
 import java.beans.PropertyDescriptor;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
+import java.lang.reflect.*;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -181,5 +178,37 @@ public class ReflectionUtil {
         }
 
         return Number.class.isAssignableFrom(clazz);
+    }
+
+    public static Method getMethod(Class type, String methodName, Class<?>... parameterTypes) {
+        Method method = null;
+        Class currentType = type;
+        while (method == null && !currentType.equals(Object.class)) {
+            try {
+                method = currentType.getDeclaredMethod(methodName, parameterTypes);
+            } catch (SecurityException e) {
+                throw new RuntimeException(e);
+            } catch (NoSuchMethodException e) {
+                currentType = currentType.getSuperclass();
+            }
+        }
+
+        return method;
+    }
+
+    public static Field getField(Class type, String fieldName) {
+        Field field = null;
+        Class currentType = type;
+        while (field == null && !currentType.equals(Object.class)) {
+            try {
+                field = currentType.getDeclaredField(fieldName);
+            } catch (SecurityException e) {
+                throw new RuntimeException(e);
+            } catch (NoSuchFieldException e) {
+                currentType = currentType.getSuperclass();
+            }
+        }
+
+        return field;
     }
 }

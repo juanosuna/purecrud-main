@@ -174,6 +174,8 @@ public class MainApplication extends Application implements HttpServletRequestLi
     public static SystemMessages getSystemMessages() {
         CustomizedSystemMessages customizedSystemMessages = new CustomizedSystemMessages();
         customizedSystemMessages.setSessionExpiredURL("mvc/login.do");
+        customizedSystemMessages.setCommunicationErrorURL("mvc/login.do");
+        customizedSystemMessages.setOutOfSyncURL("mvc/login.do");
         return customizedSystemMessages;
     }
 

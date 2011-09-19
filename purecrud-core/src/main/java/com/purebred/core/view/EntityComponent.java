@@ -26,6 +26,10 @@ import com.vaadin.ui.VerticalLayout;
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 
+/**
+ * Any generic entity component that contains some results.
+ * @param <T>
+ */
 public abstract class EntityComponent<T> extends CustomComponent {
 
     @Resource
@@ -37,10 +41,21 @@ public abstract class EntityComponent<T> extends CustomComponent {
     protected EntityComponent() {
     }
 
+    /**
+     * Get results.
+     *
+     * @return results
+     */
     public abstract Results getResults();
 
+    /**
+     * Get the caption used to represent this type of entity, e.g. to be displayed in tab.
+     *
+     * @return display caption
+     */
     public abstract String getEntityCaption();
 
+    @Override
     public String getCaption() {
         return entityMessageSource.getMessageWithDefault(getEntityCaption());
     }
@@ -58,16 +73,16 @@ public abstract class EntityComponent<T> extends CustomComponent {
         setCustomSizeUndefined();
     }
 
+    private void setCustomSizeUndefined() {
+        setSizeUndefined();
+        getCompositionRoot().setSizeUndefined();
+    }
+
     /**
      * Can be overridden if any initialization is required after all Spring beans have been wired.
      * Overriding methods should call super.
      */
     public void postWire() {
-    }
-
-    public void setCustomSizeUndefined() {
-        setSizeUndefined();
-        getCompositionRoot().setSizeUndefined();
     }
 
     @Override

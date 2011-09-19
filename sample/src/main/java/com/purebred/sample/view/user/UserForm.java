@@ -69,7 +69,6 @@ public class UserForm extends EntityForm<User> {
         addPersistListener(this, "onPersist");
     }
 
-
     public void onPersist() {
         Role anyUserRole = roleDao.findByName("ROLE_USER");
         UserRole userRole = new UserRole(getEntity(), anyUserRole);

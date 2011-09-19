@@ -17,6 +17,8 @@
 
 package com.purebred.core.util;
 
+import com.purebred.core.util.assertion.Assert;
+
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
@@ -31,15 +33,14 @@ public class MethodDelegate {
 
     public MethodDelegate(Object target, String methodName, Class<?>... parameterTypes) {
         this.target = target;
-        try {
-            method = target.getClass().getMethod(methodName, parameterTypes);
-        } catch (NoSuchMethodException e) {
-            throw new RuntimeException(e);
-        }
+        method = ReflectionUtil.getMethod(target.getClass(), methodName, parameterTypes);
+        Assert.PROGRAMMING.assertTrue(method != null, "Cannot find method " + target.getClass().getName()
+                +"." + methodName + parameterTypes == null ? "" : " (" + parameterTypes + ")");
     }
 
     public Object execute(Object... args) {
         try {
+            method.setAccessible(true);
             return method.invoke(target, args);
         } catch (IllegalAccessException e) {
             throw new RuntimeException(e);

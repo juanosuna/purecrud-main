@@ -253,18 +253,7 @@ public class BeanPropertyType {
                 validAnnotation = readMethod.getAnnotation(Valid.class);
             }
             if (validAnnotation == null) {
-                Field field = null;
-                Class currentType = containingType;
-                while (field == null && !currentType.equals(Object.class)) {
-                    try {
-                        field = currentType.getDeclaredField(id);
-                    } catch (NoSuchFieldException e) {
-                        currentType = currentType.getSuperclass();
-                    } catch (SecurityException e) {
-                        throw new RuntimeException(e);
-                    }
-                }
-
+                Field field = ReflectionUtil.getField(containingType, id);
                 Assert.PROGRAMMING.assertTrue(field != null, "Cannot find field: "
                         + containingType.getName() + "." + id);
 
