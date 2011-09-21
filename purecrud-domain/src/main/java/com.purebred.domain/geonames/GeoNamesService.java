@@ -56,6 +56,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Services for fetching currency code and postal code information about countries
+ * from http://www.geonames.org.
+ */
 @Configuration
 @Service
 public class GeoNamesService extends RestClientService {

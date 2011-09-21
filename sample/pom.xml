@@ -41,11 +41,11 @@
 
     <repositories>
         <repository>
-            <id>purebred-private-snapshots</id>
-            <url>http://www.purecrud.com/nexus/content/repositories/purebred-private-snapshots/</url>
+            <id>purebred-public-snapshots</id>
+            <url>http://www.purecrud.com/nexus/content/repositories/snapshots/</url>
         </repository>
         <repository>
-            <id>purebred-releases</id>
+            <id>purebred-proxy-releases</id>
             <url>http://www.purecrud.com/nexus/content/groups/public</url>
         </repository>
     </repositories>

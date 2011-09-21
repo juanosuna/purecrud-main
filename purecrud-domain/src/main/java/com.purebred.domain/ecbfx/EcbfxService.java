@@ -58,6 +58,10 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+/**
+ * Service for fetching currency exchange rates from European Central Bank.
+ * See http://www.ecb.int/stats/eurofxref/eurofxref-daily.xml
+ */
 @Configuration
 @Service
 public class EcbfxService extends RestClientService {

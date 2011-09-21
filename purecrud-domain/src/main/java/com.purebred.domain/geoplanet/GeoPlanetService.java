@@ -53,6 +53,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * Services for fetching country and state codes from Yahoo GeoPlanet:
+ * http://developer.yahoo.com/geo/geoplanet/
+ */
 @Configuration
 @Service
 public class GeoPlanetService extends RestClientService {

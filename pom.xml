@@ -43,9 +43,9 @@
     <distributionManagement>
         <snapshotRepository>
             <uniqueVersion>false</uniqueVersion>
-            <id>purebred-private-snapshots</id>
-            <name>Purebred Private Snapshots</name>
-            <url>http://www.purecrud.com/nexus/content/repositories/purebred-private-snapshots/</url>
+            <id>purebred-public-snapshots</id>
+            <name>Purebred Public Snapshots</name>
+            <url>http://www.purecrud.com/nexus/content/repositories/snapshots</url>
         </snapshotRepository>
     </distributionManagement>
 
