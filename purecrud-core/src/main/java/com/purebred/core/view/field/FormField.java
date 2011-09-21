@@ -1,18 +1,38 @@
 /*
- * BROWN BAG CONFIDENTIAL
+ * Copyright (c) 2011 Brown Bag Consulting.
+ * This file is part of the PureCRUD project.
+ * Author: Juan Osuna
  *
- * Copyright (c) 2011 Brown Bag Consulting LLC
- * All Rights Reserved.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License Version 3
+ * as published by the Free Software Foundation with the addition of the
+ * following permission added to Section 15 as permitted in Section 7(a):
+ * FOR ANY PART OF THE COVERED WORK IN WHICH THE COPYRIGHT IS OWNED BY
+ * Brown Bag Consulting, Brown Bag Consulting DISCLAIMS THE WARRANTY OF
+ * NON INFRINGEMENT OF THIRD PARTY RIGHTS.
  *
- * NOTICE:  All information contained herein is, and remains
- * the property of Brown Bag Consulting LLC and its suppliers,
- * if any.  The intellectual and technical concepts contained
- * herein are proprietary to Brown Bag Consulting LLC
- * and its suppliers and may be covered by U.S. and Foreign Patents,
- * patents in process, and are protected by trade secret or copyright law.
- * Dissemination of this information or reproduction of this material
- * is strictly forbidden unless prior written permission is obtained
- * from Brown Bag Consulting LLC.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * The interactive user interfaces in modified source and object code versions
+ * of this program must display Appropriate Legal Notices, as required under
+ * Section 5 of the GNU Affero General Public License.
+ *
+ * You can be released from the requirements of the license by purchasing
+ * a commercial license. Buying such a license is mandatory as soon as you
+ * develop commercial activities involving the PureCRUD software without
+ * disclosing the source code of your own applications. These activities
+ * include: offering paid services to customers as an ASP, providing
+ * services from a hosted web application, shipping PureCRUD with a closed
+ * source product.
+ *
+ * For more information, please contact Brown Bag Consulting at this
+ * address: juan@brownbagconsulting.com.
  */
 
 package com.purebred.core.view.field;
@@ -302,14 +322,26 @@ public class FormField extends DisplayField {
     }
 
     /**
-     * Manually set width of the field.
-     * @param width
-     * @param unit
+     * Manually set width of the field and turn off auto width adjustment.
+     *
+     * @param width size of width
+     * @param unit unit of measurement defined in Sizeable
+     *
+     * @see Sizeable
      */
     public void setWidth(float width, int unit) {
+        setAutoAdjustWidthMode(FormField.AutoAdjustWidthMode.NONE);
         getField().setWidth(width, unit);
     }
 
+    /**
+     * Set height of the field.
+     *
+     * @param height size of width
+     * @param unit unit of measurement defined in Sizeable
+     *
+     * @see Sizeable
+     */
     public void setHeight(float height, int unit) {
         getField().setHeight(height, unit);
     }
@@ -337,6 +369,13 @@ public class FormField extends DisplayField {
         }
     }
 
+    /**
+     * Set the menu options in a select.
+     *
+     * @param items list of items
+     *
+     * @see FormField.DEFAULT_DISPLAY_PROPERTY_ID
+     */
     public void setSelectItems(List items) {
         // could be either collection or single item
         Object selectedItems = getSelectedItems();
@@ -367,10 +406,21 @@ public class FormField extends DisplayField {
         autoAdjustSelectWidth();
     }
 
+    /**
+     * Set menu options in a select.
+     *
+     * @param items map of items where key is bound to entity and value is the display caption
+     */
     public void setSelectItems(Map<Object, String> items) {
         setSelectItems(items, null);
     }
 
+    /**
+     * Set menu options in a select.
+     *
+     * @param items map of items where key is bound to entity and value is the display caption
+     * @param nullCaption caption displayed to represent null or no selection
+     */
     public void setSelectItems(Map<Object, String> items, String nullCaption) {
         Field field = getField();
         Assert.PROGRAMMING.assertTrue(field instanceof AbstractSelect,
@@ -395,6 +445,25 @@ public class FormField extends DisplayField {
         autoAdjustSelectWidth();
     }
 
+    /**
+     * Get selected items, maybe single item or collection.
+     *
+     * @return single item or collection
+     */
+    public Object getSelectedItems() {
+        Field field = getField();
+        Assert.PROGRAMMING.assertTrue(field instanceof AbstractSelect,
+                "property " + getPropertyId() + " is not a AbstractSelect field");
+        AbstractSelect selectField = (AbstractSelect) field;
+        return selectField.getValue();
+    }
+
+    /**
+     * Set the dimensions of a multi-select menu
+     *
+     * @param rows height
+     * @param columns width
+     */
     public void setMultiSelectDimensions(int rows, int columns) {
         Field field = getField();
         Assert.PROGRAMMING.assertTrue(field instanceof ListSelect,
@@ -404,74 +473,122 @@ public class FormField extends DisplayField {
         selectField.setColumns(columns);
     }
 
-    public void setDisplayPropertyId(String displayPropertyId) {
+    /**
+     * Set the property Id to be used as display caption in select menu.
+     *
+     * @param displayCaptionPropertyId bean property name
+     */
+    public void setDisplayCaptionPropertyId(String displayCaptionPropertyId) {
         Assert.PROGRAMMING.assertTrue(field instanceof AbstractSelect,
                 "property " + getPropertyId() + " is not a Select field");
 
-        ((AbstractSelect) field).setItemCaptionPropertyId(displayPropertyId);
+        ((AbstractSelect) field).setItemCaptionPropertyId(displayCaptionPropertyId);
     }
 
-    public Object getSelectedItems() {
-        Field field = getField();
-        Assert.PROGRAMMING.assertTrue(field instanceof AbstractSelect,
-                "property " + getPropertyId() + " is not a AbstractSelect field");
-        AbstractSelect selectField = (AbstractSelect) field;
-        return selectField.getValue();
-    }
-
+    /**
+     * Add listener for changes in this field's value.
+     *
+     * @param target target object to invoke
+     * @param methodName name of method to invoke
+     */
     public void addValueChangeListener(Object target, String methodName) {
         AbstractComponent component = (AbstractComponent) getField();
         component.addListener(Property.ValueChangeEvent.class, target, methodName);
     }
 
+    /**
+     * Get the parent object for managing all fields on this form.
+     *
+     * @return object for managing all fields on this form
+     */
     public FormFields getFormFields() {
         return (FormFields) getDisplayFields();
     }
 
+    /**
+     * Set the visibility of this field and label
+     *
+     * @param isVisible true if visible
+     */
     public void setVisible(boolean isVisible) {
         this.isVisible = isVisible;
         getField().setVisible(isVisible);
         getFieldLabel().setVisible(isVisible);
     }
 
+    /**
+     * Allow the field to be visible from a security permissions standpoint, if it is configured to be visible
+     */
     public void allowView() {
         getField().setVisible(isVisible);
         getFieldLabel().setVisible(isVisible);
     }
 
+    /**
+     * Deny the field from being visible from a security permissions standpoint
+     */
     public void denyView() {
         getField().setVisible(false);
         getFieldLabel().setVisible(false);
     }
 
+    /**
+     * Set whether or not this field is required
+     *
+     * @param isRequired true if required
+     */
     public void setRequired(boolean isRequired) {
         getField().setRequired(isRequired);
     }
 
-    public void disableIsRequired() {
-        getField().setRequired(false);
-    }
-
+    /**
+     * Ask if this field is required.
+     *
+     * @return true if required
+     */
     public boolean isRequired() {
         return getField().isRequired();
     }
 
+    /**
+     * Restore is-required setting to originally configured value, as specified in validation annotations
+     */
     public void restoreIsRequired() {
         getField().setRequired(isRequired);
     }
 
+    /**
+     * Get the description displayed during mouse-over/hovering
+     *
+     * @return description displayed to user
+     */
     public String getDescription() {
         return getField().getDescription();
     }
 
+    /**
+     * Set the description displayed during mouse-over/hovering
+     *
+     * @param description description displayed to user
+     */
     public void setDescription(String description) {
         getField().setDescription(description);
     }
 
+    /**
+     * Set whether or not field is enabled.
+     *
+     * @param enabled true if enabled
+     */
     public void setEnabled(boolean enabled) {
         getField().setEnabled(enabled);
     }
 
+    /**
+     * Set whether or not field is read-only.
+     *
+     * @param isReadOnly true if read-only
+     */
     public void setReadOnly(boolean isReadOnly) {
         if (getField() instanceof SelectField) {
             ((SelectField) getField()).setButtonVisible(!isReadOnly);
@@ -480,6 +597,9 @@ public class FormField extends DisplayField {
         getField().setReadOnly(isReadOnly);
     }
 
+    /**
+     * Restore read-only setting to originally configured value
+     */
     public void restoreIsReadOnly() {
         if (getField() instanceof SelectField) {
             ((SelectField) getField()).setButtonVisible(!isReadOnly);
@@ -487,10 +607,20 @@ public class FormField extends DisplayField {
         getField().setReadOnly(isReadOnly);
     }
 
+    /**
+     * Set the value of the field.
+     *
+     * @param value value of field
+     */
     public void setValue(Object value) {
         getField().setValue(value);
     }
 
+    /**
+     * Asks if field currently has an error.
+     *
+     * @return true if field currently has an error
+     */
     public boolean hasError() {
         if (hasConversionError) {
             return true;
@@ -502,19 +632,20 @@ public class FormField extends DisplayField {
         }
     }
 
-    @Override
-    public PropertyFormatter getPropertyFormatter() {
-        if (getField() instanceof AbstractTextField) {
-            return super.getPropertyFormatter();
-        } else {
-            return new EmptyPropertyFormatter();
-        }
-    }
-
+    /**
+     * Ask if field currently has error because field is empty but is required
+     *
+     * @return true if field currently has error because field is empty but is required
+     */
     public boolean hasIsRequiredError() {
         return getField().isRequired() && StringUtil.isEmpty(getField().getValue());
     }
 
+    /**
+     * Clear any errors on this field.
+     *
+     * @param clearConversionError true to clear data-type conversion error as well
+     */
     public void clearError(boolean clearConversionError) {
         if (clearConversionError) {
             hasConversionError = false;
@@ -525,6 +656,29 @@ public class FormField extends DisplayField {
         }
     }
 
+    /**
+     * Ask if this field has a data-type conversion error.
+     *
+     * @return true if this field as a data-type conversion error
+     */
+    public boolean hasConversionError() {
+        return hasConversionError;
+    }
+
+    /**
+     * Set whether or not this field has a data-type conversion error.
+     *
+     * @param hasConversionError true if this field as a data-type conversion error
+     */
+    public void setHasConversionError(boolean hasConversionError) {
+        this.hasConversionError = hasConversionError;
+    }
+
+    /**
+     * Add error message to this field.
+     *
+     * @param errorMessage error message, builds Vaadin composite error message
+     */
     public void addError(ErrorMessage errorMessage) {
         Assert.PROGRAMMING.assertTrue(getField() instanceof AbstractComponent,
                 "Error message cannot be added to field that is not an AbstractComponent");
@@ -550,6 +704,15 @@ public class FormField extends DisplayField {
             newErrorMessages.add(errorMessage);
             CompositeErrorMessage newCompositeErrorMessage = new CompositeErrorMessage(newErrorMessages);
             abstractComponent.setComponentError(newCompositeErrorMessage);
+        }
+    }
+
+    @Override
+    public PropertyFormatter getPropertyFormatter() {
+        if (getField() instanceof AbstractTextField) {
+            return super.getPropertyFormatter();
+        } else {
+            return new EmptyPropertyFormatter();
         }
     }
 
@@ -675,28 +838,13 @@ public class FormField extends DisplayField {
         }
     }
 
+    /**
+     * Add Vaadin validator to this field.
+     *
+     * @param validator Vaadin validator
+     */
     public void addValidator(Validator validator) {
         getField().addValidator(validator);
-    }
-
-    public class FieldValueChangeListener implements Property.ValueChangeListener {
-
-        @Override
-        public void valueChange(Property.ValueChangeEvent event) {
-            EntityForm entityForm = (EntityForm) getFormFields().getForm();
-
-            if (entityForm.isValidationEnabled()) {
-                entityForm.validate(false);
-            }
-        }
-    }
-
-    public boolean isHasConversionError() {
-        return hasConversionError;
-    }
-
-    public void setHasConversionError(boolean hasConversionError) {
-        this.hasConversionError = hasConversionError;
     }
 
     private void initializeIsRequired() {
@@ -710,6 +858,11 @@ public class FormField extends DisplayField {
         isRequired = field.isRequired();
     }
 
+    /**
+     * Initialize field to default settings.
+     *
+     * @param field Vaadin field to initialize
+     */
     public static void initAbstractFieldDefaults(AbstractField field) {
         field.setRequiredError("Required value is missing");
         field.setImmediate(true);
@@ -717,21 +870,41 @@ public class FormField extends DisplayField {
         field.setWriteThrough(true);
     }
 
+    /**
+     * Initialize field to default settings.
+     *
+     * @param field Vaadin field to initialize
+     */
     public static void initTextFieldDefaults(AbstractTextField field) {
         field.setWidth(DEFAULT_TEXT_FIELD_WIDTH, Sizeable.UNITS_EM);
         field.setNullRepresentation("");
         field.setNullSettingAllowed(false);
     }
 
+    /**
+     * Initialize field to default settings.
+     *
+     * @param field Vaadin field to initialize
+     */
     public static void initRichTextFieldDefaults(RichTextArea field) {
         field.setNullRepresentation("");
         field.setNullSettingAllowed(false);
     }
 
+    /**
+     * Initialize field to default settings.
+     *
+     * @param field Vaadin field to initialize
+     */
     public static void initDateFieldDefaults(DateField field) {
         field.setResolution(DateField.RESOLUTION_DAY);
     }
 
+    /**
+     * Initialize field to default settings.
+     *
+     * @param field Vaadin field to initialize
+     */
     public static void initAbstractSelectDefaults(AbstractSelect field) {
         field.setWidth(DEFAULT_SELECT_FIELD_WIDTH, Sizeable.UNITS_EM);
         field.setItemCaptionMode(Select.ITEM_CAPTION_MODE_PROPERTY);
@@ -739,17 +912,50 @@ public class FormField extends DisplayField {
         field.setItemCaptionPropertyId(DEFAULT_DISPLAY_PROPERTY_ID);
     }
 
+    /**
+     * Initialize field to default settings.
+     *
+     * @param field Vaadin field to initialize
+     */
     public static void initSelectDefaults(Select field) {
         field.setFilteringMode(Select.FILTERINGMODE_CONTAINS);
     }
 
+    /**
+     * Initialize field to default settings.
+     *
+     * @param field Vaadin field to initialize
+     */
     public static void initListSelectDefaults(ListSelect field) {
         field.setMultiSelect(true);
     }
 
+    private class FieldValueChangeListener implements Property.ValueChangeListener {
+        @Override
+        public void valueChange(Property.ValueChangeEvent event) {
+            EntityForm entityForm = (EntityForm) getFormFields().getForm();
+
+            if (entityForm.isValidationEnabled()) {
+                entityForm.validate(false);
+            }
+        }
+    }
+
+    /**
+     * Mode for automatically adjusting field widths
+     */
     public enum AutoAdjustWidthMode {
+        /**
+         * Fully automatic
+         */
         FULL,
+        /**
+         * Automatic but with minimum width specified by DEFAULT_TEXT_FIELD_WIDTH and DEFAULT_SELECT_FIELD_WIDTH
+         */
         PARTIAL,
+        /**
+         * Turn off automatic width adjustment
+         */
         NONE
     }
 }
