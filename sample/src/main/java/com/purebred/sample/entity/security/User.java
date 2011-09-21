@@ -39,14 +39,9 @@ package com.purebred.sample.entity.security;
 
 
 import com.purebred.core.entity.security.AbstractUser;
-import com.purebred.core.entity.security.AbstractUserRole;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import java.util.HashSet;
-import java.util.Set;
 
 @Entity
 @Table

@@ -37,9 +37,9 @@
 
 package com.purebred.sample.util;
 
-import com.purebred.sample.entity.Phone;
 import com.google.i18n.phonenumbers.PhoneNumberUtil;
 import com.google.i18n.phonenumbers.Phonenumber;
+import com.purebred.sample.entity.Phone;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;

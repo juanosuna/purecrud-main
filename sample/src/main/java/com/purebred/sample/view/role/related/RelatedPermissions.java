@@ -62,6 +62,7 @@ import java.util.Map;
 
 @Component
 @Scope("prototype")
+@SuppressWarnings({"rawtypes", "serial"})
 public class RelatedPermissions extends ToManyRelationship<Permission> {
 
     @Resource
@@ -179,11 +180,6 @@ public class RelatedPermissions extends ToManyRelationship<Permission> {
             if (!isEmpty(role)) {
                 typedQuery.setParameter("role", role);
             }
-        }
-
-        @Override
-        public Path buildOrderBy(Root<Permission> rootEntity) {
-            return null;
         }
 
         @Override

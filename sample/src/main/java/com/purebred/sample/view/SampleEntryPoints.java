@@ -53,6 +53,7 @@ import java.util.List;
 
 @Component
 @Scope("prototype")
+@SuppressWarnings({"rawtypes", "serial"})
 public class SampleEntryPoints extends MainEntryPoints {
 
     @Resource

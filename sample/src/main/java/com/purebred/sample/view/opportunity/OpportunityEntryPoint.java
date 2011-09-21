@@ -46,6 +46,7 @@ import javax.annotation.Resource;
 
 @Component
 @Scope("prototype")
+@SuppressWarnings({"serial"})
 public class OpportunityEntryPoint extends MainEntryPoint<Opportunity> {
 
     @Resource

@@ -38,9 +38,7 @@
 package com.purebred.sample.dao.init;
 
 import com.purebred.sample.dao.AbstractDomainTest;
-import org.junit.Before;
 import org.junit.Test;
-import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.test.context.transaction.TransactionConfiguration;
 
 import javax.annotation.Resource;

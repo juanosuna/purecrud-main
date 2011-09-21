@@ -55,6 +55,7 @@ import java.util.Set;
 
 @Component
 @Scope("prototype")
+@SuppressWarnings({"rawtypes"})
 public class AccountQuery extends StructuredEntityQuery<Account> {
 
     @Resource

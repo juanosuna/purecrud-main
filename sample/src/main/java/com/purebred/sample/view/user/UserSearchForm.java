@@ -44,6 +44,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @Scope("prototype")
+@SuppressWarnings({"serial"})
 public class UserSearchForm extends SearchForm<UserQuery> {
 
     @Override

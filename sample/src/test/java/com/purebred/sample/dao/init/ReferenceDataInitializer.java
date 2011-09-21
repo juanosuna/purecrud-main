@@ -38,11 +38,11 @@
 package com.purebred.sample.dao.init;
 
 import com.purebred.core.dao.EntityDao;
+import com.purebred.domain.geonames.GeoNamesService;
+import com.purebred.domain.geoplanet.GeoPlanetService;
 import com.purebred.sample.dao.*;
 import com.purebred.sample.entity.*;
 import com.purebred.sample.entity.Currency;
-import com.purebred.domain.geonames.GeoNamesService;
-import com.purebred.domain.geoplanet.GeoPlanetService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -162,7 +162,7 @@ public class ReferenceDataInitializer {
         return entities.get(ReferenceDataInitializer.random(0, entities.size() - 1));
     }
 
-    public static boolean hasExistingEntities(EntityDao dao) {
+    public static boolean hasExistingEntities(@SuppressWarnings("rawtypes") EntityDao dao) {
         return dao.countAll() > 0;
     }
 

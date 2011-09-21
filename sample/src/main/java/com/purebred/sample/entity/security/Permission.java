@@ -40,10 +40,10 @@ package com.purebred.sample.entity.security;
 
 import com.purebred.core.entity.security.AbstractPermission;
 import com.purebred.sample.view.role.related.ValidPermission;
-import org.hibernate.annotations.ForeignKey;
-import org.hibernate.annotations.Index;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
 @Entity
 @ValidPermission

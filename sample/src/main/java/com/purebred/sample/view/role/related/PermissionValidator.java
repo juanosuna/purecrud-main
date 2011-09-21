@@ -51,15 +51,12 @@ public class PermissionValidator implements ConstraintValidator<ValidPermission,
     @Resource
     private PermissionDao permissionDao;
 
-    private ValidPermission validPermission;
-
     public PermissionValidator() {
         SpringApplicationContext.autowire(this);
     }
 
     @Override
     public void initialize(ValidPermission constraintAnnotation) {
-        validPermission = constraintAnnotation;
     }
 
     @Override

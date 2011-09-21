@@ -46,6 +46,7 @@ import javax.annotation.Resource;
 
 @Component
 @Scope("prototype")
+@SuppressWarnings({"serial"})
 public class AccountEntryPoint extends MainEntryPoint<Account> {
 
     @Resource

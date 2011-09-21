@@ -37,13 +37,12 @@
 
 package com.purebred.sample.dao;
 
+import com.google.i18n.phonenumbers.NumberParseException;
 import com.purebred.sample.entity.*;
 import com.purebred.sample.view.contact.ContactQuery;
-import com.google.i18n.phonenumbers.NumberParseException;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
 import javax.annotation.Resource;
 import java.util.List;

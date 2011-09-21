@@ -37,8 +37,8 @@
 
 package com.purebred.sample.view.role;
 
-import com.purebred.core.view.ResultsTable;
 import com.purebred.core.view.CrudResults;
+import com.purebred.core.view.ResultsTable;
 import com.purebred.core.view.field.DisplayFields;
 import com.purebred.sample.dao.RoleDao;
 import com.purebred.sample.entity.security.Role;
@@ -50,6 +50,7 @@ import javax.annotation.Resource;
 
 @Component
 @Scope("prototype")
+@SuppressWarnings({"serial"})
 public class RoleResults extends CrudResults<Role> {
 
     @Resource

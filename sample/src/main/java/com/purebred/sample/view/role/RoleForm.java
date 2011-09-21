@@ -55,6 +55,7 @@ import java.util.List;
 
 @Component
 @Scope("prototype")
+@SuppressWarnings({"rawtypes", "serial"})
 public class RoleForm extends EntityForm<Role> {
 
     @Resource

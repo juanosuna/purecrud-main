@@ -52,6 +52,7 @@ import java.util.List;
 
 @Component
 @Scope("prototype")
+@SuppressWarnings({"serial", "rawtypes"})
 public class ContactSearchForm extends SearchForm<ContactQuery> {
 
     @Resource

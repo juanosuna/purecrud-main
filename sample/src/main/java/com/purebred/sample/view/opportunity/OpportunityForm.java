@@ -50,6 +50,7 @@ import javax.annotation.Resource;
 
 @Component
 @Scope("prototype")
+@SuppressWarnings({"serial"})
 public class OpportunityForm extends EntityForm<Opportunity> {
 
     @Resource

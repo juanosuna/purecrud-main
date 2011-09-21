@@ -52,6 +52,7 @@ import javax.annotation.Resource;
 
 @Component
 @Scope("prototype")
+@SuppressWarnings({"serial"})
 public class ContactSelect extends EntitySelect<Contact> {
 
     @Resource

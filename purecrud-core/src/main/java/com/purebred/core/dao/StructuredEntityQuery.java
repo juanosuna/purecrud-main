@@ -38,10 +38,7 @@
 package com.purebred.core.dao;
 
 import javax.persistence.TypedQuery;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.Path;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
+import javax.persistence.criteria.*;
 import java.util.List;
 
 /**
@@ -77,12 +74,15 @@ public abstract class StructuredEntityQuery<T> extends EntityQuery<T> {
      * @param rootEntity root type in the from clause
      * @return path used for sorting
      */
-    public abstract Path buildOrderBy(Root<T> rootEntity);
+    public Path buildOrderBy(Root<T> rootEntity) {
+        return null;
+    }
 
     /**
      * Adding any fetch joins required to improve performance, i.e. to avoid N+1 select problem
      *
      * @param rootEntity root type in the from clause
      */
-    public abstract void addFetchJoins(Root<T> rootEntity);
+    public void addFetchJoins(Root<T> rootEntity) {
+    }
 }

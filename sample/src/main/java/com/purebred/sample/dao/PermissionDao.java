@@ -38,12 +38,10 @@
 package com.purebred.sample.dao;
 
 import com.purebred.core.dao.EntityDao;
-import com.purebred.core.entity.security.AbstractPermission;
 import com.purebred.core.entity.security.AbstractRole;
 import com.purebred.sample.entity.security.Permission;
 import com.purebred.sample.entity.security.Role;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.FlushModeType;
 import javax.persistence.Query;
@@ -52,6 +50,7 @@ import java.util.List;
 import static com.purebred.sample.dao.CacheSettings.setReadOnly;
 
 @Repository
+@SuppressWarnings("unchecked")
 public class PermissionDao extends EntityDao<Permission, Long> {
 
     @Override

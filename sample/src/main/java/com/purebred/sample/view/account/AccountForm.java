@@ -58,6 +58,7 @@ import java.util.List;
 
 @Component
 @Scope("prototype")
+@SuppressWarnings({"serial", "rawtypes"})
 public class AccountForm extends EntityForm<Account> {
 
     @Resource

@@ -47,9 +47,10 @@ import java.util.List;
 import static com.purebred.sample.dao.CacheSettings.setReadOnly;
 
 @Repository
+@SuppressWarnings("unchecked")
 public class AccountTypeDao extends EntityDao<AccountType, String> {
 
-    @Override
+	@Override
     public List<AccountType> findAll() {
         Query query = getEntityManager().createQuery("SELECT a FROM AccountType a ORDER BY a.displayName");
         setReadOnly(query);

@@ -52,6 +52,7 @@ import java.util.List;
 
 @Component
 @Scope("prototype")
+@SuppressWarnings({"rawtypes"})
 public class RoleQuery extends StructuredEntityQuery<Role> {
 
     @Resource
@@ -110,15 +111,6 @@ public class RoleQuery extends StructuredEntityQuery<Role> {
         if (!isEmpty(doesNotBelongToUser)) {
             typedQuery.setParameter("doesNotBelongToUser", doesNotBelongToUser);
         }
-    }
-
-    @Override
-    public Path buildOrderBy(Root<Role> rootEntity) {
-        return null;
-    }
-
-    @Override
-    public void addFetchJoins(Root<Role> rootEntity) {
     }
 
     @Override

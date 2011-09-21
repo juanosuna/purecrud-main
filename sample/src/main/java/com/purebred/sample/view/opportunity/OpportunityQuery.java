@@ -54,6 +54,7 @@ import java.util.Set;
 
 @Component
 @Scope("prototype")
+@SuppressWarnings({"rawtypes"})
 public class OpportunityQuery extends StructuredEntityQuery<Opportunity> {
 
     @Resource

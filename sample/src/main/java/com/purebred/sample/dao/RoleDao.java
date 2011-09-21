@@ -40,7 +40,6 @@ package com.purebred.sample.dao;
 import com.purebred.core.dao.EntityDao;
 import com.purebred.sample.entity.security.Role;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.Query;
 import java.util.List;
@@ -48,6 +47,7 @@ import java.util.List;
 import static com.purebred.sample.dao.CacheSettings.setReadOnly;
 
 @Repository
+@SuppressWarnings("unchecked")
 public class RoleDao extends EntityDao<Role, Long> {
 
     @Override

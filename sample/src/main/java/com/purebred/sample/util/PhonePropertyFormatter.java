@@ -37,11 +37,12 @@
 
 package com.purebred.sample.util;
 
-import com.purebred.sample.entity.Phone;
 import com.google.i18n.phonenumbers.PhoneNumberUtil;
 import com.google.i18n.phonenumbers.Phonenumber;
+import com.purebred.sample.entity.Phone;
 import com.vaadin.data.util.PropertyFormatter;
 
+@SuppressWarnings({ "serial", "unchecked" })
 public class PhonePropertyFormatter extends PropertyFormatter {
 
     public static final String DEFAULT_PHONE_COUNTRY = "US";

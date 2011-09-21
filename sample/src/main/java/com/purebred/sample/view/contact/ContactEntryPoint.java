@@ -46,6 +46,7 @@ import javax.annotation.Resource;
 
 @Component
 @Scope("prototype")
+@SuppressWarnings({"serial"})
 public class ContactEntryPoint extends MainEntryPoint<Contact> {
 
     @Resource

@@ -58,6 +58,7 @@ import java.util.List;
 
 @Component
 @Scope("prototype")
+@SuppressWarnings({"rawtypes", "serial"})
 public class RelatedRoles extends ToManyRelationship<Role> {
 
     @Resource
@@ -187,11 +188,6 @@ public class RelatedRoles extends ToManyRelationship<Role> {
             if (!isEmpty(user)) {
                 typedQuery.setParameter("user", user);
             }
-        }
-
-        @Override
-        public Path buildOrderBy(Root<Role> rootEntity) {
-            return null;
         }
 
         @Override

@@ -51,6 +51,7 @@ import java.io.Serializable;
  * User: Juan
  * Date: 7/19/11
  */
+@SuppressWarnings("serial")
 @Embeddable
 public class Phone implements Serializable {
     private Integer countryCode;

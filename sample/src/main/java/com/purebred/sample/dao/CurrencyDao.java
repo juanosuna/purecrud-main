@@ -38,8 +38,8 @@
 package com.purebred.sample.dao;
 
 import com.purebred.core.dao.EntityDao;
-import com.purebred.sample.entity.Currency;
 import com.purebred.domain.ecbfx.EcbfxService;
+import com.purebred.sample.entity.Currency;
 import org.springframework.stereotype.Repository;
 
 import javax.annotation.Resource;
@@ -49,6 +49,7 @@ import java.util.List;
 import static com.purebred.sample.dao.CacheSettings.setReadOnly;
 
 @Repository
+@SuppressWarnings("unchecked")
 public class CurrencyDao extends EntityDao<Currency, String> {
 
     @Resource

@@ -37,19 +37,10 @@
 
 package com.purebred.sample.dao;
 
-import org.junit.AfterClass;
-import org.junit.Before;
 import org.junit.runner.RunWith;
-import org.springframework.jdbc.datasource.DriverManagerDataSource;
-import org.springframework.test.annotation.IfProfileValue;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
-
-import javax.annotation.PostConstruct;
-import javax.annotation.Resource;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {

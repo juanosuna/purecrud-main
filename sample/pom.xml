@@ -65,10 +65,8 @@
     </parent>
 
     <description>PureCRUD Sample Web Application</description>
-    <groupId>com.purebred</groupId>
     <artifactId>sample</artifactId>
     <packaging>war</packaging>
-    <version>1.0-SNAPSHOT</version>
 
     <properties>
         <TEST_DATA_INITIALIZER_TEST>TestDataInitializerTest.java</TEST_DATA_INITIALIZER_TEST>

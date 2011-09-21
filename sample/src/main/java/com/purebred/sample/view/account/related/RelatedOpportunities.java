@@ -54,6 +54,7 @@ import javax.persistence.criteria.*;
 import java.util.ArrayList;
 import java.util.List;
 
+@SuppressWarnings("serial")
 @Component
 @Scope("prototype")
 public class RelatedOpportunities extends ToManyRelationship<Opportunity> {
@@ -129,6 +130,7 @@ public class RelatedOpportunities extends ToManyRelationship<Opportunity> {
 
     @Component
     @Scope("prototype")
+    @SuppressWarnings("rawtypes")
     public static class RelatedOpportunitiesQuery extends ToManyRelationshipQuery<Opportunity, Account> {
 
         @Resource

@@ -42,6 +42,7 @@ import com.purebred.core.validation.AbstractConversionValidator;
 import com.purebred.core.view.field.FormField;
 import com.vaadin.data.util.PropertyFormatter;
 
+@SuppressWarnings("serial")
 public class PhoneConversionValidator extends AbstractConversionValidator {
 
     public PhoneConversionValidator(FormField formField) {

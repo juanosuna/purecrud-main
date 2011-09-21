@@ -50,7 +50,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import java.security.Permissions;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
@@ -287,7 +286,8 @@ public class TestDataInitializer {
         return i == 1;
     }
 
-    public static <T extends Enum> T random(Class<T> enumType) {
+    @SuppressWarnings("rawtypes")
+	public static <T extends Enum> T random(Class<T> enumType) {
         T[] enumConstants = enumType.getEnumConstants();
         Arrays.asList(enumConstants);
 
