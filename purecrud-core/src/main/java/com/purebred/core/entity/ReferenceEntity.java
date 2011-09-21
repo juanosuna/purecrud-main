@@ -28,7 +28,7 @@
  * develop commercial activities involving the PureCRUD software without
  * disclosing the source code of your own applications. These activities
  * include: offering paid services to customers as an ASP, providing
- * services from a hosted web application, shipping PureCRUD with a closed
+ * services from a web application, shipping PureCRUD with a closed
  * source product.
  *
  * For more information, please contact Brown Bag Consulting at this
