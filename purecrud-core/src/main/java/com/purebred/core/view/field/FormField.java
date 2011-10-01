@@ -53,6 +53,9 @@ import com.vaadin.terminal.CompositeErrorMessage;
 import com.vaadin.terminal.ErrorMessage;
 import com.vaadin.terminal.Sizeable;
 import com.vaadin.ui.*;
+import com.vaadin.ui.themes.ChameleonTheme;
+import com.vaadin.ui.themes.Reindeer;
+import com.vaadin.ui.themes.Runo;
 
 import javax.persistence.Lob;
 import java.util.*;
@@ -346,7 +349,7 @@ public class FormField extends DisplayField {
         getField().setHeight(height, unit);
     }
 
-    private void autoAdjustSelectWidth() {
+    public void autoAdjustSelectWidth() {
         Assert.PROGRAMMING.assertTrue(getField() instanceof AbstractSelect,
                 "FormField.autoAdjustSelectWidth can only be called on select fields");
 

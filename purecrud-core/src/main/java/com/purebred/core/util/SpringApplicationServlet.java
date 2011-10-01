@@ -48,6 +48,7 @@ import org.springframework.web.context.support.WebApplicationContextUtils;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
+import java.net.URL;
 
 public class SpringApplicationServlet extends ApplicationServlet {
 
@@ -97,6 +98,11 @@ public class SpringApplicationServlet extends ApplicationServlet {
         } catch (BeansException e) {
             throw new ServletException(e);
         }
+    }
+
+    @Override
+    protected boolean isAllowedVAADINResourceUrl(HttpServletRequest request, URL resourceUrl) {
+        return true;
     }
 }
 

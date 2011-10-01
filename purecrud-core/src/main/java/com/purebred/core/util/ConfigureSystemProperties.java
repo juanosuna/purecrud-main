@@ -35,33 +35,37 @@
  * address: juan@brownbagconsulting.com.
  */
 
-package com.purebred.domain;
+package com.purebred.core.util;
 
-import com.purebred.core.util.ConfigureSystemProperties;
-import org.apache.commons.httpclient.HttpClient;
-import org.jboss.resteasy.client.spring.RestClientProxyFactoryBean;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Configuration;
 
-import javax.annotation.Resource;
-import java.net.URI;
+import javax.annotation.PostConstruct;
 
-public abstract class RestClientService {
+@Configuration
+public class ConfigureSystemProperties {
 
-    @Resource
-    private ConfigureSystemProperties configureSystemProperties;
+    @Value("${http.proxyHost}")
+    private String httpProxyHost;
 
-    public <T> T create(String uri, Class<T> clazz) throws Exception {
-        RestClientProxyFactoryBean restClientFactory = new RestClientProxyFactoryBean();
-        restClientFactory.setBaseUri(new URI(uri));
-        restClientFactory.setServiceInterface(clazz);
-        if (configureSystemProperties.getHttpProxyHost() != null && configureSystemProperties.getHttpProxyPort() != null) {
-            HttpClient httpClient = new HttpClient();
-            httpClient.getHostConfiguration().setProxy(
-                    configureSystemProperties.getHttpProxyHost(),
-                    configureSystemProperties.getHttpProxyPort());
+    @Value("${http.proxyPort}")
+    private Integer httpProxyPort;
 
-            restClientFactory.setHttpClient(httpClient);
+    public String getHttpProxyHost() {
+        return httpProxyHost;
+    }
+
+    public Integer getHttpProxyPort() {
+        return httpProxyPort;
+    }
+
+    @PostConstruct
+    public void postConstruct() {
+        if (!StringUtil.isEmpty(System.getProperty("http.proxyHost")) && httpProxyHost != null) {
+            System.setProperty("http.proxyHost", httpProxyHost);
         }
-        restClientFactory.afterPropertiesSet();
-        return (T) restClientFactory.getObject();
+        if (!StringUtil.isEmpty(System.getProperty("http.proxyPort")) && httpProxyPort != null) {
+            System.setProperty("http.proxyPort", httpProxyPort.toString());
+        }
     }
 }

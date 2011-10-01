@@ -47,10 +47,7 @@ import com.purebred.core.view.layout.LeftLabelGridLayout;
 import com.purebred.core.view.layout.TopLabelGridLayout;
 import com.vaadin.data.Validator;
 import com.vaadin.terminal.ErrorMessage;
-import com.vaadin.ui.AbstractComponent;
-import com.vaadin.ui.AbstractTextField;
-import com.vaadin.ui.Field;
-import com.vaadin.ui.GridLayout;
+import com.vaadin.ui.*;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -363,6 +360,8 @@ public class FormFields extends DisplayFields {
         for (FormField formField : formFields) {
             if (formField.getField() instanceof AbstractTextField) {
                 formField.autoAdjustTextFieldWidth();
+            } else if (formField.getField() instanceof AbstractSelect) {
+                formField.autoAdjustSelectWidth();
             }
         }
     }
